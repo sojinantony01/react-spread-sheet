@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Sheet, { SheetRef } from "./lib";
 import packageConf from "../package.json";
 
 const createData = () => {
   const val: any[][] = [];
-  for (let i = 0; i < 1000; i++) {
-    val.push(Array.from({ length: 60 }, () => Math.floor(Math.random() * 10)));
+  for (let i = 0; i < 2000; i++) {
+    val.push(Array.from({ length: 40 }, () => Math.floor(Math.random() * 10)));
   }
   return val;
 };
