@@ -1,16 +1,48 @@
-.input-dummy {
-	width: 150px;
-	border: 1px solid rgb(167, 167, 167);
-  border-radius: 2px;
-  
+.sheet-table .input-dummy {
+	width: 100%;
+  /* min-width: 150px; */
+  padding: 0px 4px;
 }
-.sheet-table {
+.sheet-table, .sheet-table table {
   max-width: 100vw;
   max-height: 100vh;
   overflow: auto;
 }
-.sheet-axis {
-  background-color: rgb(182 182 182);
-  padding: 0px 5px;
-  border-radius: 2px;
+.sheet-table .sheet-axis {
+  background-color: rgb(207, 207, 207);
+  padding: 0px 4px;
 }
+
+.sheet-table table, td {
+  border: 1px solid rgb(86, 86, 86);
+  border-collapse: collapse;
+  border-spacing: 0;
+  padding: 0px;
+}
+.sheet-table .sheet-x-axis {
+  min-width: 100px;
+}
+.sheet-table .sheet-axis div {
+  resize: horizontal;
+  overflow: auto;
+  width: auto;
+  height: auto;
+}
+.sheet-table td {
+  height: 28px;
+  overflow: auto;
+}
+.sheet-table input {
+  margin: 0;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 0;
+  width: 100%;
+  padding: 0px 4px;
+  height: 100%;
+  border-spacing: 0;
+}
+.sheet-table input:focus {
+  border-radius: 0;
+}
+
