@@ -10,6 +10,7 @@ export interface Props {
   hideXAxisHeader?: boolean;
   hideYAxisHeader?: boolean;
   headerValues?: string[];
+  readonly?: boolean;
 }
 const List = (props: Props) => {
   const dispatch = useAppDispatch();
@@ -24,6 +25,7 @@ const List = (props: Props) => {
         i={i}
         onChange={props.onChange}
         hideYAxisHeader={props.hideYAxisHeader}
+        readonly={props.readonly}
       />
     );
   }
