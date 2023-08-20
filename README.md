@@ -2,6 +2,12 @@
 
 Render large lists of input boxes in table using React JS and Redux, Render table with large number of rows and columns.
 
+* Can render large number of input boxes in table
+* Customizable header values
+* Resize columns
+* Can Use as Spreadsheet or excel with react
+* Simple read only mode
+<!-- * Supports calculations in Excel -->
 
 ## Getting Started
 
