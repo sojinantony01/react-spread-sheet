@@ -1,15 +1,16 @@
-import React from "react";
+import React, { memo } from "react";
 import { useAppSelector } from "../store";
 import Input from "./input";
 interface Prop {
   i: number;
+  onChange?(i: number, j: number, value: string): void;
 }
 const Row = (props: Prop) => {
   const itemLength = useAppSelector((store) => store.list.data[props.i].length);
   const items = [];
 
   for (let i = 0; i < itemLength; i++) {
-    items.push(<Input i={props.i} j={i} />);
+    items.push(<Input i={props.i} j={i} onChange={props.onChange} />);
   }
   return (
     <tr>
@@ -19,4 +20,4 @@ const Row = (props: Prop) => {
   );
 };
 
-export default Row;
+export default memo(Row);

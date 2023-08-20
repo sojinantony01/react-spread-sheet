@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { useInView } from "react-intersection-observer";
 import { useAppDispatch, useAppSelector } from "../store";
 import { changeData } from "../reducer";
@@ -6,6 +6,7 @@ import { changeData } from "../reducer";
 interface Prop {
   i: number;
   j: number;
+  onChange?(i: number, j: number, value: string): void;
 }
 const Input = (props: Prop) => {
   const dispatch = useAppDispatch();
@@ -18,6 +19,7 @@ const Input = (props: Prop) => {
     dispatch(
       changeData({ value: e.target.value || "", i: props.i, j: props.j })
     );
+    props.onChange && props.onChange(props.i, props.j, e.target.value);
   };
   return (
     <td ref={ref}>
@@ -36,4 +38,4 @@ const Input = (props: Prop) => {
   );
 };
 
-export default Input;
+export default memo(Input);
