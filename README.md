@@ -64,6 +64,15 @@ export default App;
 ```
 ## props
 
+| Prop | Description | Default | Mandatory | type
+| --- | --- | -- | -- | -- |
+| data | Array of array with values (matrix)  | [[]]  |  yes | any[][] |
+| onChange | Calls when a changes detected in input boxes, Do not set render component when value changes, component should be uncontrolled |  | No | 
+| resize | show column resize option | false | No | boolean |
+| hideXAxisHeader | Show serial numbers in X axis | false | No | boolean |
+| hideYAxisHeader | Show serial numbers in Y axis | false | No | boolean |
+| headerValues | array of headers | alphabets | No | string[] |
+
 
 [Sojin Antony](https://github.com/sojinantony01)
 

@@ -1,5 +1,4 @@
 import React, { memo } from "react";
-import { useInView } from "react-intersection-observer";
 import { useAppDispatch, useAppSelector } from "../store";
 import { changeData } from "../reducer";
 
@@ -17,15 +16,7 @@ const Input = (props: Prop) => {
     );
     props.onChange && props.onChange(props.i, props.j, e.target.value);
   };
-  return (
-    <input
-      // ref={inputRef}
-      // autoFocus
-      value={value}
-      onChange={change}
-      // onBlur={() => setShow(false)}
-    />
-  );
+  return <input value={value} onChange={change} />;
 };
 
 export default memo(Input);

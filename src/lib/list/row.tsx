@@ -4,7 +4,7 @@ import Cell from "./cell";
 interface Prop {
   i: number;
   onChange?(i: number, j: number, value: string): void;
-  showYAxisHeader?: boolean;
+  hideYAxisHeader?: boolean;
   readonly?: boolean;
 }
 const Row = (props: Prop) => {
@@ -24,7 +24,7 @@ const Row = (props: Prop) => {
   }
   return (
     <tr>
-      {!props.showYAxisHeader && <td className="sheet-axis">{props.i + 1}</td>}
+      {!props.hideYAxisHeader && <td className="sheet-axis">{props.i + 1}</td>}
       {items}
     </tr>
   );

@@ -7,8 +7,8 @@ export interface Props {
   data: any[][];
   onChange?(i: number, j: number, value: string): void;
   resize?: boolean;
-  showXAxisHeader?: boolean;
-  showYAxisHeader?: boolean;
+  hideXAxisHeader?: boolean;
+  hideYAxisHeader?: boolean;
   headerValues?: string[];
 }
 const List = (props: Props) => {
@@ -23,7 +23,7 @@ const List = (props: Props) => {
       <Row
         i={i}
         onChange={props.onChange}
-        showYAxisHeader={props.showYAxisHeader}
+        hideYAxisHeader={props.hideYAxisHeader}
       />
     );
   }
@@ -32,7 +32,7 @@ const List = (props: Props) => {
       {items.length && (
         <table>
           <tbody>
-            {!props.showXAxisHeader && (
+            {!props.hideXAxisHeader && (
               <SheetXAxis
                 resize={props.resize}
                 headerValues={props.headerValues}
