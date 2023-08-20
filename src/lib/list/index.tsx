@@ -31,6 +31,7 @@ const List = (props: Props) => {
       <Row
         i={i}
         key={i}
+        headerValues={props.headerValues}
         onChange={props.onChange}
         hideYAxisHeader={props.hideYAxisHeader}
         readonly={props.readonly}

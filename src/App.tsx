@@ -4,7 +4,7 @@ import packageConf from "../package.json";
 
 const createData = () => {
   const val: any[][] = [];
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 500; i++) {
     val.push(
       Array.from({ length: 40 }, () => ({
         value: Math.floor(Math.random() * 10),

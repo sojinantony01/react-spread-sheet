@@ -7,6 +7,7 @@ interface Prop {
   onChange?(i: number, j: number, value: string): void;
   hideYAxisHeader?: boolean;
   readonly?: boolean;
+  headerValues?: string[];
 }
 const Row = (props: Prop) => {
   const { i } = props;
@@ -17,7 +18,13 @@ const Row = (props: Prop) => {
       props.readonly ? (
         <ReadOnlyCell key={`${i}-${j}-ReadOnly`} i={i} j={j} />
       ) : (
-        <Cell key={`${i}-${j}`} i={i} j={j} onChange={props.onChange} />
+        <Cell
+          key={`${i}-${j}`}
+          i={i}
+          j={j}
+          onChange={props.onChange}
+          headerValues={props.headerValues}
+        />
       )
     );
   }
