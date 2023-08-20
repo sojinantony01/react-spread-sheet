@@ -79,6 +79,12 @@ export default App;
 | hideYAxisHeader | Show serial numbers in Y axis | false | No | boolean |
 | headerValues | array of headers | alphabets | No | string[] |
 
+## Ref
+
+| Ref | Description |
+| --- | --- |
+| getData | Get updated data from sheet | 
+| setData | Set new data to sheet |
 
 [Sojin Antony](https://github.com/sojinantony01)
 
