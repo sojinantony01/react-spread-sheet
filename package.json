@@ -1,5 +1,5 @@
 {
-  "name": "react-excel-sheet",
+  "name": "react-spread-sheet",
   "version": "1.0.0",
   "description": "A quick example of rendering large lists of inputs in table using React JS and Redux",
   "keywords": [
@@ -20,7 +20,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/sojinantony01/react-excel-sheet.git"
+    "url": "https://github.com/sojinantony01/react-spread-sheet.git"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
@@ -56,7 +56,7 @@
     "react-build": "CI=false && react-scripts build",
     "prepublishOnly": "npm run build"
   },
-  "homepage": "https://sojinantony01.github.io/react-excel-sheet",
+  "homepage": "https://sojinantony01.github.io/react-spread-sheet",
   "eslintConfig": {
     "extends": [
       "react-app",

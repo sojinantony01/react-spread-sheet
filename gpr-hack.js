@@ -7,6 +7,6 @@ const file = readFileSync("./package.json", {
 
 const json = JSON.parse(file);
 
-json.name = "@sojinantony01/react-excel-sheet";
+json.name = "@sojinantony01/react-spread-sheet";
 
 writeFileSync("./package.json", JSON.stringify(json, undefined, 2));
