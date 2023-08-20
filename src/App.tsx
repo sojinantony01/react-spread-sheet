@@ -28,7 +28,7 @@ function App() {
         <button onClick={getData}>Get Updated data</button>
       </div>
       <div>
-        <Sheet data={state} onChange={onChange} ref={childRef} resize={true} />
+        <Sheet data={state} onChange={onChange} ref={childRef} resize={false} />
       </div>
     </div>
   );
