@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import { useAppDispatch, useAppSelector } from "../store";
 import { changeData } from "../reducer";
 
@@ -19,4 +19,4 @@ const Input = (props: Prop) => {
   return <input value={value} onChange={change} />;
 };
 
-export default memo(Input);
+export default Input;

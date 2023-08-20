@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import { useInView } from "react-intersection-observer";
 import Input from "./input";
 interface Prop {
@@ -18,4 +18,4 @@ const Cell = (props: Prop) => {
   );
 };
 
-export default memo(Cell);
+export default Cell;

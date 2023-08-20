@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import { useAppSelector } from "../store";
 import Cell from "./cell";
+import ReadOnlyCell from "./readonlycell";
 interface Prop {
   i: number;
   onChange?(i: number, j: number, value: string): void;
@@ -14,9 +15,7 @@ const Row = (props: Prop) => {
   for (let i = 0; i < itemLength; i++) {
     items.push(
       props.readonly ? (
-        <td>
-          <div className="input-dummy"></div>
-        </td>
+        <ReadOnlyCell i={props.i} j={i} />
       ) : (
         <Cell i={props.i} j={i} onChange={props.onChange} />
       )
