@@ -7,6 +7,10 @@ Render large lists of input boxes in table using React JS and Redux, Render tabl
 * Resize columns
 * Can Use as Spreadsheet or excel with react
 * Read only mode
+* Export to CSV support
+* Calculations Support
+* Move between cells using tab/shift+tab or shift+arrowKeys keys in keyboard
+
 <!-- * Supports calculations in Excel -->
 
 ## Getting Started
@@ -14,10 +18,7 @@ Render large lists of input boxes in table using React JS and Redux, Render tabl
 Input data format
 ```
 [
-  [1,2,3,4,5,"a","b", "d"],
-  ["23","45","3",4,5,"a","b", "d"],
-  [1,"w",3,"4",5,"a","b", "d"],
-  [1,2,"23",4,5,"a","b", "d"]
+  [{value: 1},{value: 1},{value: "a"},{value: "b"},{value: "d"}]
 ]
 ```
 ```
@@ -77,7 +78,7 @@ export default App;
 | resize | show column resize option | false | No | boolean |
 | hideXAxisHeader | Show serial numbers in X axis | false | No | boolean |
 | hideYAxisHeader | Show serial numbers in Y axis | false | No | boolean |
-| headerValues | array of headers | alphabets | No | string[] |
+| headerValues | array of header values, Number in header values could affect calculations | alphabets | No | string[] |
 
 ## Ref
 

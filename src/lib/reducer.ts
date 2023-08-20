@@ -15,7 +15,8 @@ const listSlice = createSlice({
       state.data = action.payload;
     },
     changeData(state, action) {
-      state.data[action.payload.i][action.payload.j] = action.payload.value;
+      state.data[action.payload.i][action.payload.j].value =
+        action.payload.value;
     },
   },
 });

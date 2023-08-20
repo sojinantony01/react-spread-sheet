@@ -4,7 +4,7 @@ import Row from "./row";
 import { addData } from "../reducer";
 import SheetXAxis from "./sheet-x-axis";
 export interface Props {
-  data: any[][];
+  data?: any[][];
   onChange?(i: number, j: number, value: string): void;
   resize?: boolean;
   hideXAxisHeader?: boolean;
@@ -12,11 +12,18 @@ export interface Props {
   headerValues?: string[];
   readonly?: boolean;
 }
+const generateDummyContent = () => {
+  const val: any[][] = [];
+  for (let i = 0; i < 100; i++) {
+    val.push(Array.from({ length: 30 }, () => ({ value: "" })));
+  }
+  return val;
+};
 const List = (props: Props) => {
   const dispatch = useAppDispatch();
   const itemLength = useAppSelector((store) => store.list.data.length);
   useEffect(() => {
-    dispatch(addData(props.data));
+    dispatch(addData(props.data ? props.data : generateDummyContent()));
   }, []);
   const items = [];
   for (let i = 0; i < itemLength; i++) {

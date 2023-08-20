@@ -1,4 +1,8 @@
 .sheet-table .input-dummy {
+  height: 100%;
+}
+
+.sheet-table .pv-4 {
   padding: 0px 4px;
 }
 .sheet-table, .sheet-table table {
@@ -7,25 +11,30 @@
   overflow: auto;
 }
 .sheet-table .sheet-axis {
-  background-color: rgb(207, 207, 207);
+  background-color: #f5f6f7;
   padding: 0px 4px;
+  text-align: center;
 }
 
 .sheet-table table, td {
-  border: 1px solid rgb(86, 86, 86);
+  border: 1px solid #e1e1e1;
   border-collapse: collapse;
   border-spacing: 0;
   padding: 0px;
 }
+.sheet-table td:focus {
+  border: 2px solid blue;
+}
 .sheet-table .sheet-x-axis {
-  min-width: 100px;
+  min-width: 50px;
 }
 .sheet-table .sheet-axis div {
   resize: horizontal;
   overflow: auto;
   width: auto;
   height: auto;
-  min-width: 140px;
+  min-width: 50px;
+  width: 100px
 }
 .sheet-table td {
   height: 28px;
