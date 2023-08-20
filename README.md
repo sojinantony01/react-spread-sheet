@@ -21,7 +21,7 @@ npm install react-excel-sheet
 ## demo
 [Live demo](https://sojinantony01.github.io/react-excel-sheet/)
 
-![alt text](https://raw.githubusercontent.com/sojinantony01/react-excel-sheet/master/public/images/samplesheet.png)
+![alt text](https://raw.githubusercontent.com/sojinantony01/react-excel-sheet/main/public/images/samplesheet.png)
 
 ```
 import React, { useRef, useState } from "react";
