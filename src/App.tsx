@@ -4,13 +4,14 @@ import packageConf from "../package.json";
 
 const createData = () => {
   const val: any[][] = [];
-  for (let i = 0; i < 2000; i++) {
+  for (let i = 0; i < 300; i++) {
     val.push(Array.from({ length: 40 }, () => Math.floor(Math.random() * 10)));
   }
   return val;
 };
+const data = createData();
 function App() {
-  const [state] = useState<any[][]>(createData());
+  const [state] = useState<any[][]>(data);
   const childRef = useRef<SheetRef>(null);
   const onChange = (i: number, j: number, value: string) => {
     //Do not try to update state with this action, it will slow down your application
@@ -27,7 +28,7 @@ function App() {
         <button onClick={getData}>Get Updated data</button>
       </div>
       <div>
-        <Sheet data={state} onChange={onChange} ref={childRef} />
+        <Sheet data={state} onChange={onChange} ref={childRef} resize={true} />
       </div>
     </div>
   );

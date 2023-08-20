@@ -1,20 +1,30 @@
 import React, { memo } from "react";
 import { useAppSelector } from "../store";
-import Input from "./input";
+import Cell from "./cell";
 interface Prop {
   i: number;
   onChange?(i: number, j: number, value: string): void;
+  showYAxisHeader?: boolean;
+  readonly?: boolean;
 }
 const Row = (props: Prop) => {
   const itemLength = useAppSelector((store) => store.list.data[props.i].length);
   const items = [];
 
   for (let i = 0; i < itemLength; i++) {
-    items.push(<Input i={props.i} j={i} onChange={props.onChange} />);
+    items.push(
+      props.readonly ? (
+        <td>
+          <div className="input-dummy"></div>
+        </td>
+      ) : (
+        <Cell i={props.i} j={i} onChange={props.onChange} />
+      )
+    );
   }
   return (
     <tr>
-      <td className="sheet-axis">{props.i + 1}</td>
+      {!props.showYAxisHeader && <td className="sheet-axis">{props.i + 1}</td>}
       {items}
     </tr>
   );

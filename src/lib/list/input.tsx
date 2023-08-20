@@ -10,10 +10,6 @@ interface Prop {
 }
 const Input = (props: Prop) => {
   const dispatch = useAppDispatch();
-  const { ref, inView } = useInView({
-    root: document.getElementsByClassName("sheet-table")[0],
-    rootMargin: "100px",
-  });
   const value = useAppSelector((store) => store.list.data[props.i][props.j]);
   const change = (e: { target: { value: any } }) => {
     dispatch(
@@ -22,19 +18,13 @@ const Input = (props: Prop) => {
     props.onChange && props.onChange(props.i, props.j, e.target.value);
   };
   return (
-    <td ref={ref}>
-      {!inView ? (
-        <div className="input-dummy">{value}</div>
-      ) : (
-        <input
-          // ref={inputRef}
-          // autoFocus
-          value={value}
-          onChange={change}
-          // onBlur={() => setShow(false)}
-        />
-      )}
-    </td>
+    <input
+      // ref={inputRef}
+      // autoFocus
+      value={value}
+      onChange={change}
+      // onBlur={() => setShow(false)}
+    />
   );
 };
 

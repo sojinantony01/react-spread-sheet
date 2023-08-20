@@ -1,13 +1,10 @@
 import React, { forwardRef, useImperativeHandle } from "react";
 import { Provider } from "react-redux";
-import List from "./list";
+import List, { Props } from "./list";
 import { store } from "./store";
 import "./sheet.css";
 import { addData } from "./reducer";
-interface Props {
-  data: any[][];
-  onChange?(i: number, j: number, value: string): void;
-}
+
 export type SheetRef = {
   getData: () => string[][];
   setData: (data: any[][]) => void;
@@ -26,7 +23,7 @@ const Sheet = forwardRef((props: Props, ref) => {
 
   return (
     <Provider store={store}>
-      <List data={props.data} onChange={props.onChange} />
+      <List {...props} />
     </Provider>
   );
 });
