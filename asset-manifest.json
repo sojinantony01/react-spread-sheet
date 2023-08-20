@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/react-excel-sheet/static/css/main.de09bde1.css",
-    "main.js": "/react-excel-sheet/static/js/main.7a36246a.js",
+    "main.css": "/react-excel-sheet/static/css/main.0e9b6281.css",
+    "main.js": "/react-excel-sheet/static/js/main.d7fe8d7b.js",
     "static/js/787.3d937384.chunk.js": "/react-excel-sheet/static/js/787.3d937384.chunk.js",
     "index.html": "/react-excel-sheet/index.html",
-    "main.de09bde1.css.map": "/react-excel-sheet/static/css/main.de09bde1.css.map",
-    "main.7a36246a.js.map": "/react-excel-sheet/static/js/main.7a36246a.js.map",
+    "main.0e9b6281.css.map": "/react-excel-sheet/static/css/main.0e9b6281.css.map",
+    "main.d7fe8d7b.js.map": "/react-excel-sheet/static/js/main.d7fe8d7b.js.map",
     "787.3d937384.chunk.js.map": "/react-excel-sheet/static/js/787.3d937384.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.de09bde1.css",
-    "static/js/main.7a36246a.js"
+    "static/css/main.0e9b6281.css",
+    "static/js/main.d7fe8d7b.js"
   ]
 }
