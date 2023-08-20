@@ -89,3 +89,6 @@ export default App;
 [Sojin Antony](https://github.com/sojinantony01)
 
 ## Acknowledgments
+
+* React-intersection-observer
+* Redux, React Redux
