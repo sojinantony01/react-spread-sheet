@@ -5,7 +5,7 @@ import packageConf from "../package.json";
 const createData = () => {
   const val: any[][] = [];
   for (let i = 0; i < 300; i++) {
-    val.push(Array.from({ length: 40 }, () => Math.floor(Math.random() * 10)));
+    val.push(Array.from({ length: 20 }, () => Math.floor(Math.random() * 10)));
   }
   return val;
 };
