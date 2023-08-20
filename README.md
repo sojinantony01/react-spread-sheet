@@ -1,4 +1,4 @@
-# react-spread-sheet
+# React-spread-sheet-excel
 
 Render large lists of input boxes in table using React JS and Redux, Render table with large number of rows and columns.
 
@@ -6,7 +6,7 @@ Render large lists of input boxes in table using React JS and Redux, Render tabl
 * Customizable header values
 * Resize columns
 * Can Use as Spreadsheet or excel with react
-* Simple read only mode
+* Read only mode
 <!-- * Supports calculations in Excel -->
 
 ## Getting Started
@@ -21,7 +21,7 @@ Input data format
 ]
 ```
 ```
-npm install react-spread-sheet
+npm install react-spread-sheet-excel
 
 ```
 ## demo
@@ -72,7 +72,7 @@ export default App;
 
 | Prop | Description | Default | Mandatory | type
 | --- | --- | -- | -- | -- |
-| data | Array of array with values (matrix)  | [[]]  |  yes | any[][] |
+| data | Array of array with values (matrix)  | [[]]  |  No | any[][] |
 | onChange | Calls when a changes detected in input boxes, Do not set render component when value changes, component should be uncontrolled |  | No | 
 | resize | show column resize option | false | No | boolean |
 | hideXAxisHeader | Show serial numbers in X axis | false | No | boolean |

@@ -18,7 +18,7 @@
   padding: 0px;
 }
 .sheet-table .sheet-x-axis {
-  min-width: 140px;
+  min-width: 100px;
 }
 .sheet-table .sheet-axis div {
   resize: horizontal;

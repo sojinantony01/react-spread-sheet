@@ -1,5 +1,5 @@
 {
-  "name": "react-spread-sheet",
+  "name": "react-spread-sheet-excel",
   "version": "1.0.0",
   "description": "A quick example of rendering large lists of inputs in table using React JS and Redux",
   "keywords": [
