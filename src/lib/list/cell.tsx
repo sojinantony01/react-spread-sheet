@@ -11,7 +11,7 @@ interface Prop {
 const Cell = (props: Prop) => {
   const { ref, inView } = useInView({
     root: document.getElementsByClassName("sheet-table")[0],
-    rootMargin: "30px",
+    rootMargin: "100px",
   });
   const dispatch = useAppDispatch();
   const value = useAppSelector((store) => store.list.data[props.i][props.j]);
@@ -24,7 +24,7 @@ const Cell = (props: Prop) => {
   return (
     <td ref={ref}>
       {!inView ? (
-        <div className="input-dummy"></div>
+        <div className="input-dummy">{value}</div>
       ) : (
         <input value={value} onChange={change} />
       )}

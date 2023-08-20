@@ -1,7 +1,5 @@
 .sheet-table .input-dummy {
-	width: 100%;
   padding: 0px 4px;
-  min-width: 92px;
 }
 .sheet-table, .sheet-table table {
   max-width: 100vw;
@@ -20,13 +18,14 @@
   padding: 0px;
 }
 .sheet-table .sheet-x-axis {
-  min-width: 100px;
+  min-width: 140px;
 }
 .sheet-table .sheet-axis div {
   resize: horizontal;
   overflow: auto;
   width: auto;
   height: auto;
+  min-width: 140px;
 }
 .sheet-table td {
   height: 28px;

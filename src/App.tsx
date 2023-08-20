@@ -4,14 +4,13 @@ import packageConf from "../package.json";
 
 const createData = () => {
   const val: any[][] = [];
-  for (let i = 0; i < 300; i++) {
-    val.push(Array.from({ length: 20 }, () => Math.floor(Math.random() * 10)));
+  for (let i = 0; i < 1000; i++) {
+    val.push(Array.from({ length: 40 }, () => Math.floor(Math.random() * 10)));
   }
   return val;
 };
-const data = createData();
 function App() {
-  const [state] = useState<any[][]>(data);
+  const [state] = useState<any[][]>(createData());
   const childRef = useRef<SheetRef>(null);
   const onChange = (i: number, j: number, value: string) => {
     //Do not try to update state with this action, it will slow down your application
@@ -24,11 +23,11 @@ function App() {
   return (
     <div>
       <div>
-        React excel sheet: V {packageConf.version}{" "}
+        React excel sheet: V{packageConf.version}{" "}
         <button onClick={getData}>Get Updated data</button>
       </div>
       <div>
-        <Sheet data={state} onChange={onChange} ref={childRef} resize={false} />
+        <Sheet data={state} onChange={onChange} ref={childRef} resize={true} />
       </div>
     </div>
   );

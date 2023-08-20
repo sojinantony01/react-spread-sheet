@@ -9,21 +9,21 @@ interface Prop {
   readonly?: boolean;
 }
 const Row = (props: Prop) => {
-  const itemLength = useAppSelector((store) => store.list.data[props.i].length);
+  const { i } = props;
+  const itemLength = useAppSelector((store) => store.list.data[i].length);
   const items = [];
-
-  for (let i = 0; i < itemLength; i++) {
+  for (let j = 0; j < itemLength; j++) {
     items.push(
       props.readonly ? (
-        <ReadOnlyCell i={props.i} j={i} />
+        <ReadOnlyCell key={`${i}-${j}-ReadOnly`} i={i} j={j} />
       ) : (
-        <Cell i={props.i} j={i} onChange={props.onChange} />
+        <Cell key={`${i}-${j}`} i={i} j={j} onChange={props.onChange} />
       )
     );
   }
   return (
     <tr>
-      {!props.hideYAxisHeader && <td className="sheet-axis">{props.i + 1}</td>}
+      {!props.hideYAxisHeader && <td className="sheet-axis">{i + 1}</td>}
       {items}
     </tr>
   );

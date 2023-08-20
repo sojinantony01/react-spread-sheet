@@ -23,6 +23,7 @@ const List = (props: Props) => {
     items.push(
       <Row
         i={i}
+        key={i}
         onChange={props.onChange}
         hideYAxisHeader={props.hideYAxisHeader}
         readonly={props.readonly}

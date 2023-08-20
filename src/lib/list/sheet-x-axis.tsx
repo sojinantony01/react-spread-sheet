@@ -26,9 +26,12 @@ const SheetXAxis = ({ resize, headerValues }: Props) => {
   };
   for (let i = 0; i <= itemLength; i++) {
     items.push(
-      <td className={`sheet-axis ${i > 0 && "sheet-x-axis"}`}>
-        {resize ? (
-          <div>{i > 0 && printToLetter(i)}</div>
+      <td
+        className={`sheet-axis ${i > 0 && "sheet-x-axis"}`}
+        key={`${i}-x-axis`}
+      >
+        {resize && i > 0 ? (
+          <div>{printToLetter(i)}</div>
         ) : (
           i > 0 && printToLetter(i)
         )}
