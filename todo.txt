@@ -5,3 +5,7 @@ Replace Math JS
 Select cells
 Format support
 Resize rows
+Add more rows or columns on the scroll end
+sticky header
+
+Jump issue with long text in dummy 
