@@ -11,6 +11,7 @@ Render large lists of input boxes in the table using React JS and Redux, Render 
 * Calculations Support
 * Move between cells using tab/shift+tab or arrow Keys keys on the keyboard
 * Supports calculations in Excel cells
+* Sticky Headers
 
 ## Getting Started
 

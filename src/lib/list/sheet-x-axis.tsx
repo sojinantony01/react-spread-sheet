@@ -11,7 +11,7 @@ const SheetXAxis = ({ resize, headerValues }: Props) => {
   const items: any = [];
   for (let i = 0; i <= itemLength; i++) {
     items.push(
-      <td
+      <th
         className={`sheet-axis ${i > 0 && "sheet-x-axis"}`}
         key={`${i}-x-axis`}
       >
@@ -20,7 +20,7 @@ const SheetXAxis = ({ resize, headerValues }: Props) => {
         ) : (
           i > 0 && printToLetter(i, headerValues)
         )}
-      </td>
+      </th>
     );
   }
   return <tr>{items}</tr>;

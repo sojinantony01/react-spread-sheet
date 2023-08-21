@@ -5,29 +5,38 @@
 .sheet-table .pv-4 {
   padding: 0px 4px;
 }
-.sheet-table, .sheet-table table {
+
+.sheet-table,
+.sheet-table table {
   max-width: 100vw;
   max-height: 100vh;
   overflow: auto;
+  position: relative;
 }
+
 .sheet-table .sheet-axis {
   background-color: #f5f6f7;
   padding: 0px 4px;
   text-align: center;
 }
 
-.sheet-table table, td {
+.sheet-table table,
+td,
+th {
   border: 1px solid #e1e1e1;
   border-collapse: collapse;
   border-spacing: 0;
   padding: 0px;
 }
+
 .sheet-table td:focus {
   border: 2px solid blue;
 }
+
 .sheet-table .sheet-x-axis {
   min-width: 50px;
 }
+
 .sheet-table .sheet-axis div {
   resize: horizontal;
   overflow: auto;
@@ -36,10 +45,13 @@
   min-width: 50px;
   width: 100px
 }
-.sheet-table td {
+
+.sheet-table td,
+.sheet-table th {
   height: 28px;
   overflow: auto;
 }
+
 .sheet-table input {
   margin: 0;
   box-sizing: border-box;
@@ -50,7 +62,25 @@
   height: 100%;
   border-spacing: 0;
 }
+
 .sheet-table input:focus {
   border-radius: 0;
 }
 
+.sheet-table th {
+  position: sticky;
+  top: -2px;
+  z-index: 1;
+}
+
+.sheet-table th:first-child {
+  position: sticky;
+  top: -2px;
+  left: -2px;
+  z-index: 2;
+}
+
+.sheet-table tr td:first-child {
+  position: sticky;
+  left: -2px;
+}
