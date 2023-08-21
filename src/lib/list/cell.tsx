@@ -16,7 +16,7 @@ const Cell = (props: Prop) => {
 
   return (
     <td ref={ref} className={`${!inView ? "pv-4" : ""}`}>
-      {inView ? <Input {...props} /> : " "}
+      {inView ? <Input key={`${props.i}-${props.j}`} {...props} /> : " "}
     </td>
   );
 };
