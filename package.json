@@ -1,6 +1,6 @@
 {
   "name": "react-spread-sheet-excel",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A quick example of rendering large lists of inputs in table using React JS and Redux",
   "keywords": [
     "React spreadsheet",
