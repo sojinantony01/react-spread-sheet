@@ -70,6 +70,7 @@ const Cell = (props: Prop) => {
           value={value}
           onFocus={() => setFocus(true)}
           onKeyDown={keyDown}
+          className={`${editMode ? "" : "view_mode"}`}
           onBlur={() => {
             setFocus(false);
             setEdit(false);
