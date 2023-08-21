@@ -1,8 +1,4 @@
-import React, {
-  ChangeEvent,
-  KeyboardEvent,
-  useState,
-} from "react";
+import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { useAppDispatch, useAppSelector } from "../store";
 import { changeData } from "../reducer";
@@ -22,7 +18,7 @@ const Cell = (props: Prop) => {
   });
   const [focused, setFocus] = useState(false);
   const [editMode, setEdit] = useState(false);
-  const [clicked, setClicked] = useState(false)
+  const [clicked, setClicked] = useState(false);
   const dispatch = useAppDispatch();
   const value = useAppSelector((store) => {
     let val = store.list.data[i][j].value;
@@ -77,7 +73,7 @@ const Cell = (props: Prop) => {
             setEdit(false);
             setClicked(false);
           }}
-          onClick={()=>!clicked ? setClicked(true) : setEdit(true)}
+          onClick={() => (!clicked ? setClicked(true) : setEdit(true))}
           onDoubleClick={() => setEdit(true)}
           onChange={change}
         />

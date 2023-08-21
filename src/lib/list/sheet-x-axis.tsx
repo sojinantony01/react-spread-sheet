@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppSelector } from "../store";
 import { printToLetter } from "./utils";
 interface Props {
@@ -9,6 +9,13 @@ interface Props {
 const SheetXAxis = ({ resize, headerValues }: Props) => {
   const itemLength = useAppSelector((store) => store.list.data[0].length);
   const items: any = [];
+  useEffect(() => {
+    if (headerValues?.find((d) => d.match(/[0-9]/))) {
+      console.error(
+        "React-spread-sheet-excel: Header values should not contain numbers"
+      );
+    }
+  }, [headerValues]);
   for (let i = 0; i <= itemLength; i++) {
     items.push(
       <th

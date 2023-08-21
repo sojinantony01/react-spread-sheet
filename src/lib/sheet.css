@@ -29,10 +29,6 @@ th {
   padding: 0px;
 }
 
-.sheet-table td:focus {
-  border: 2px solid blue;
-}
-
 .sheet-table .sheet-x-axis {
   min-width: 50px;
 }

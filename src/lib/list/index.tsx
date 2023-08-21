@@ -39,7 +39,14 @@ const List = (props: Props) => {
     );
   }
   return (
-    <div className="sheet-table">
+    <div
+      className="sheet-table"
+      // onMouseOverCapture={(e) => {
+      //   if (e.buttons == 1) {
+      //     console.log(e);
+      //   }
+      // }}
+    >
       {items.length && (
         <table>
           <tbody>

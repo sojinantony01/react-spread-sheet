@@ -4,7 +4,9 @@
   "description": "A quick example of rendering large lists of inputs in table using React JS and Redux",
   "keywords": [
     "React spreadsheet",
-    "React Excel"
+    "React Excel",
+    "Light weight excel / spreadsheets",
+    "Spreadsheet supports calculations"
   ],
   "author": "Sojin antony",
   "dependencies": {
