@@ -1,4 +1,7 @@
-Math for columns
-Move to nearest cells using arrows
+Math for columns, select other columns while editing
 Virtualized for more rows
 Add more demos
+Replace Math JS
+Select cells
+Format support
+Resize rows
