@@ -22,6 +22,7 @@ const Cell = (props: Prop) => {
   });
   const [focused, setFocus] = useState(false);
   const [editMode, setEdit] = useState(false);
+  const [clicked, setClicked] = useState(false)
   const dispatch = useAppDispatch();
   const value = useAppSelector((store) => {
     let val = store.list.data[i][j].value;
@@ -74,7 +75,9 @@ const Cell = (props: Prop) => {
           onBlur={() => {
             setFocus(false);
             setEdit(false);
+            setClicked(false);
           }}
+          onClick={()=>!clicked ? setClicked(true) : setEdit(true)}
           onDoubleClick={() => setEdit(true)}
           onChange={change}
         />

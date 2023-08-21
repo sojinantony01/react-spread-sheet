@@ -9,7 +9,6 @@
   "author": "Sojin antony",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
-    "mathjs": "^11.9.1",
     "react-intersection-observer": "^9.5.2",
     "react-redux": "^8.1.2"
   },
@@ -24,8 +23,8 @@
     "url": "https://github.com/sojinantony01/react-spread-sheet.git"
   },
   "peerDependencies": {
-    "react": ">=16.8.0",
-    "react-dom": ">=16.8.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "22.0.2",
@@ -38,6 +37,7 @@
     "@types/node": "^16.11.59",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "@types/react-virtualized": "^9.21.22",
     "postcss": "^8.4.16",
     "react-scripts": "5.0.1",
     "rollup": "2.79.0",
