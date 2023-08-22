@@ -5,6 +5,4 @@ Format support
 Resize rows
 Add more rows or columns on the scroll end
 Calc in Read only mode
-Jump issue with long text in dummy 
-
-Fix calc support with ()
+Separate package for math calc

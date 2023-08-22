@@ -72,10 +72,8 @@ interface Calcs {
   [key: string]: (a: number, b: number) => string
 }
 const solveMathExpression = (expr: string) => {
-  let str = expr.replace(/ +/g, "");           // Remove all spaces!
+  let str = expr.replace(/ +/g, "");
 
-  // Get operands and operators as array.
-  // Remove full matches and undefined values.
   const m = [...str.matchAll(/(-?[\d.]+)([*\/+-])?/g)].flat().filter((x, i) => x && i % 3);
 
   const calc:Calcs = {
@@ -85,20 +83,17 @@ const solveMathExpression = (expr: string) => {
     "-": (a: number, b: number) => (a - b).toString(),
   };
 
-  // Iterate by MDAS groups order (first */ and than +-)
   [/[*\/]/, /[+-]/].forEach(expr => {
     for (let i = 0; i < m.length; i += 2) {
       let [a, x1, b] = [m[i], m[i + 1], m[i + 2]];
       
       let x: RegExpExecArray | null = expr.exec(x1);
       if (x && x.input) {
-        m[i] = calc[x.input](parseFloat(a), parseFloat(b)); // calculate and insert
-        m.splice(i + 1, 2);                                 // remove operator and operand
+        m[i] = calc[x.input](parseFloat(a), parseFloat(b)); 
+        m.splice(i + 1, 2);
         i -= 2; 
-      };                                    // rewind loop
+      };
     }
   });
-
-  // Get the last standing result
   return m[0]; 
 }
