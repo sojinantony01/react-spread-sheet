@@ -62,6 +62,7 @@ export const getCalculatedVal = (
       }
       return x;
     });
+    val = val.replaceAll(/\(.+?\)/gi, solveMathExpression)
     return solveMathExpression(val);
   } catch (e) {
     return val;
