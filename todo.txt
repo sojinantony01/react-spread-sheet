@@ -1,5 +1,4 @@
 Math for columns, select other columns while editing
-Virtualized for more rows
 Add more demos
 Select cells
 Format support
@@ -7,3 +6,5 @@ Resize rows
 Add more rows or columns on the scroll end
 Calc in Read only mode
 Jump issue with long text in dummy 
+
+Fix calc support with ()
