@@ -62,38 +62,48 @@ export const getCalculatedVal = (
       }
       return x;
     });
-    val = val.replaceAll(/\(.+?\)/gi, solveMathExpression)
+    val = val.replaceAll(/\(.+?\)/gi, solveMathExpression);
     return solveMathExpression(val);
   } catch (e) {
     return val;
   }
 };
 interface Calcs {
-  [key: string]: (a: number, b: number) => string
+  [key: string]: (a: number, b: number) => string;
 }
 const solveMathExpression = (expr: string) => {
   let str = expr.replace(/ +/g, "");
 
-  const m = [...str.matchAll(/(-?[\d.]+)([*\/+-])?/g)].flat().filter((x, i) => x && i % 3);
+  const m = [...str.matchAll(/(-?[\d.]+)([*\/+-])?/g)]
+    .flat()
+    .filter((x, i) => x && i % 3);
 
-  const calc:Calcs = {
+  const calc: Calcs = {
     "*": (a: number, b: number) => (a * b).toString(),
     "/": (a: number, b: number) => (a / b).toString(),
     "+": (a: any, b: any) => (a + b).toString(),
     "-": (a: number, b: number) => (a - b).toString(),
   };
 
-  [/[*\/]/, /[+-]/].forEach(expr => {
+  [/[*\/]/, /[+-]/].forEach((expr) => {
     for (let i = 0; i < m.length; i += 2) {
       let [a, x1, b] = [m[i], m[i + 1], m[i + 2]];
-      
+
       let x: RegExpExecArray | null = expr.exec(x1);
       if (x && x.input) {
-        m[i] = calc[x.input](parseFloat(a), parseFloat(b)); 
+        m[i] = calc[x.input](parseFloat(a), parseFloat(b));
         m.splice(i + 1, 2);
-        i -= 2; 
-      };
+        i -= 2;
+      }
     }
   });
-  return m[0]; 
-}
+  return m[0];
+};
+
+export const generateDummyContent = (n: number, m: number) => {
+  const val: any[][] = [];
+  for (let i = 0; i < n; i++) {
+    val.push(Array.from({ length: m }, () => ({ value: "" })));
+  }
+  return val;
+};
