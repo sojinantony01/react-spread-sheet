@@ -12,9 +12,9 @@ export interface Props {
   headerValues?: string[];
   readonly?: boolean;
 }
-const generateDummyContent = () => {
+export const generateDummyContent = (n: number) => {
   const val: any[][] = [];
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < n; i++) {
     val.push(Array.from({ length: 30 }, () => ({ value: "" })));
   }
   return val;
@@ -29,7 +29,7 @@ const List = (props: Props) => {
     setJ(itemLength < 300 ? itemLength : 300)
   }, [itemLength])
   useEffect(() => {
-    dispatch(addData(props.data ? props.data : generateDummyContent()));
+    dispatch(addData(props.data ? props.data : generateDummyContent(1000)));
   }, []);
   const items = [];
   for (let i = 0; i < j; i++) {
