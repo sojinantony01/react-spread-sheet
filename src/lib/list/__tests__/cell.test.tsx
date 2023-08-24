@@ -1,21 +1,26 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import Input from "../input";
 import { Provider } from "react-redux";
 import { store } from "../../store";
 import { addData } from "../../reducer";
 import { generateDummyContent } from "../utils";
-import { mockAllIsIntersecting } from "react-intersection-observer/test-utils";
-let i = 1;
-let j = 1;
-
-test("should create a hook inView", () => {
+import Cell from "../cell";
+import {
+  mockAllIsIntersecting,
+} from 'react-intersection-observer/test-utils';
+const i = 1;
+const j = 1;
+test("row  render", () => {
   store.dispatch(addData(generateDummyContent(3, 3)));
   render(
     <Provider store={store}>
-      <Input i={i} j={j} />
+        <table><tbody><tr><Cell i={i} j={j}/></tr></tbody></table>
     </Provider>
   );
   mockAllIsIntersecting(true);
   expect(screen.getByTestId(`${i}-${j}`)).toBeInTheDocument();
+  mockAllIsIntersecting(false);
+  expect(screen.queryByTestId(`${i}-${j}`)).not.toBeInTheDocument()
+  // expect(()=>screen.getByRole(`input`, {name: `${i}-${j}`})).not.toBeInTheDocument();
+  // .not.toBeInTheDocument();
 });

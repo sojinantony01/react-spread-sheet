@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import App from './App';
 import packageVersion from "../package.json"
 test('App Name rendered', () => {
@@ -17,6 +17,15 @@ test('Get Updated data option', () => {
     render(<App />);
     const linkElement = screen.getByText(/Get Updated data/i);
     expect(linkElement).toBeInTheDocument();
+});
+
+test('Get Updated data in console', () => {
+  const consoleSpy = jest
+    .spyOn(console, 'log')
+      .mockImplementation(() => {});
+  render(<App />);
+  fireEvent.click(screen.getByTestId("get-updated-data"))
+  expect(consoleSpy).toHaveBeenCalled();
 });
 
 

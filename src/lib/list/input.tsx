@@ -53,7 +53,6 @@ const Input = (props: Prop) => {
         break;
     }
   };
-
   return (
     <input
       id={`${i}-${j}`}

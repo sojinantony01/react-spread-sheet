@@ -30,12 +30,12 @@ function App() {
     <div>
       <div>
         React excel sheet: V{packageConf.version}{" "}
-        <button onClick={getData}>Get Updated data</button>{" "}
+        <button data-testid="get-updated-data" onClick={getData}>Get Updated data</button>{" "}
         <button onClick={exportCSV}>Export CSV data</button>
       </div>
       <br />
       <div>
-        <Sheet data={state} onChange={onChange} ref={childRef} resize={true} />
+        <Sheet data={state} onChange={onChange} ref={childRef} resize={true}/>
       </div>
     </div>
   );

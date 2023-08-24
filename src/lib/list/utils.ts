@@ -51,7 +51,7 @@ export const getCalculatedVal = (
   try {
     val = val.toString().trim();
     val = val.substring(1, val.length);
-    val = val.replaceAll(/[A-Z]+[0-9]+$/gi, (x) => {
+    val = val.replaceAll(/[A-Z]+[0-9]+/gi, (x) => {
       let match = /[0-9]/.exec(x);
       if (match?.index) {
         let i: number | string = x.substring(0, match?.index);

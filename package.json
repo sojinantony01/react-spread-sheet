@@ -70,8 +70,8 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx}",
-      "!src/index.js",
+      "src/**/*.{ts,tsx}",
+      "!src/index.tsx",
       "!src/reportWebVitals.ts"
     ]
   },

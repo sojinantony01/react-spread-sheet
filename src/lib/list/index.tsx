@@ -48,18 +48,18 @@ const List = (props: Props) => {
     }
   };
   return (
-    <div className="sheet-table" onScroll={onsCroll} ref={parentDivRef}>
+    <div className="sheet-table" onScroll={onsCroll} ref={parentDivRef} data-testid="sheet-table">
       <div style={{ height: (itemLength + 1) * 28 }}>
         <div ref={divRef}>
           {items.length && (
             <table>
               <tbody>
-                {!props.hideXAxisHeader && (
+                {!props.hideXAxisHeader ? (
                   <SheetXAxis
                     resize={props.resize}
                     headerValues={props.headerValues}
                   />
-                )}
+                ) : ""}
                 {items}
               </tbody>
             </table>
