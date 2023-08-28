@@ -10,17 +10,14 @@ import {
 } from 'react-intersection-observer/test-utils';
 const i = 1;
 const j = 1;
-test("row  render", () => {
+test("cell  render", () => {
   store.dispatch(addData(generateDummyContent(3, 3)));
-  render(
-    <Provider store={store}>
+  render(<Provider store={store}>
         <table><tbody><tr><Cell i={i} j={j}/></tr></tbody></table>
-    </Provider>
-  );
+    </Provider>);
   mockAllIsIntersecting(true);
   expect(screen.getByTestId(`${i}-${j}`)).toBeInTheDocument();
   mockAllIsIntersecting(false);
   expect(screen.queryByTestId(`${i}-${j}`)).not.toBeInTheDocument()
-  // expect(()=>screen.getByRole(`input`, {name: `${i}-${j}`})).not.toBeInTheDocument();
-  // .not.toBeInTheDocument();
+
 });
