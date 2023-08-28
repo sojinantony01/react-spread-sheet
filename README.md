@@ -15,6 +15,7 @@ A light weight component to Render large lists of input boxes in the table using
 * Export to CSV support
 * Move between cells using tab/shift+tab or arrow Keys keys on the keyboard
 * Sticky Headers
+* 100% unit test coverage
 
 ## Getting Started
 
