@@ -56,6 +56,7 @@
     "start": "react-scripts start",
     "build": "rm -rf build && rollup -c",
     "test": "react-scripts test --watchAll --coverage",
+    "test:ci": "CI=true react-scripts test --coverage",
     "eject": "react-scripts eject",
     "deploy": "gh-pages -d build",
     "react-build": "CI=false && react-scripts build",
