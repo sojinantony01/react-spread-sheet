@@ -2,19 +2,19 @@ import React, { useRef, useState } from "react";
 import Sheet, { SheetRef } from "./lib";
 import packageConf from "../package.json";
 
-const createData = () => {
+const createData = (count) => {
   const val: any[][] = [];
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < (count || 1000) ; i++) {
     val.push(
-      Array.from({ length: 40 }, () => ({
+      Array.from({ length: count || 40 }, () => ({
         value: Math.floor(Math.random() * 10),
       }))
     );
   }
   return val;
 };
-function App() {
-  const [state] = useState<any[][]>(createData());
+function App({count}: {count?: number}) {
+  const [state] = useState<any[][]>(createData(count));
   const childRef = useRef<SheetRef>(null);
   const onChange = (i: number, j: number, value: string) => {
     //Do not try to update state with this action, it will slow down your application
@@ -30,12 +30,12 @@ function App() {
     <div>
       <div>
         React excel sheet: V{packageConf.version}{" "}
-        <button onClick={getData}>Get Updated data</button>{" "}
-        <button onClick={exportCSV}>Export CSV data</button>
+        <button data-testid="get-updated-data" onClick={getData}>Get Updated data</button>{" "}
+        <button data-testid="csv-export" onClick={exportCSV}>Export CSV data</button>
       </div>
       <br />
       <div>
-        <Sheet data={state} onChange={onChange} ref={childRef} resize={true} />
+        <Sheet data={state} onChange={onChange} ref={childRef} resize={true}/>
       </div>
     </div>
   );

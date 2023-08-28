@@ -53,10 +53,10 @@ const Input = (props: Prop) => {
         break;
     }
   };
-
   return (
     <input
       id={`${i}-${j}`}
+      data-testid={`${i}-${j}`}
       value={value}
       onFocus={() => setFocus(true)}
       onKeyDown={keyDown}

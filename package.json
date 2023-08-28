@@ -11,6 +11,8 @@
   "author": "Sojin antony",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-intersection-observer": "^9.5.2",
     "react-redux": "^8.1.2"
   },
@@ -68,8 +70,8 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx}",
-      "!src/index.js",
+      "src/**/*.{ts,tsx}",
+      "!src/index.tsx",
       "!src/reportWebVitals.ts"
     ]
   },

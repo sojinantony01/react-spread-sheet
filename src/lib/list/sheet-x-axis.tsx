@@ -11,7 +11,7 @@ const SheetXAxis = ({ resize, headerValues }: Props) => {
   const items: any = [];
   useEffect(() => {
     if (headerValues?.find((d) => d.match(/[0-9]/))) {
-      console.error(
+      console.warn(
         "React-spread-sheet-excel: Header values should not contain numbers"
       );
     }
@@ -30,7 +30,7 @@ const SheetXAxis = ({ resize, headerValues }: Props) => {
       </th>
     );
   }
-  return <tr>{items}</tr>;
+  return <tr data-testid="sheet-table-x-axis-header">{items}</tr>;
 };
 
 export default SheetXAxis;

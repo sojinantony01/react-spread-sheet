@@ -29,8 +29,8 @@ const Row = (props: Prop) => {
     );
   }
   return (
-    <tr>
-      {!props.hideYAxisHeader && <td className="sheet-axis">{i + 1}</td>}
+    <tr data-testid="sheet-table-tr">
+      {!props.hideYAxisHeader ? <td className="sheet-axis">{i + 1}</td> : ""}
       {items}
     </tr>
   );
