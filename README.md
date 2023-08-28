@@ -3,6 +3,14 @@
 A light weight component to Render large lists of input boxes in the table using React JS and Redux, Render a table with a large number of rows and columns.
 
 [![npm version](https://badge.fury.io/js/react-spread-sheet-excel.svg)](https://badge.fury.io/js/react-spread-sheet-excel) ![Downloads](https://img.shields.io/npm/dm/react-spread-sheet-excel.svg)
+  <a href="https://codecov.io/gh/react-spread-sheet-excel/react-spread-sheet-excel">
+    <img src="https://codecov.io/gh/react-spread-sheet-excel/react-spread-sheet-excel/graph/badge.svg" alt="code coverage" >
+  </a>
+  <a href="https://github.com/rollup/rollup/blob/master/LICENSE.md">
+    <img src="https://img.shields.io/npm/l/rollup.svg" alt="license">
+  </a>
+
+
 
 * Can render a large number of input boxes in the table
 * Light Weight
