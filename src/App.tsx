@@ -18,7 +18,7 @@ function App({count}: {count?: number}) {
   const childRef = useRef<SheetRef>(null);
   const onChange = (i: number, j: number, value: string) => {
     //Do not try to update state with this action, it will slow down your application
-    console.log(`Value Updated at ${j}, ${j}`, value);
+    console.log(`Value Updated at ${i}, ${j}`, value);
   };
   const getData = () => {
     console.log("Updated Data", childRef?.current?.getData()); //Data will be printed in console
