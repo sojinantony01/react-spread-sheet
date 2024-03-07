@@ -1,0 +1,8 @@
+Math for columns, select other columns while editing
+Add more demos
+Select cells
+Format support
+Resize rows
+Add more rows or columns on the scroll end
+Calc in Read only mode
+Separate package for math calc

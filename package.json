@@ -1,0 +1,91 @@
+{
+  "name": "react-spread-sheet-excel",
+  "version": "1.0.8",
+  "description": "A quick example of rendering large lists of inputs in table using React JS and Redux",
+  "keywords": [
+    "React spreadsheet",
+    "React Excel",
+    "Light weight excel / spreadsheets",
+    "Spreadsheet supports calculations"
+  ],
+  "author": "Sojin antony",
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.9.5",
+    "react-intersection-observer": "^9.5.2",
+    "react-redux": "^8.1.2",
+    "react-router-dom": "^6.22.2"
+  },
+  "main": "build/index.js",
+  "module": "build/index.js",
+  "files": [
+    "build",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sojinantony01/react-spread-sheet.git"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "22.0.2",
+    "@rollup/plugin-json": "4.1.0",
+    "@rollup/plugin-node-resolve": "14.1.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.11.59",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/react-virtualized": "^9.21.22",
+    "postcss": "^8.4.16",
+    "react-scripts": "5.0.1",
+    "rollup": "2.79.0",
+    "rollup-plugin-peer-deps-external": "2.2.4",
+    "rollup-plugin-postcss": "4.0.2",
+    "rollup-plugin-typescript2": "0.34.0",
+    "sass": "^1.54.9",
+    "typescript": "^4.8.3",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "rm -rf build && rollup -c",
+    "test": "react-scripts test --watchAll --coverage",
+    "test:ci": "CI=true react-scripts test --coverage",
+    "eject": "react-scripts eject",
+    "deploy": "gh-pages -d build",
+    "react-build": "CI=false && react-scripts build",
+    "prepublishOnly": "npm run build"
+  },
+  "homepage": "https://sojinantony01.github.io/react-spread-sheet",
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/index.tsx",
+      "!src/reportWebVitals.ts"
+    ]
+  },
+  "license": "ISC",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
