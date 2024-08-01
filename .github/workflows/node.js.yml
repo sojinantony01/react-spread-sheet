@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Set up Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
@@ -27,8 +27,6 @@ jobs:
     - name: install gh pages separately  
       run: npm install gh-pages react@18.2.0 react-dom@18.2.0
     - name: Unit test
-      env: 
-        NODE_OPTIONS: "--max_old_space_size=4096"
       run: npm run test:ci
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
@@ -42,7 +40,7 @@ jobs:
       run: |
         git config --global user.name $user_name
         git config --global user.email $user_email
-        git remote set-url origin https://x-access-token:${github_token}@github.com/${repository}
+        git remote set-url origin https://${github_token}@github.com/${repository}
         npm run deploy
       env:
         user_name: 'github-actions[bot]'
