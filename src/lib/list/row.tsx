@@ -1,7 +1,8 @@
 import React, { memo } from "react";
-import { useAppSelector } from "../store";
+import { useAppDispatch, useAppSelector } from "../store";
 import Cell from "./cell";
 import ReadOnlyCell from "./readonlycell";
+import { selectHorizontalCells } from "../reducer";
 interface Prop {
   i: number;
   onChange?(i: number, j: number, value: string): void;
@@ -12,6 +13,7 @@ interface Prop {
 const Row = (props: Prop) => {
   const { i } = props;
   const itemLength = useAppSelector((store) => store.list.data[i].length);
+    const dispatch = useAppDispatch();
   const items = [];
   for (let j = 0; j < itemLength; j++) {
     items.push(
@@ -30,7 +32,19 @@ const Row = (props: Prop) => {
   }
   return (
     <tr data-testid="sheet-table-tr">
-      {!props.hideYAxisHeader ? <td className="sheet-axis">{i + 1}</td> : ""}
+      {!props.hideYAxisHeader ? (
+        <td
+          className="sheet-axis"
+          tabIndex={1}
+          onClick={(e) => {
+            dispatch(selectHorizontalCells({ i: i, ctrlPressed: e.metaKey || e.ctrlKey }));
+          }}
+        >
+          {i + 1}
+        </td>
+      ) : (
+        ""
+      )}
       {items}
     </tr>
   );

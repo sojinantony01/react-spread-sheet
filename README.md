@@ -1,6 +1,7 @@
 # React-spread-sheet-excel
 
 A light weight component to Render large lists of input boxes in the table using React JS and Redux, Render a table with a large number of rows and columns.
+Able to render 1Lakh+ input boxes in react, A quick solution for web based spreadsheet or excel.
 
 [![npm version](https://badge.fury.io/js/react-spread-sheet-excel.svg)](https://badge.fury.io/js/react-spread-sheet-excel) ![Downloads](https://img.shields.io/npm/dm/react-spread-sheet-excel.svg)
   <a href="https://codecov.io/gh/sojinantony01/react-spread-sheet" > 
@@ -16,10 +17,13 @@ A light weight component to Render large lists of input boxes in the table using
 * Light Weight
 * Calculations Support, value should starts with "="
 * Supports calculations in Excel cells (= 2 * A2 + (B2 * C4))
+* Supports Keyboard Actions, Format, Bold, underline, Italic.
+* Select Multiple cells
+* Delete values in selected cells.
 * Customizable header values - (Do not pass numbers in header values, will affect calc)
 * Resize columns
 * Can Use as a Spreadsheet or Excel with react
-* Read-only mode
+* Read-only mode support
 * Export to CSV support
 * Move between cells using tab/shift+tab or arrow Keys keys on the keyboard
 * Sticky Headers

@@ -62,6 +62,9 @@ th {
 .sheet-table input.view_mode {
   caret-color: transparent;
 }
+.sheet-table input.selected {
+  border: 1px #0081ff solid;
+}
 
 .sheet-table input:focus {
   border-radius: 0;
