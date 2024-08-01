@@ -97,37 +97,37 @@ test("input check keyboard arrow keys", () => {
   
   render(
     <Provider store={store}>
+      <Input i={i-1} j={j-1} />
+      <Input i={i-1} j={j} />
       <Input i={i} j={j-1} />
       <Input i={i} j={j} />
-      <Input i={i} j={j+1} />
-      <Input i={i-1} j={j} />
-      <Input i={i+1} j={j} />
     </Provider>
   );
+ 
   fireEvent.keyDown(screen.getByTestId(`${i}-${j}`), {
-    keyCode: 37
+    code: "ArrowLeft",
   });
   expect(screen.getByTestId(`${i}-${j-1}`)).toHaveFocus()
 
   fireEvent.keyDown(screen.getByTestId(`${i}-${j}`), {
-    keyCode: 38
+    code: "ArrowUp",
   });
   expect(screen.getByTestId(`${i-1}-${j}`)).toHaveFocus()
 
-  fireEvent.keyDown(screen.getByTestId(`${i}-${j}`), {
-    keyCode: 39
+  fireEvent.keyDown(screen.getByTestId(`${i-1}-${j-1}`), {
+    code: "ArrowDown",
   });
-  expect(screen.getByTestId(`${i}-${j+1}`)).toHaveFocus()
+  expect(screen.getByTestId(`${i}-${j-1}`)).toHaveFocus()
 
-  fireEvent.keyDown(screen.getByTestId(`${i}-${j}`), {
-    keyCode: 40
-  });
-  expect(screen.getByTestId(`${i+1}-${j}`)).toHaveFocus()
+  fireEvent.keyDown(screen.getByTestId(`${i}-${j-1}`), {
+     code: "ArrowRight",
+   });
+  expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus()
 
   fireEvent.click(screen.getByTestId(`${i}-${j}`), {});
-  expect(screen.getByTestId(`${i+1}-${j}`)).toHaveFocus()
+  expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus()
   fireEvent.doubleClick(screen.getByTestId(`${i}-${j}`), {});
-  expect(screen.getByTestId(`${i+1}-${j}`)).toHaveFocus()
+  expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus()
 });
 
 
