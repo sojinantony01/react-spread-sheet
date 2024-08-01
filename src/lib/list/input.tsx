@@ -1,6 +1,6 @@
 import React, { ChangeEvent, KeyboardEvent, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
-import { changeData } from "../reducer";
+import { changeData, updateStyles } from "../reducer";
 import { getCalculatedVal } from "./utils";
 interface Prop {
   i: number;
@@ -11,17 +11,20 @@ interface Prop {
 
 const Input = (props: Prop) => {
   const { i, j, onChange, headerValues } = props;
-  const [focused, setFocus] = useState(false);
   const [editMode, setEdit] = useState(false);
   const [clicked, setClicked] = useState(false);
   const dispatch = useAppDispatch();
   const value = useAppSelector((store) => {
     let val = store.list.data[i][j].value;
-    if (!focused && val && val.toString().trim().startsWith("=")) {
+    if (!clicked && val && val.toString().trim().startsWith("=")) {
       return getCalculatedVal(val, store.list.data, headerValues);
     }
     return val;
   });
+  const styles = useAppSelector((store) => {
+    return store.list.data[i][j].styles;
+  });
+
   const change = (e: ChangeEvent<HTMLInputElement>) => {
     if (value !== e.target.value) {
       setEdit(true);
@@ -31,38 +34,48 @@ const Input = (props: Prop) => {
   };
   const keyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (
-      (!editMode && [37, 39].includes(e.keyCode)) ||
-      [38, 40].includes(e.keyCode)
+      (!editMode && ["ArrowLeft", "ArrowRight"].includes(e.code)) ||
+      ["ArrowUp", "ArrowDown"].includes(e.code)
     ) {
-      moveToNext(e.keyCode);
+      moveToNext(e.code);
+    }
+    else if (e.code === "KeyB" && (e.ctrlKey || e.metaKey)) {
+      dispatch(updateStyles({i, j, value: {key: "fontWeight", value: "bold"}}));
+    }
+    else if (e.code === "KeyU" && (e.ctrlKey || e.metaKey)) {
+      dispatch(updateStyles({ i, j, value: { key: "text-decoration", value: "underline" } }));
+    }
+    else if (e.code === "KeyI" && (e.ctrlKey || e.metaKey)) {
+      dispatch(updateStyles({ i, j, value: { key: "fontStyle", value: "italic" } }));
     }
   };
-  const moveToNext = (keyCode: number) => {
-    switch (keyCode) {
-      case 37:
+  const moveToNext = (code: string) => {
+    switch (code) {
+      case "ArrowLeft":
         document.getElementById(`${i}-${j - 1}`)?.focus();
         break;
-      case 38:
+      case "ArrowUp":
         document.getElementById(`${i - 1}-${j}`)?.focus();
         break;
-      case 39:
+      case "ArrowRight":
         document.getElementById(`${i}-${j + 1}`)?.focus();
         break;
-      case 40:
+      case "ArrowDown":
         document.getElementById(`${i + 1}-${j}`)?.focus();
         break;
     }
   };
+
   return (
     <input
       id={`${i}-${j}`}
       data-testid={`${i}-${j}`}
       value={value}
-      onFocus={() => setFocus(true)}
+      style={styles}
+      onFocus={() => setClicked(true)}
       onKeyDown={keyDown}
       className={`${editMode ? "" : "view_mode"}`}
       onBlur={() => {
-        setFocus(false);
         setEdit(false);
         setClicked(false);
       }}
