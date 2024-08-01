@@ -27,6 +27,7 @@ jobs:
     - name: install gh pages separately  
       run: npm install gh-pages react@18.2.0 react-dom@18.2.0
     - name: Unit test
+      env: NODE_OPTIONS: "--max_old_space_size=4096"
       run: npm run test:ci
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
