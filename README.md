@@ -1,4 +1,5 @@
 # React-spread-sheet-excel
+A high-performance React component for building Excel-like spreadsheets with advanced features.
 
 A light weight component to Render large lists of input boxes in the table using React JS and Redux, Render a table with a large number of rows and columns.
 Able to render 1Lakh+ input boxes in react, A quick solution for web based spreadsheet or excel.
@@ -13,21 +14,22 @@ Able to render 1Lakh+ input boxes in react, A quick solution for web based sprea
 
 
 
-* Can render a large number of input boxes in the table
-* Light Weight
+* Blazing Fast Rendering: Handles large datasets efficiently.
+* Comprehensive Calculation Engine: Supports complex formulas and calculations. (= 2 * A2 + (B2 * C4))
+* Rich Formatting Options: Customize cell appearance with bold, italic, underline, and more.
 * Calculations Support, value should starts with "="
-* Supports calculations in Excel cells (= 2 * A2 + (B2 * C4))
-* Supports Keyboard Actions, Format, Bold, underline, Italic.
 * Select Multiple cells
+* Intuitive Keyboard Navigation: Navigate and edit cells effortlessly.
 * Delete values in selected cells.
 * Customizable header values - (Do not pass numbers in header values, will affect calc)
 * Resize columns
 * Can Use as a Spreadsheet or Excel with react
-* Read-only mode support
-* Export to CSV support
-* Move between cells using tab/shift+tab or arrow Keys keys on the keyboard
-* Sticky Headers
-* 100% unit test coverage
+* Flexible Data Management: Import, export, and manipulate data.
+* Customizable Headers and Columns: Tailor the spreadsheet to your application.
+* Read-Only Mode: Protect data from accidental modifications.
+* CSV Export: Easily share data in a common format.
+* Sticky Headers: Keep headers visible while scrolling.
+* 100% Unit Test Coverage: Ensures reliability and stability.
 
 ## Getting Started
 
@@ -102,6 +104,10 @@ export default App;
 | --- | --- |
 | getData | Get updated data from sheet | 
 | setData | Set new data to sheet |
+
+Performance
+Benchmark: Rendered 1000 rows and 100 columns in milli seconds.
+Optimization Techniques: Redux, Lazy loading.
 
 
 [Sojin Antony](https://github.com/sojinantony01)
