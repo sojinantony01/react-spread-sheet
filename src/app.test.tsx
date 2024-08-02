@@ -5,18 +5,18 @@ import packageVersion from "../package.json"
 import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils';
 
 test('App Name rendered', () => {
-  render(<App />);
+  render(<App count={4} />);
   const linkElement = screen.getByText(/React excel sheet/i);
   expect(linkElement).toBeInTheDocument();
 });
 
 test('App version match check', () => {
-    render(<App />);
+    render(<App count={4} />);
     const linkElement = screen.getByText(new RegExp(packageVersion.version, "i"));
     expect(linkElement).toBeInTheDocument();
 });
 test('Get Updated data option', () => {
-    render(<App />);
+    render(<App count={4} />);
     const linkElement = screen.getByText(/Get Updated data/i);
     expect(linkElement).toBeInTheDocument();
 });
@@ -25,7 +25,7 @@ test('Get Updated data in console', () => {
   const consoleSpy = jest
     .spyOn(console, 'log')
       .mockImplementation(() => {});
-  render(<App />);
+  render(<App count={4} />);
   fireEvent.click(screen.getByTestId("get-updated-data"))
   expect(consoleSpy).toHaveBeenCalled();
 });

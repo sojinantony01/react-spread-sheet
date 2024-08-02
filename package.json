@@ -1,17 +1,18 @@
 {
   "name": "react-spread-sheet-excel",
-  "version": "1.0.8",
-  "description": "A quick example of rendering large lists of inputs in table using React JS and Redux",
+  "version": "2.0.2",
+  "description": "A quick example of rendering large number of input boxes in table using React JS and Redux",
   "keywords": [
     "React spreadsheet",
     "React Excel",
     "Light weight excel / spreadsheets",
-    "Spreadsheet supports calculations"
+    "Spreadsheet supports calculations",
+    "100000+ input boxes"
   ],
   "author": "Sojin antony",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
-    "react-intersection-observer": "^9.5.2",
+    "react-intersection-observer": "9.5.2",
     "react-redux": "^8.1.2"
   },
   "main": "build/index.js",
@@ -32,11 +33,10 @@
     "@rollup/plugin-commonjs": "22.0.2",
     "@rollup/plugin-json": "4.1.0",
     "@rollup/plugin-node-resolve": "14.1.0",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.11.59",
+    "@testing-library/jest-dom": "6.4.8",
+    "@testing-library/react": "16.0.0",
+    "@types/jest": "29.5.12",
+    "@types/node": "18.11.18",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@types/react-virtualized": "^9.21.22",

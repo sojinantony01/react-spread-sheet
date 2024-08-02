@@ -10,7 +10,7 @@ test("row  render", () => {
   store.dispatch(addData(generateDummyContent(3, 3)));
   render(
     <Provider store={store}>
-        <table><tbody><Row key={i} i={i} readonly/> </tbody></table>
+        <table><tbody><Row key={i} i={i} readonly/></tbody></table>
     </Provider>
   );
   expect(screen.getByTestId(`read-only-${i}-0`)).toBeInTheDocument();
