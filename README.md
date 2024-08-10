@@ -34,7 +34,7 @@ Able to render 1Lakh+ input boxes in react, A quick solution for web based sprea
 ## Getting Started
 
 Input data format
-```
+```json
 [
   [{value: 1},{value: 1},{value: "a"},{value: "b"},{value: "d"}]
 ]
@@ -48,7 +48,7 @@ npm install react-spread-sheet-excel
 
 ![alt text](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/samplesheet.png)
 
-```
+```js
 import React, { useRef, useState } from "react";
 import Sheet, { SheetRef } from "./lib";
 import packageConf from "../package.json";

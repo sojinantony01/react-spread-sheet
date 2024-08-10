@@ -48,7 +48,7 @@ th {
   overflow: auto;
 }
 
-.sheet-table input {
+.sheet-table .input {
   margin: 0;
   box-sizing: border-box;
   border: none;
@@ -86,4 +86,8 @@ th {
 .sheet-table tr td:first-child {
   position: sticky;
   left: -2px;
+}
+
+.font-size-input {
+  width: 50px;
 }

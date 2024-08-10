@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../store";
 import { printToLetter } from "./utils";
-import { selectVerticalCells } from "../reducer";
+import { selectAllCells, selectVerticalCells } from "../reducer";
 interface Props {
   resize?: boolean;
   headerValues?: string[];
@@ -26,6 +26,9 @@ const SheetXAxis = ({ resize, headerValues }: Props) => {
         key={`${i}-x-axis`}
         tabIndex={0}
         onClick={(e) => {
+          if(i === 0) {
+             dispatch(selectAllCells());
+          } else
           dispatch(selectVerticalCells({ j: i - 1, ctrlPressed: e.metaKey || e.ctrlKey }));
         }}
       >

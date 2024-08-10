@@ -96,12 +96,11 @@ const Input = (props: Prop) => {
       onKeyDown={keyDown}
       onMouseMoveCapture={onDrag}
       onMouseDown={onClick}
-      className={`${editMode ? "" : "view_mode"} ${selected ? "selected" : ""}`}
+      className={`input ${editMode ? "" : "view_mode"} ${selected ? "selected" : ""}`}
       onBlur={() => {
         setEdit(false);
         setFocus(false);
       }}
-      // onClick={onClick}
       onDoubleClick={() => setEdit(true)}
       onChange={change}
     />

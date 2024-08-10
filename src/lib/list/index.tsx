@@ -4,6 +4,7 @@ import Row from "./row";
 import { addData, deleteSelectItems, selectAllCells, updateStyles } from "../reducer";
 import SheetXAxis from "./sheet-x-axis";
 import { generateDummyContent } from "./utils";
+import Tools from "./tools/tools"
 export interface Props {
   data?: any[][];
   onChange?(i: number, j: number, value: string): void;
@@ -13,10 +14,13 @@ export interface Props {
   headerValues?: string[];
   readonly?: boolean;
 }
-
+const featureFlag = {
+  tools: false
+}
 const List = (props: Props) => {
   const dispatch = useAppDispatch();
   const itemLength = useAppSelector((store) => store.list.data.length);
+
   const divRef = useRef<HTMLDivElement>(null);
   const parentDivRef = useRef<HTMLDivElement>(null);
   const [j, setJ] = useState(0);
@@ -55,13 +59,41 @@ const List = (props: Props) => {
     if (e.code === "Backspace") {
       dispatch(deleteSelectItems());
     } else if (e.code === "KeyB" && (e.ctrlKey || e.metaKey)) {
-      dispatch(updateStyles({ value: { key: "fontWeight", value: "bold" } }));
+      changeStyle("B");
     } else if (e.code === "KeyU" && (e.ctrlKey || e.metaKey)) {
-      dispatch(updateStyles({ value: { key: "text-decoration", value: "underline" } }));
+      changeStyle("U");
     } else if (e.code === "KeyI" && (e.ctrlKey || e.metaKey)) {
-      dispatch(updateStyles({ value: { key: "fontStyle", value: "italic" } }));
+      changeStyle("I");
     }
   }
+  const getStyle = (key: string, value?:string) => {
+    switch (key) {
+      case "B":
+        return { value: { key: "fontWeight", value: "bold" } };
+      case "U":
+        return { value: { key: "text-decoration", value: "underline" } };
+      case "I":
+        return { value: { key: "fontStyle", value: "italic" } };
+      case "ALIGN-LEFT":
+        return { value: { key: "textAlign", value: "left" } };
+      case "ALIGN-CENTER":
+        return { value: { key: "textAlign", value: "center" } };
+      case "ALIGN-RIGHT":
+        return { value: { key: "textAlign", value: "right" } };
+      case "ALIGN-JUSTIFY":
+        return { value: { key: "textAlign", value: "justify" } };
+      case "FONT":
+        return { value: { key: "fontSize", value: value ? value + "px" : "" }, replace: true };
+      case "COLOR":
+        return { value: { key: "color", value: value }, replace: true };
+      case "BACKGROUND":
+        return { value: { key: "background", value: value }, replace: true };
+    }
+  };
+  const changeStyle = (key: string, value?: string) => {
+    dispatch(updateStyles(getStyle(key, value)));
+  };
+
   return (
     <div
       onKeyDown={handleKeyDown}
@@ -70,6 +102,7 @@ const List = (props: Props) => {
       ref={parentDivRef}
       data-testid="sheet-table"
     >
+      {featureFlag.tools && <Tools changeStyle={changeStyle}/>}
       <div style={{ height: (itemLength + 1) * 28 }}>
         <div ref={divRef}>
           {items.length && (

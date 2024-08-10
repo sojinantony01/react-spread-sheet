@@ -29,6 +29,7 @@ const listSlice = createSlice({
     updateStyles(state, action) {
       let add = true;
       if (
+        !action.payload.replace &&
         state.selected[0] &&
         state.data[state.selected[0][0]][state.selected[0][1]]?.styles?.[action.payload.value.key] ===
           action.payload.value.value
@@ -95,8 +96,8 @@ const listSlice = createSlice({
     selectCellsDrag(state, action) {
       const [startRow, startCol] = state.lastSelected || [0, 0];
       const [endRow, endCol] = [action.payload.i, action.payload.j];
-      const result:Selected[] = [];
-      if(startRow === endRow && startCol === endCol) {
+      const result: Selected[] = [];
+      if (startRow === endRow && startCol === endCol) {
         return;
       }
       // Determine iteration directions
@@ -106,13 +107,16 @@ const listSlice = createSlice({
       for (let row = startRow; row !== endRow + rowIncrement; row += rowIncrement) {
         for (let col = startCol; col !== endCol + colIncrement; col += colIncrement) {
           if (row >= 0 && row < matrix.length && col >= 0 && col < matrix[row].length) {
-            result.push([row,col]);
+            result.push([row, col]);
           }
         }
       }
-      
+
       state.selected = result;
-    }
+    },
+    updateFont(state, action) {
+
+    },
   },
 });
 
