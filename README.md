@@ -97,6 +97,8 @@ export default App;
 | hideXAxisHeader | Show serial numbers in X axis | false | No | boolean |
 | hideYAxisHeader | Show serial numbers in Y axis | false | No | boolean |
 | headerValues | array of header values, Number in header values could affect calculations | alphabets | No | string[] |
+| hideTools | Hide tools | false | No | boolean |
+
 
 ## Ref
 

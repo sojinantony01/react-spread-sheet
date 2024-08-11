@@ -96,7 +96,9 @@ td:has(.selected) {
   width: 50px;
   padding-top: 6px;
 }
-
+.sheet-table .tools  {
+  padding-bottom: 5px;
+}
 .sheet-table .tools button {
   font-size: 18px;
 }

@@ -13,6 +13,7 @@ export interface Props {
   hideYAxisHeader?: boolean;
   headerValues?: string[];
   readonly?: boolean;
+  hideTools?: boolean;
 }
 const List = (props: Props) => {
   const dispatch = useAppDispatch();
@@ -99,7 +100,7 @@ const List = (props: Props) => {
       ref={parentDivRef}
       data-testid="sheet-table"
     >
-      <Tools changeStyle={changeStyle}/>
+      {!props.hideTools && <Tools changeStyle={changeStyle}/>}
       <div style={{ height: (itemLength + 1) * 28 }}>
         <div ref={divRef}>
           {items.length && (
