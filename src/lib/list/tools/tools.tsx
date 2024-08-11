@@ -15,7 +15,7 @@ const Tools = ({ changeStyle }: {changeStyle: (type:string, val?:string)=> void}
     timer = setTimeout(() => {changeStyle(type, val)}, 200)
   }
   return (
-    <div>
+    <div className="tools">
       <button onClick={() => changeStyle("B")}>B</button>
       <button onClick={() => changeStyle("U")}>U</button>
       <button onClick={() => changeStyle("I")}>I</button>
@@ -44,6 +44,7 @@ const Tools = ({ changeStyle }: {changeStyle: (type:string, val?:string)=> void}
       <button onClick={() => changeStyle("ALIGN-JUSTIFY")}>
         <Icons type="align-justify" />
       </button>
+      
       <input
         type="color"
         value={selectedStyles?.["color"] || "#000000"}

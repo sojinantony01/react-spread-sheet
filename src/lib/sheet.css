@@ -92,7 +92,11 @@ td:has(.selected) {
   position: sticky;
   left: -2px;
 }
-
-.font-size-input {
+.sheet-table .tools .font-size-input {
   width: 50px;
+  padding-top: 6px;
+}
+
+.sheet-table .tools button {
+  font-size: 18px;
 }
