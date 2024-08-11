@@ -29,6 +29,11 @@ th {
   padding: 0px;
 }
 
+.sheet-table table,
+td:has(.selected) {
+  border: none;
+}
+
 .sheet-table .sheet-x-axis {
   min-width: 50px;
 }
