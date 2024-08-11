@@ -14,9 +14,6 @@ export interface Props {
   headerValues?: string[];
   readonly?: boolean;
 }
-const featureFlag = {
-  tools: false
-}
 const List = (props: Props) => {
   const dispatch = useAppDispatch();
   const itemLength = useAppSelector((store) => store.list.data.length);
@@ -102,7 +99,7 @@ const List = (props: Props) => {
       ref={parentDivRef}
       data-testid="sheet-table"
     >
-      {featureFlag.tools && <Tools changeStyle={changeStyle}/>}
+      <Tools changeStyle={changeStyle}/>
       <div style={{ height: (itemLength + 1) * 28 }}>
         <div ref={divRef}>
           {items.length && (
