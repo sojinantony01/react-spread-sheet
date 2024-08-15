@@ -9,7 +9,7 @@ const ReadOnlyCell = (props: Prop) => {
   const value = useAppSelector((store) => store.list.data[props.i][props.j].value);
   return (
     <td>
-      <div className="input-dummy" data-testid={`read-only-${props.i}-${props.j}`}>{value}</div>
+      <div className="input input-dummy" data-testid={`read-only-${props.i}-${props.j}`}>{value}</div>
     </td>
   );
 };

@@ -1,7 +1,7 @@
 Math for columns, select other columns while editing
 Add more demos
-Select cells - done, improve selection CSS, unit test pending
-Format support - done, Format toolbar pending, unit test pending, CSS tool bar
+Select cells - improve selection CSS
+Format support - CSS tool bar
 Resize rows - use new package
 Calc in Read only mode 
 Separate package for math calc *
@@ -9,7 +9,6 @@ Undo, Redo *
 Update Readme
 Minimum Number of cells, ex: if data is having 10x10 cells, make it 1000x50
 
-Fix new Unit test warnings *, improve unit test coverage
+Fix new Unit test warnings *
 Top input box *, 
-Add more demos 
 Select cells using keyboard (shift arrow)
