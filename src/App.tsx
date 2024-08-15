@@ -35,12 +35,12 @@ function App({count}: {count?: number}) {
   };
   return (
     <div style={{height: '100%'}}>
-      <div >
+      <div style={{marginBottom: "10px"}}>
         React excel sheet: V{packageConf.version}{" "}
         <button data-testid="get-updated-data" onClick={getData}>Get Updated data</button>{" "}
         <button data-testid="csv-export" onClick={exportCSV}>Export CSV data</button>
       </div>
-      <div style={{height: 'calc(100% - 21px)'}}>
+      <div style={{height: 'calc(100% - 31px)'}}>
         {/* Data is optional, if data is empty it will render empty input boxes */}
         <Sheet data={state} onChange={onChange} ref={childRef} resize={true}/>
       </div>

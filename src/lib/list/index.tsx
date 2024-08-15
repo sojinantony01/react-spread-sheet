@@ -95,13 +95,9 @@ const List = (props: Props) => {
   };
 
   return (
-    <div
-      onKeyDown={handleKeyDown}
-      className="sheet-table"
-      data-testid="sheet-table"
-    >
-      {!props.hideTools && <Tools changeStyle={changeStyle}/>}
-      <div className="sheet-table-table-container" ref={parentDivRef} onScroll={onsCroll}>
+    <div onKeyDown={handleKeyDown} className="sheet-table" data-testid="sheet-table">
+      {!props.hideTools && <Tools changeStyle={changeStyle} />}
+      <div className="sheet-table-table-container" ref={parentDivRef} onScroll={onsCroll} data-testid="sheet-table-content">
         <div style={{ height: (itemLength + 1) * 28 }}>
           <div ref={divRef}>
             {items.length && (

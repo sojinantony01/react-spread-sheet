@@ -11,7 +11,7 @@ test("Tools render", async () => {
     const changeStyle = jest.fn()
     render(
         <Provider store={store}>
-        <Tools changeStyle={changeStyle} />
+            <Tools changeStyle={changeStyle} />
         </Provider>,
     );
     const bold = screen.getByRole("button", {
