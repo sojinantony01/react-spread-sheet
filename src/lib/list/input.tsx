@@ -98,7 +98,7 @@ const Input = (props: Prop) => {
       onKeyDown={keyDown}
       onMouseMoveCapture={onDrag}
       onMouseDown={onClick}
-      className={`input ${editMode ? "" : "view_mode"} ${selected ? "selected" : ""}`}
+      className={`input ${editMode ? "" : "view_mode"}`}
       onBlur={() => {
         setEdit(false);
         setFocus(false);
