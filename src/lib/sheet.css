@@ -20,7 +20,7 @@
 }  
 
 .sheet-table .sheet-axis {
-  background-color: #edf2fa;
+  background-color: #f3f5f8;
   padding: 0px 4px;
   text-align: center;
 }
@@ -30,9 +30,7 @@
   border-spacing: 0;
 }
 
-.sheet-table table
-td,
-th {
+.sheet-table table th {
   border-bottom: 1px solid #E1E1E1;
   border-right: 1px solid #E1E1E1;
   padding: 0px;
@@ -45,10 +43,12 @@ th {
 }
 .sheet-table td:first-child {
   border-left: 1px solid #E1E1E1;
-
+  border-bottom: 1px solid #E1E1E1;
+  border-right: 1px solid #E1E1E1;
 }
-.sheet-table th, .sheet-table tbody tr td:first-child {
-  border-color: #e1e1e1;
+.sheet-table td {
+  border: none;
+  padding: 0 0;
 }
 
 .sheet-table .sheet-x-axis {
@@ -72,24 +72,33 @@ th {
 
 .sheet-table .input {
   margin: 0;
-  border: none;
+  border-right: 1px solid #E1E1E1;
+  border-bottom: 1px solid #E1E1E1;
+  border-top: none;
+  border-left: none;
   width: 100%;
   padding: 0px 4px;
-  height: 32px;
+  min-height: 32px;
+  height: 100%;
   outline: none;
   width: 100%;
   max-width: 100%;
 }
 
 .sheet-table .input:focus {
-  box-shadow: inset 0px 0px 3px 0px #0A58D0;
+  border: 1px solid #0A58D0;
+  box-shadow: inset 0px 0px 0px 1px #0A58D0;
 }
 
 .sheet-table input.view_mode {
   caret-color: transparent;
 }
-.sheet-table td.sheet-selected-td {
-  border: 1px #0A58D0 solid;
+.sheet-table td.sheet-not-in-view-table {
+  border-right: 1px solid #E1E1E1;
+  border-bottom: 1px solid #E1E1E1;
+}
+.sheet-table td input.sheet-selected-td {
+  border: 1px solid #0A58D0;
 }
 
 .sheet-table input:focus {
@@ -114,7 +123,7 @@ th {
   left: 0px;
 }
 .sheet-table .sheet-tools {
-  background-color: #edf2fa;
+  background-color: #f3f5f8;
   padding: 8px 15px;
   border-radius: 8px;
   display: flex;
@@ -183,6 +192,13 @@ th {
 	-webkit-appearance: none;
 	margin: 0;
 }
+.sheet-table .sheet-tools .sheet-tools-text-style-container {
+  margin-left: 15px;
+  margin-right: 15px;
+  border-left: 1px solid #E1E1E1;
+  border-right: 1px solid #E1E1E1;
+  padding: 0px 3px;
+}
 .sheet-table .sheet-tools .sheet-tools-text-style-container button {
   border: none;
   outline: none;
@@ -193,11 +209,68 @@ th {
   cursor: pointer;
   border-radius: 4px;
   margin: 0px 2px;
+  min-width: 21px;
 }
-.sheet-table .sheet-tools .sheet-tools-text-style-container button.text-style-btn-active {
+.sheet-table .sheet-tools-container .sheet-tools button.text-style-btn-active {
   background-color: #E1E1E1;
 }
-
 .sheet-table .sheet-tools .sheet-tools-text-style-container button.text-style-btn-active-underline {
   text-decoration: underline;
+}
+.sheet-table .sheet-tools .sheet-tools-text-align-container {
+  display: flex;
+  align-items: center;
+}
+.sheet-table .sheet-tools .sheet-tools-text-align-container button {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding: 0px 5px;
+  height: 28px;
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 0px 2px;
+  min-width: 21px;
+  display: flex;
+  align-items: center;
+}
+.sheet-tools-text-cell-color-container input {
+  opacity: 0;
+  position: relative;
+  height: 0;
+  width: 0;
+  z-index: -1;
+}
+.sheet-table .sheet-tools .sheet-tools-text-cell-color-container {
+  display: flex;
+  align-items: center;
+}
+.sheet-table .sheet-tools .sheet-tools-text-cell-color-container button {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding: 0px 5px;
+  height: 28px;
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 0px 2px;
+  min-width: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+}
+.sheet-table .sheet-tools .sheet-tools-text-cell-color-container button .sheet-color-strip {
+  height: 3px;
+  width: 100%;
+  border-radius: 4px;
+  background-color: transparent;
+  position: absolute;
+  bottom: 0px;
+}
+.sheet-table .sheet-tools .sheet-tools-text-cell-color-container button svg {
+  width: 16px;
 }

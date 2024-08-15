@@ -40,8 +40,7 @@ function App({count}: {count?: number}) {
         <button data-testid="get-updated-data" onClick={getData}>Get Updated data</button>{" "}
         <button data-testid="csv-export" onClick={exportCSV}>Export CSV data</button>
       </div>
-      <br />
-      <div>
+      <div style={{height: 'calc(100% - 21px)'}}>
         {/* Data is optional, if data is empty it will render empty input boxes */}
         <Sheet data={state} onChange={onChange} ref={childRef} resize={true}/>
       </div>
