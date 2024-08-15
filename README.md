@@ -12,12 +12,13 @@ Able to render 1Lakh+ input boxes in react, A quick solution for web based sprea
     <img src="https://img.shields.io/npm/l/react-spread-sheet-excel.svg" alt="license">
   </a>
 
-## [Live demo](https://sojinantony01.github.io/react-spread-sheet/)
+## [Live Demo](https://sojinantony01.github.io/react-spread-sheet/)
 
-![alt text](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/samplesheet.png)
+[Demo](https://sojinantony01.github.io/react-spread-sheet/)
 
+## Features
 
-* Blazing Fast Rendering: Handles large datasets efficiently.
+* Blazing Fast Rendering: Handles large datasets efficiently (1Lakh+ input boxes).
 * Comprehensive Calculation Engine: Supports complex formulas and calculations. (= 2 * A2 + (B2 * C4))
 * Rich Formatting Options: Customize cell appearance with bold, italic, underline, and more.
 * Calculations Support, value should starts with "="
@@ -33,16 +34,19 @@ Able to render 1Lakh+ input boxes in react, A quick solution for web based sprea
 * CSV Export: Easily share data in a common format.
 * Sticky Headers: Keep headers visible while scrolling.
 * 100% Unit Test Coverage: Ensures reliability and stability.
-* JSON based
+* JSON based SpreadSheet
+
+![alt text](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/samplesheet.png)
 
 ## Getting Started
 
 Input data format
 ```json
 [
-  [{value: 1},{value: 1},{value: "a"},{value: "b"},{value: "d"}]
+  [{"value": 1},{"value": 1},{"value": "a"},{"value": "b"},{"value": "d"}]
 ]
 ```
+
 ```
 npm install react-spread-sheet-excel
 
@@ -56,26 +60,35 @@ import packageConf from "../package.json";
 
 const createData = () => {
   const val: any[][] = [];
-  for (let i = 0; i < 2000; i++) {
+  for (let i = 0; i < 1000; i++) {
     val.push(Array.from({ length: 40 }, () => Math.floor(Math.random() * 10)));
   }
   return val;
 };
+
 function App() {
   const [state] = useState<any[][]>(createData());
   const childRef = useRef<SheetRef>(null);
+
   const onChange = (i: number, j: number, value: string) => {
     //Do not try to update state with this action, it will slow down your application
     console.log(`Value Updated at ${j}, ${j}`, value);
   };
+
   const getData = () => {
     console.log("Updated Data", childRef?.current?.getData()); 
+  };
+
+  //Generate CSV
+  const exportCSV = () => {
+    childRef?.current?.exportCsv("myCsvFile", false);
   };
 
   return (
     <div>
       <div>
         <button onClick={getData}>Get Updated data</button>
+        <button data-testid="csv-export" onClick={exportCSV}>Export CSV data</button>
       </div>
       <div>
         <Sheet data={state} onChange={onChange} ref={childRef} />
@@ -101,15 +114,17 @@ export default App;
 | hideTools | Hide tools | false | No | boolean |
 
 
-## Ref
+## Ref (API's)
 
-| Ref | Description |
-| --- | --- |
-| getData | Get updated data from sheet | 
-| setData | Set new data to sheet |
+| Ref | Description | Params |
+| --- | --- | --- |
+| getData | Get updated data from sheet |  |
+| setData | Set new data to sheet | [{ value: string; styles?: {[key: string]: string}}, ...] |
+| exportCsv | Export to CSV | filename: (Mandatory), IncludeHeaders (default false) |
+
 
 Performance
-Benchmark: Rendered 1000 rows and 100 columns in milli seconds.
+Benchmark: Rendered 1000 rows and 100 columns in mills.
 Optimization Techniques: Redux, Lazy loading.
 
 

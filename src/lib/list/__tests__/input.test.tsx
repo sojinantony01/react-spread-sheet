@@ -92,7 +92,7 @@ test("input render change", () => {
   expect(screen.getByTestId(`${i}-${j}`)).toHaveValue("new value")
 });
 
-test("input check keyboard arrow keys", () => {
+test("input check keyboard arrow keys", async () => {
   store.dispatch(addData(generateDummyContent(3, 3)));
   
   render(
@@ -128,6 +128,19 @@ test("input check keyboard arrow keys", () => {
   expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus()
   fireEvent.doubleClick(screen.getByTestId(`${i}-${j}`), {});
   expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus()
+
+  fireEvent.mouseDown(screen.getByTestId(`${i}-${j}`), {});
+  expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus();
+
+  fireEvent.mouseDown(screen.getByTestId(`${i}-${j}`), {ctrlKey: true});
+  expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus();
+
+  fireEvent.mouseMove(screen.getByTestId(`${i}-${j}`), { button: 1, buttons : 1});
+  expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus();
+
+  fireEvent.mouseMove(screen.getByTestId(`${i-1}-${j}`), { button: 1, buttons: 1 });
+  expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus();
+
 });
 
 

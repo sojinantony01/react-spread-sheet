@@ -8,6 +8,8 @@ interface Prop {
   onChange?(i: number, j: number, value: string): void;
   headerValues?: string[];
 }
+
+//Mouse clicked check
 const detectLeftButton = (evt: any) => {
   if ("buttons" in evt) {
     return evt.buttons == 1;

@@ -24,12 +24,12 @@ const SheetXAxis = ({ resize, headerValues }: Props) => {
       <th
         className={`sheet-axis ${i > 0 && "sheet-x-axis"}`}
         key={`${i}-x-axis`}
+        data-testid={`${i}-x-axis`}
         tabIndex={0}
         onClick={(e) => {
-          if(i === 0) {
-             dispatch(selectAllCells());
-          } else
-          dispatch(selectVerticalCells({ j: i - 1, ctrlPressed: e.metaKey || e.ctrlKey }));
+          if (i === 0) {
+            dispatch(selectAllCells());
+          } else dispatch(selectVerticalCells({ j: i - 1, ctrlPressed: e.metaKey || e.ctrlKey }));
         }}
       >
         {resize && i > 0 ? <div>{printToLetter(i, headerValues)}</div> : i > 0 && printToLetter(i, headerValues)}
