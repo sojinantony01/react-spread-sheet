@@ -26,7 +26,9 @@ const List = (props: Props) => {
     setJ(itemLength < 300 ? itemLength : 300);
   }, [itemLength]);
   useEffect(() => {
-    dispatch(addData(props.data ? props.data : generateDummyContent(1000, 30)));
+    dispatch(
+      addData(props.data && props.data.length && props.data[0].length ? props.data : generateDummyContent(1000, 30)),
+    );
   }, []);
 
   const items = [];

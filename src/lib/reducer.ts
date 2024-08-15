@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 type Selected = [number, number];
 
-interface Data {
+export interface Data {
   value: string;
   styles?: {[key: string]: string}
 }
