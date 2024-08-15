@@ -4,6 +4,7 @@
 // learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom";
 import { defaultFallbackInView } from "react-intersection-observer";
+import { setupIntersectionMocking, resetIntersectionMocking } from "react-intersection-observer/test-utils";
 
 // Mock IntersectionObserver
 class IntersectionObserver {
@@ -22,6 +23,14 @@ Object.defineProperty(global, "IntersectionObserver", {
   writable: true,
   configurable: true,
   value: IntersectionObserver,
+});
+
+beforeEach(() => {
+  setupIntersectionMocking(jest.fn);
+});
+
+afterEach(() => {
+  resetIntersectionMocking();
 });
 
 defaultFallbackInView(true);
