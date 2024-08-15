@@ -1,54 +1,37 @@
 .sheet-table .input-dummy {
   height: 100%;
 }
-.sheet-table .sheet-table-table-container {
-  height: calc(100% - 50px);
-  overflow: auto;
-}
+
 .sheet-table .pv-4 {
   padding: 0px 4px;
 }
 
 .sheet-table,
 .sheet-table table {
-  height: 100%;
-  width: 100%;
+  max-width: 100vw;
+  max-height: 100vh;
+  overflow: auto;
   position: relative;
 }
-.sheet-table *, .sheet-table ::before, .sheet-table ::after {
-  box-sizing: border-box;
-}  
 
 .sheet-table .sheet-axis {
-  background-color: #edf2fa;
+  background-color: #f5f6f7;
   padding: 0px 4px;
   text-align: center;
 }
 
-.sheet-table table {
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.sheet-table table
+.sheet-table table,
 td,
 th {
-  border-bottom: 1px solid #E1E1E1;
-  border-right: 1px solid #E1E1E1;
+  border: 1px solid #e1e1e1;
+  border-collapse: collapse;
+  border-spacing: 0;
   padding: 0px;
 }
-.sheet-table th {
-  border-top: 1px solid #E1E1E1;
-}
-.sheet-table th:first-child {
-  border-left: 1px solid #E1E1E1;
-}
-.sheet-table td:first-child {
-  border-left: 1px solid #E1E1E1;
 
-}
-.sheet-table th, .sheet-table tbody tr td:first-child {
-  border-color: #e1e1e1;
+.sheet-table table,
+td:has(.selected) {
+  border: none;
 }
 
 .sheet-table .sheet-x-axis {
@@ -66,30 +49,26 @@ th {
 
 .sheet-table td,
 .sheet-table th {
-  height: 32px;
+  height: 28px;
   overflow: auto;
 }
 
 .sheet-table .input {
   margin: 0;
+  box-sizing: border-box;
   border: none;
+  border-radius: 0;
   width: 100%;
   padding: 0px 4px;
-  height: 32px;
-  outline: none;
-  width: 100%;
-  max-width: 100%;
-}
-
-.sheet-table .input:focus {
-  box-shadow: inset 0px 0px 3px 0px #0A58D0;
+  height: 100%;
+  border-spacing: 0;
 }
 
 .sheet-table input.view_mode {
   caret-color: transparent;
 }
-.sheet-table td.sheet-selected-td {
-  border: 1px #0A58D0 solid;
+.sheet-table input.selected {
+  border: 1px #0081ff solid;
 }
 
 .sheet-table input:focus {
@@ -98,106 +77,28 @@ th {
 
 .sheet-table th {
   position: sticky;
-  top: 0px;
+  top: -2px;
   z-index: 1;
 }
 
 .sheet-table th:first-child {
   position: sticky;
-  top: 0px;
-  left: 0px;
+  top: -2px;
+  left: -2px;
   z-index: 2;
 }
 
 .sheet-table tr td:first-child {
   position: sticky;
-  left: 0px;
-}
-.sheet-table .sheet-tools {
-  background-color: #edf2fa;
-  padding: 8px 15px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
+  left: -2px;
 }
 .sheet-table .tools .font-size-input {
   width: 50px;
   padding-top: 6px;
 }
-.sheet-table .sheet-tools button {
+.sheet-table .tools  {
+  padding-bottom: 5px;
+}
+.sheet-table .tools button {
   font-size: 18px;
-}
-.sheet-table .sheet-tools-container {
-  padding-bottom: 10px;
-  background-color: white;
-  z-index: 99;
-}
-.sheet-table .sheet-tools .sheet-tools-calculation-input-container {
-  flex: 1 1 10px;
-  max-width: 500px;
-  display: flex;
-  align-items: center;
-  color: grey;
-  border: 1px solid #E1E1E1;
-  padding: 0px 10px;
-  background-color: white;
-  border-radius: 4px;
-  overflow: hidden;
-}
-.sheet-table .sheet-tools .sheet-tools-calculation-input-container input {
-  margin-left: 10px;
-  height: 28px;
-  flex: 1 1 10px;
-  border: none;
-  box-shadow: none;
-  outline: none;
-}
-.sheet-table .sheet-tools .sheet-tools-font-size-container {
-  margin-left: 15px;
-  margin-right: 15px;
-  border-left: 1px solid #E1E1E1;
-  border-right: 1px solid #E1E1E1;
-}
-.sheet-table .sheet-tools .sheet-tools-font-size-container button {
-  border: none;
-  outline: none;
-  box-shadow: none;
-  padding: 0px 10px;
-  height: 28px;
-  background-color: transparent;
-  cursor: pointer;
-}
-
-.sheet-table .sheet-tools .sheet-tools-font-size-container input {
-  outline: none;
-  box-shadow: none;
-  height: 28px;
-  border: 1px solid #E1E1E1;
-  padding: 0px 10px;
-  background-color: white;
-  border-radius: 4px;
-  width: 50px;
-}
-.sheet-table .sheet-tools .sheet-tools-font-size-container input::-webkit-outer-spin-button,
-.sheet-table .sheet-tools .sheet-tools-font-size-container input::-webkit-inner-spin-button {
-	-webkit-appearance: none;
-	margin: 0;
-}
-.sheet-table .sheet-tools .sheet-tools-text-style-container button {
-  border: none;
-  outline: none;
-  box-shadow: none;
-  padding: 0px 5px;
-  height: 28px;
-  background-color: transparent;
-  cursor: pointer;
-  border-radius: 4px;
-  margin: 0px 2px;
-}
-.sheet-table .sheet-tools .sheet-tools-text-style-container button.text-style-btn-active {
-  background-color: #E1E1E1;
-}
-
-.sheet-table .sheet-tools .sheet-tools-text-style-container button.text-style-btn-active-underline {
-  text-decoration: underline;
 }

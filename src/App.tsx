@@ -34,8 +34,8 @@ function App({count}: {count?: number}) {
     childRef?.current?.exportCsv("myCsvFile", false);
   };
   return (
-    <div style={{height: '100%'}}>
-      <div >
+    <div>
+      <div>
         React excel sheet: V{packageConf.version}{" "}
         <button data-testid="get-updated-data" onClick={getData}>Get Updated data</button>{" "}
         <button data-testid="csv-export" onClick={exportCSV}>Export CSV data</button>
