@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { store } from "../../store";
 import { addData } from "../../reducer";
@@ -29,5 +29,11 @@ test("header cell render headervalues", () => {
     );
     expect(screen.getByTestId(`sheet-table-x-axis-header`)).toBeInTheDocument();
     expect(consoleSpy).toHaveBeenCalled();
+
+    fireEvent.click(screen.getByText("Test header 1"));
+    expect(store.getState().list.selected).toHaveLength(3)
+    fireEvent.click(screen.getByTestId("0-x-axis"));
+    expect(store.getState().list.selected).toHaveLength(9);
+
   });
   

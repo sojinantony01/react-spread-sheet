@@ -12,10 +12,11 @@ Able to render 1Lakh+ input boxes in react, A quick solution for web based sprea
     <img src="https://img.shields.io/npm/l/react-spread-sheet-excel.svg" alt="license">
   </a>
 
-## [Live demo](https://sojinantony01.github.io/react-spread-sheet/)
+## [Live Demo](https://sojinantony01.github.io/react-spread-sheet/)
+
+[Demo](https://sojinantony01.github.io/react-spread-sheet/)
 
 ![alt text](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/samplesheet.png)
-
 
 * Blazing Fast Rendering: Handles large datasets efficiently.
 * Comprehensive Calculation Engine: Supports complex formulas and calculations. (= 2 * A2 + (B2 * C4))

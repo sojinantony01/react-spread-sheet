@@ -12,3 +12,4 @@ Minimum Number of cells, ex: if data is having 10x10 cells, make it 1000x50
 Fix new Unit test warnings *, improve unit test coverage
 Top input box *, 
 Add more demos 
+Select cells using keyboard (shift arrow)
