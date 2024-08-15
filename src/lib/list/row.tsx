@@ -35,6 +35,7 @@ const Row = (props: Prop) => {
       {!props.hideYAxisHeader ? (
         <td
           className="sheet-axis"
+          data-testid={`${i}-sheet-y-axis`}
           tabIndex={1}
           onClick={(e) => {
             dispatch(selectHorizontalCells({ i: i, ctrlPressed: e.metaKey || e.ctrlKey }));
