@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import Sheet, { SheetRef } from "./lib";
 import packageConf from "../package.json";
 
-const createData = (count) => {
+const createData = (count?: number) => {
   const val: any[][] = [];
   for (let i = 0; i < (count || 1000) ; i++) {
     val.push(

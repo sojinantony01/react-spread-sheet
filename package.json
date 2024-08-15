@@ -52,8 +52,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "rm -rf build && rollup -c",
-    "test": "react-scripts test --watchAll --coverage",
-    "test:ci": "CI=true react-scripts test --coverage",
+    "test": "react-scripts test --watchAll --coverage --no-cache",
+    "test:ci": "CI=true react-scripts test --coverage --no-cache",
     "eject": "react-scripts eject",
     "deploy": "gh-pages -d build",
     "react-build": "CI=false && react-scripts build",
@@ -71,7 +71,8 @@
       "src/**/*.{ts,tsx}",
       "!src/index.tsx",
       "!src/reportWebVitals.ts"
-    ]
+    ],
+    "coveragePathIgnorePatterns": ["./node_modules/"]
   },
   "license": "ISC",
   "browserslist": {
