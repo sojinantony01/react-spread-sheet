@@ -3,23 +3,23 @@ import { Provider } from "react-redux";
 import List, { Props } from "./list";
 import { store } from "./store";
 import "./sheet.css";
-import { addData } from "./reducer";
+import { addData, Data } from "./reducer";
 import { exportToCsv } from "./list/utils";
 export type SheetRef = {
   getData: () => string[][];
   setData: (data: any[][]) => void;
-  exportCsv: (fileName: string) => void;
+  exportCsv: (fileName: string, includeHeaders?: boolean) => void;
 };
 const Sheet = forwardRef((props: Props, ref) => {
   const getData = () => {
     return store.getState().list.data;
   };
-  const setData = (data: any[][]) => {
+  const setData = (data: Data[][]) => {
     store.dispatch(addData(data));
   };
-  const exportCsv = (fileName: string) => {
+  const exportCsv = (fileName: string, includeHeaders: boolean = false) => {
     let results = store.getState().list.data;
-    exportToCsv(results, fileName, props.headerValues);
+    exportToCsv(results, fileName, props.headerValues, includeHeaders);
   };
 
   useImperativeHandle(ref, () => ({
