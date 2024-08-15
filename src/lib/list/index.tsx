@@ -96,21 +96,21 @@ const List = (props: Props) => {
     <div
       onKeyDown={handleKeyDown}
       className="sheet-table"
-      onScroll={onsCroll}
-      ref={parentDivRef}
       data-testid="sheet-table"
     >
       {!props.hideTools && <Tools changeStyle={changeStyle}/>}
-      <div style={{ height: (itemLength + 1) * 28 }}>
-        <div ref={divRef}>
-          {items.length && (
-            <table>
-              <tbody>
-                {!props.hideXAxisHeader ? <SheetXAxis resize={props.resize} headerValues={props.headerValues} /> : ""}
-                {items}
-              </tbody>
-            </table>
-          )}
+      <div className="sheet-table-table-container" ref={parentDivRef} onScroll={onsCroll}>
+        <div style={{ height: (itemLength + 1) * 28 }}>
+          <div ref={divRef}>
+            {items.length && (
+              <table>
+                <tbody>
+                  {!props.hideXAxisHeader ? <SheetXAxis resize={props.resize} headerValues={props.headerValues} /> : ""}
+                  {items}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
       </div>
     </div>
