@@ -19,7 +19,7 @@ test("Table render", async() => {
   let tr = await screen.findAllByTestId("sheet-table-tr")
   expect(tr).toHaveLength(300)
   fireEvent.scroll(screen.getByTestId(`sheet-table-content`), { target: { scrollTo: 300 * 28 } });
-  //FIXME: assert new new rows based index
+  //FIXME: assert new rows based index
 });
 
 test("Table KeyboardActions", async () => {

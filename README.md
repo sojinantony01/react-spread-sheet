@@ -36,7 +36,9 @@ Able to render 1Lakh+ input boxes in react, A quick solution for web based sprea
 * 100% Unit Test Coverage: Ensures reliability and stability.
 * JSON based SpreadSheet
 
-![alt text](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/samplesheet.png)
+![React-spread-sheet-excel](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/sample.png)
+
+![React-spread-sheet-excel-gif](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/react-spread-sheet-excel-ezgif.com-video-to-gif-converter.gif)
 
 ## Getting Started
 
