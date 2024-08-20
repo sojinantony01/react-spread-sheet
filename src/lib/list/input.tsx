@@ -47,7 +47,7 @@ const Input = (props: Prop) => {
   const keyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if ((!editMode && ["ArrowLeft", "ArrowRight"].includes(e.code)) || ["ArrowUp", "ArrowDown"].includes(e.code)) {
       dispatch(clearSelection());
-      moveToNext(e.code);
+      moveToNext(e);
     } 
     else if (editMode && e.code === "Backspace") {
       e.stopPropagation();
@@ -56,33 +56,38 @@ const Input = (props: Prop) => {
       e.stopPropagation();
     }
   };
-  const moveToNext = (code: string) => {
-    switch (code) {
+  const moveToNext = (e: KeyboardEvent<HTMLInputElement>) => {
+    switch (e.code) {
       case "ArrowLeft":
+        dispatch(selectOneCell({ i, j: j - 1 }));
         document.getElementById(`${i}-${j - 1}`)?.focus();
         break;
       case "ArrowUp":
+        dispatch(selectOneCell({ i: i - 1, j: j }));
         document.getElementById(`${i - 1}-${j}`)?.focus();
         break;
       case "ArrowRight":
+        dispatch(selectOneCell({ i, j: j + 1 }));
         document.getElementById(`${i}-${j + 1}`)?.focus();
         break;
       case "ArrowDown":
+        dispatch(selectOneCell({ i: i + 1, j }));
         document.getElementById(`${i + 1}-${j}`)?.focus();
         break;
     }
   };
+
   const setSelected = () => {
     dispatch(selectOneCell({i,j}));
   }
-  const onClick = (e: { ctrlKey: any; metaKey: any; }) => {
-    if (e.ctrlKey || e.metaKey) {
+  const onClick = (e: { ctrlKey: any; metaKey: any; shiftKey: any }) => {
+    if (e.ctrlKey || e.metaKey || e.shiftKey) {
       dispatch(selectCells({ i, j }));
     } else {
       selected && setEdit(true);
       setSelected();
     }
-  }
+  };
   const onDrag = (e: any) => {
     if(detectLeftButton(e)) {
       dispatch(selectCellsDrag({i, j}))

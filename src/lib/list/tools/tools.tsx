@@ -1,25 +1,42 @@
 import React, { useRef } from "react";
 import Icons from "../../svg/icons";
-import { useAppSelector } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { changeData } from "../../reducer";
 let timer: string | number | NodeJS.Timeout | undefined;
 const emptyObject = {}
-const Tools = ({ changeStyle }: {changeStyle: (type:string, val?:string)=> void}) => {
+const Tools = ({
+  changeStyle,
+  onChange,
+}: {
+  changeStyle: (type: string, val?: string) => void;
+  onChange: ((i: number, j: number, value: string) => void) | undefined;
+}) => {
   const calculationRef = useRef<HTMLInputElement>(null);
   const fontColorRef = useRef<HTMLInputElement>(null);
   const backgroundColorRef = useRef<HTMLInputElement>(null);
-  const selectedStyles = useAppSelector<{[string: string]: string}>((store) => {
+  const dispatch = useAppDispatch();
+  const [i, j] = useAppSelector((store) => store.list.selected[0] || [undefined, undefined]);
+  const selectedStyles = useAppSelector<{ [string: string]: string }>((store) => {
     const index = store.list.selected[0];
     if (index) {
       return store.list.data[index[0]][index[1]].styles || emptyObject;
     }
     return emptyObject;
   });
-  const selectedItemVal = useAppSelector((store) => store.list.data[store.list.selected?.[0]?.[0]]?.[store.list.selected?.[0]?.[1]]?.value || "")
-  const selectedFontSize = selectedStyles?.["fontSize"] ? selectedStyles["fontSize"]?.split("px")?.[0] : "12"
+  const selectedItemVal = useAppSelector(
+    (store) => store.list.data[store.list.selected?.[0]?.[0]]?.[store.list.selected?.[0]?.[1]]?.value || "",
+  );
+  const selectedFontSize = selectedStyles?.["fontSize"] ? selectedStyles["fontSize"]?.split("px")?.[0] : "12";
   const changeStyleWithDebounce = (type: string, val: string) => {
     clearTimeout(timer);
-    timer = setTimeout(() => {changeStyle(type, val)}, 200)
-  }
+    timer = setTimeout(() => {
+      changeStyle(type, val);
+    }, 200);
+  };
+  const onValChange = (e: { target: { value: string } }) => {
+      dispatch(changeData({ value: e.target.value || "", i: i, j: j }));
+      onChange && onChange(i, j, e.target.value);
+  };
   return (
     <div className="sheet-tools-container">
       <div className="sheet-tools">
@@ -31,7 +48,7 @@ const Tools = ({ changeStyle }: {changeStyle: (type:string, val?:string)=> void}
             calculationRef.current?.focus();
           }}
         >
-          fx <input ref={calculationRef} value={selectedItemVal} readOnly/>
+          fx <input ref={calculationRef} value={selectedItemVal} readOnly={i == undefined || j == undefined} onChange={onValChange} />
         </div>
         <div className="sheet-tools-font-size-container">
           <button onClick={() => changeStyle("FONT", (parseInt(selectedFontSize) - 1).toString())}>
