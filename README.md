@@ -130,10 +130,12 @@ export default App;
 | exportCsv | Export to CSV | filename: (Mandatory), IncludeHeaders (default false) |
 
 ## Try here
-[sandbox](https://codesandbox.io/p/sandbox/dry-water-gy2g6k)
-[stackblitz](https://stackblitz.com/edit/react-xr6ifg?file=src%2FApp.js)
+[Sandbox](https://codesandbox.io/p/sandbox/dry-water-gy2g6k)
 
-Performance
+[Stackblitz](https://stackblitz.com/edit/react-xr6ifg?file=src%2FApp.js)
+
+## Performance
+
 Benchmark: Rendered 1000 rows and 100 columns in mills.
 Optimization Techniques: Redux, Lazy loading.
 

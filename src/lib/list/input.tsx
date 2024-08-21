@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, KeyboardEvent, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
 import { changeData, clearSelection, selectCells, selectCellsDrag, selectOneCell } from "../reducer";
 import { getCalculatedVal } from "./utils";
@@ -36,6 +36,13 @@ const Input = (props: Prop) => {
   const styles = useAppSelector((store) => {
     return store.list.data[i][j].styles;
   });
+  const rowLength = useAppSelector((store) => {
+    return store.list.data.length;
+  });
+  const columnLength = useAppSelector((store) => {
+    return store.list.data[i].length
+  });
+
 
   const change = (e: ChangeEvent<HTMLInputElement>) => {
     if (value !== e.target.value) {
@@ -59,26 +66,27 @@ const Input = (props: Prop) => {
   const moveToNext = (e: KeyboardEvent<HTMLInputElement>) => {
     switch (e.code) {
       case "ArrowLeft":
-        dispatch(selectOneCell({ i, j: j - 1 }));
+        setSelected( i, j - 1 );
         document.getElementById(`${i}-${j - 1}`)?.focus();
         break;
       case "ArrowUp":
-        dispatch(selectOneCell({ i: i - 1, j: j }));
+        setSelected( i - 1, j);
         document.getElementById(`${i - 1}-${j}`)?.focus();
         break;
       case "ArrowRight":
-        dispatch(selectOneCell({ i, j: j + 1 }));
+        setSelected(i, j + 1);
         document.getElementById(`${i}-${j + 1}`)?.focus();
         break;
       case "ArrowDown":
-        dispatch(selectOneCell({ i: i + 1, j }));
+        setSelected(i + 1, j);
         document.getElementById(`${i + 1}-${j}`)?.focus();
         break;
     }
   };
 
-  const setSelected = () => {
-    dispatch(selectOneCell({i,j}));
+  const setSelected = (row = i, column = j) => {
+    if(row >= 0 && column >= 0 && row && row < rowLength && column < columnLength)
+      dispatch(selectOneCell({i:row,j: column}));
   }
   const onClick = (e: { ctrlKey: any; metaKey: any; shiftKey: any }) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey) {

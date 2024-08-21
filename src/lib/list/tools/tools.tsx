@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { changeData } from "../../reducer";
 let timer: string | number | NodeJS.Timeout | undefined;
 const emptyObject = {}
+const notSelectedIndex = [undefined, undefined]
 const Tools = ({
   changeStyle,
   onChange,
@@ -15,7 +16,7 @@ const Tools = ({
   const fontColorRef = useRef<HTMLInputElement>(null);
   const backgroundColorRef = useRef<HTMLInputElement>(null);
   const dispatch = useAppDispatch();
-  const [i, j] = useAppSelector((store) => store.list.selected[0] || [undefined, undefined]);
+  const [i, j] = useAppSelector((store) => store.list.selected[0] || notSelectedIndex);
   const selectedStyles = useAppSelector<{ [string: string]: string }>((store) => {
     const index = store.list.selected[0];
     if (index) {

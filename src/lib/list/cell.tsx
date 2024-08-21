@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { useInView } from "react-intersection-observer";
 import Input from "./input";
-import { useAppSelector } from "../store";
 interface Prop {
   i: number;
   j: number;
