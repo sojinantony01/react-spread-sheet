@@ -47,8 +47,8 @@ const List = (props: Props) => {
   const onsCroll = () => {
     const el = divRef.current;
     const parentEl = parentDivRef.current;
-    if (el && parentEl && parentEl?.scrollTop > el?.scrollHeight - 2800) {
-      const nextVal = 300 + Math.round(parentEl?.scrollTop / 28);
+    if (el && parentEl && parentEl?.scrollTop > el?.scrollHeight - 3200) {
+      const nextVal = 300 + Math.round(parentEl?.scrollTop / 32);
       setJ(nextVal > itemLength ? itemLength : nextVal);
     }
   };
@@ -103,7 +103,7 @@ const List = (props: Props) => {
         onScroll={onsCroll}
         data-testid="sheet-table-content"
       >
-        <div style={{ height: (itemLength + 1) * 28 }}>
+        <div style={{ height: (itemLength * 32) + 32 }}>
           <div ref={divRef}>
             {items.length && (
               <table>

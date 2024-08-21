@@ -129,6 +129,9 @@ export default App;
 | setData | Set new data to sheet | [{ value: string; styles?: {[key: string]: string}}, ...] |
 | exportCsv | Export to CSV | filename: (Mandatory), IncludeHeaders (default false) |
 
+## Try here
+[sandbox](https://codesandbox.io/p/sandbox/dry-water-gy2g6k)
+[stackblitz](https://stackblitz.com/edit/react-xr6ifg?file=src%2FApp.js)
 
 Performance
 Benchmark: Rendered 1000 rows and 100 columns in mills.
