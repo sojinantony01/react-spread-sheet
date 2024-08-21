@@ -60,10 +60,15 @@ import React, { useRef, useState } from "react";
 import Sheet, { SheetRef } from "./lib";
 import packageConf from "../package.json";
 
-const createData = () => {
+//Create dummy data.
+const createData = (count?: number) => {
   const val: any[][] = [];
-  for (let i = 0; i < 1000; i++) {
-    val.push(Array.from({ length: 40 }, () => Math.floor(Math.random() * 10)));
+  for (let i = 0; i < (count || 500) ; i++) {
+    val.push(
+      Array.from({ length: count || 30 }, () => ({
+        value: "",
+      }))
+    );
   }
   return val;
 };
