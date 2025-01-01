@@ -4,7 +4,6 @@ Calc in Read only mode
 Minimum Number of cells, ex: if data is having 10x10 cells, make it 1000x50
 Fix new Unit test warnings *
 Top input box *, 
-Select cells using keyboard (shift arrow)
 Sandbox example height issue
 
 sheets
