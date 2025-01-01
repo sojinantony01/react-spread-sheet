@@ -21,6 +21,7 @@ Able to render 1Lakh+ input boxes in react, A quick solution for web based sprea
 * Blazing Fast Rendering: Handles large datasets efficiently (1Lakh+ input boxes).
 * Comprehensive Calculation Engine: Supports complex formulas and calculations. (= 2 * A2 + (B2 * C4))
 * Rich Formatting Options: Customize cell appearance with bold, italic, underline, and more.
+* Undo, Redo actions.
 * Calculations Support, value should starts with "="
 * Select Multiple cells
 * Intuitive Keyboard Navigation: Navigate and edit cells effortlessly.

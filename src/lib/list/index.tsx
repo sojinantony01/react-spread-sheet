@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useRef, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../store";
 import Row from "./row";
-import { addData, deleteSelectItems, selectAllCells, updateStyles } from "../reducer";
+import { addData, deleteSelectItems, redo, selectAllCells, undo, updateStyles } from "../reducer";
 import SheetXAxis from "./sheet-x-axis";
 import { generateDummyContent } from "./utils";
 import Tools from "./tools/tools"
@@ -18,7 +18,7 @@ export interface Props {
 const List = (props: Props) => {
   const dispatch = useAppDispatch();
   const itemLength = useAppSelector((store) => store.list.data.length);
-
+  
   const divRef = useRef<HTMLDivElement>(null);
   const parentDivRef = useRef<HTMLDivElement>(null);
   const [j, setJ] = useState(0);
@@ -52,7 +52,9 @@ const List = (props: Props) => {
       setJ(nextVal > itemLength ? itemLength : nextVal);
     }
   };
-  const handleKeyDown = (e: { code: string; ctrlKey: any; metaKey: any; }) => {
+  const handleKeyDown = (e: {
+    shiftKey: boolean; code: string; ctrlKey: any; metaKey: any; 
+}) => {
     if (e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
       dispatch(selectAllCells());
     }
@@ -64,6 +66,10 @@ const List = (props: Props) => {
       changeStyle("U");
     } else if (e.code === "KeyI" && (e.ctrlKey || e.metaKey)) {
       changeStyle("I");
+    } else if (e.code === "KeyZ" && e.shiftKey && (e.ctrlKey || e.metaKey)) {
+      dispatch(redo());
+    } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey) && !props.readonly) {
+      dispatch(undo());
     }
   }
   const getStyle = (key: string, value?:string) => {

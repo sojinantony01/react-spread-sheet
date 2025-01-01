@@ -1,6 +1,6 @@
 {
   "name": "react-spread-sheet-excel",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "A quick example of rendering large number of input boxes in table using React JS and Redux, React Spread-sheet (Excel sheet)",
   "keywords": [
     "React spreadsheet",
