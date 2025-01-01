@@ -1,14 +1,14 @@
 Math for columns, select other columns while editing
 Add more demos
-Select cells - improve selection CSS
-Format support - CSS tool bar
-Resize rows - use new package
 Calc in Read only mode 
-Separate package for math calc *
-Undo, Redo *
-Update Readme
 Minimum Number of cells, ex: if data is having 10x10 cells, make it 1000x50
 Fix new Unit test warnings *
 Top input box *, 
 Select cells using keyboard (shift arrow)
 Sandbox example height issue
+
+sheets
+export to xlsx - https://docs.sheetjs.com/docs/getting-started/examples/export, https://www.npmjs.com/package/@e965/xlsx
+import xlsx - https://docs.sheetjs.com/docs/getting-started/examples/import
+
+Show input/select/date boxes based on type, auto detect type

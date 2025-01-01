@@ -55,12 +55,14 @@ const Input = (props: Prop) => {
     if ((!editMode && ["ArrowLeft", "ArrowRight"].includes(e.code)) || ["ArrowUp", "ArrowDown"].includes(e.code)) {
       dispatch(clearSelection());
       moveToNext(e);
-    } 
-    else if (editMode && e.code === "Backspace") {
+    } else if (editMode && e.code === "Backspace") {
       e.stopPropagation();
-    }
-    else if (editMode && e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
+    } else if (editMode && e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
       e.stopPropagation();
+    } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+    } else if (e.code === "KeyZ" && e.shiftKey &&  (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
     }
   };
   const moveToNext = (e: KeyboardEvent<HTMLInputElement>) => {
