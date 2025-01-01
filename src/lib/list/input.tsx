@@ -66,24 +66,31 @@ const Input = (props: Prop) => {
     }
   };
   const moveToNext = (e: KeyboardEvent<HTMLInputElement>) => {
+    let newI, newJ;
     switch (e.code) {
       case "ArrowLeft":
-        setSelected( i, j - 1 );
-        document.getElementById(`${i}-${j - 1}`)?.focus();
+        newI = i;
+        newJ = j - 1;
         break;
       case "ArrowUp":
-        setSelected( i - 1, j);
-        document.getElementById(`${i - 1}-${j}`)?.focus();
+        newI = i - 1;
+        newJ = j;
         break;
       case "ArrowRight":
-        setSelected(i, j + 1);
-        document.getElementById(`${i}-${j + 1}`)?.focus();
+        newI = i;
+        newJ = j + 1;
         break;
       case "ArrowDown":
-        setSelected(i + 1, j);
-        document.getElementById(`${i + 1}-${j}`)?.focus();
+        newI = i + 1;
+        newJ = j;
         break;
     }
+    if(e.shiftKey) {
+      dispatch(selectCellsDrag({ i: newI, j: newJ }));
+    } else {
+      setSelected(newI, newJ);
+    }
+    document.getElementById(`${newI}-${newJ}`)?.focus();
   };
 
   const setSelected = (row = i, column = j) => {
