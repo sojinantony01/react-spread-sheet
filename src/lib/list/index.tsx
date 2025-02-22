@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useRef, useState } from "react";
-import { useAppSelector, useAppDispatch } from "../store";
+import { store, useAppSelector } from "../store";
 import Row from "./row";
 import { addData, deleteSelectItems, redo, selectAllCells, undo, updateStyles } from "../reducer";
 import SheetXAxis from "./sheet-x-axis";
@@ -16,9 +16,8 @@ export interface Props {
   hideTools?: boolean;
 }
 const List = (props: Props) => {
-  const dispatch = useAppDispatch();
-  const itemLength = useAppSelector((store) => store.list.data.length);
-  
+  const { dispatch } = store;
+  const itemLength = useAppSelector(store, (state) => state.data.length);
   const divRef = useRef<HTMLDivElement>(null);
   const parentDivRef = useRef<HTMLDivElement>(null);
   const [j, setJ] = useState(0);
@@ -27,7 +26,7 @@ const List = (props: Props) => {
   }, [itemLength]);
   useEffect(() => {
     dispatch(
-      addData(props.data && props.data.length && props.data[0].length ? props.data : generateDummyContent(1000, 30)),
+      addData, {payload: props.data && props.data.length && props.data[0].length ? props.data : generateDummyContent(1000, 30)}
     );
   }, []);
 
@@ -56,10 +55,10 @@ const List = (props: Props) => {
     shiftKey: boolean; code: string; ctrlKey: any; metaKey: any; 
 }) => {
     if (e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
-      dispatch(selectAllCells());
+      dispatch(selectAllCells);
     }
     if (e.code === "Backspace") {
-      dispatch(deleteSelectItems());
+      dispatch(deleteSelectItems);
     } else if (e.code === "KeyB" && (e.ctrlKey || e.metaKey)) {
       changeStyle("B");
     } else if (e.code === "KeyU" && (e.ctrlKey || e.metaKey)) {
@@ -67,9 +66,9 @@ const List = (props: Props) => {
     } else if (e.code === "KeyI" && (e.ctrlKey || e.metaKey)) {
       changeStyle("I");
     } else if (e.code === "KeyZ" && e.shiftKey && (e.ctrlKey || e.metaKey)) {
-      dispatch(redo());
+      dispatch(redo);
     } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey) && !props.readonly) {
-      dispatch(undo());
+      dispatch(undo);
     }
   }
   const getStyle = (key: string, value?:string) => {
@@ -97,7 +96,7 @@ const List = (props: Props) => {
     }
   };
   const changeStyle = (key: string, value?: string) => {
-    dispatch(updateStyles(getStyle(key, value)));
+    dispatch(updateStyles, {payload: getStyle(key, value)});
   };
 
   return (

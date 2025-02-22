@@ -1,7 +1,7 @@
 import React, { createRef } from "react";
 import { render } from "@testing-library/react";
 import Sheet, { SheetRef } from "../lib";
-import { store } from "../store";
+import {store} from "../store";
 
 test('ref functions test', () => {
     const  ref = createRef<SheetRef>()
@@ -10,6 +10,6 @@ test('ref functions test', () => {
     ref?.current?.exportCsv("dummy")
     expect(createElementSpy).toBeCalledWith('A');
     ref?.current?.setData([[2],[2]])
-    expect(store.getState().list.data.length).toEqual(2)
+    expect(store.getState().data.length).toEqual(2)
 });
 
