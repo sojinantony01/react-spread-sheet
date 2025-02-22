@@ -11,9 +11,13 @@ let j = 1;
 test("read only cell render", () => {
   store.dispatch(addData, { payload: generateDummyContent(3, 3) });
   render(
-        <table><tbody><tr>
+    <table>
+      <tbody>
+        <tr>
           <ReadOnlyCell i={i} j={j} />
-        </tr></tbody></table>
+        </tr>
+      </tbody>
+    </table>,
   );
   expect(screen.getByTestId(`read-only-${i}-${j}`)).toBeInTheDocument();
 });

@@ -4,7 +4,10 @@
 // learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom";
 import { defaultFallbackInView } from "react-intersection-observer";
-import { setupIntersectionMocking, resetIntersectionMocking } from "react-intersection-observer/test-utils";
+import {
+  setupIntersectionMocking,
+  resetIntersectionMocking,
+} from "react-intersection-observer/test-utils";
 
 // Mock IntersectionObserver
 class IntersectionObserver {

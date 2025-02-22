@@ -1,5 +1,5 @@
 import React, { memo, useContext } from "react";
-import {  store, useAppSelector } from "../store";
+import { store, useAppSelector } from "../store";
 import Cell from "./cell";
 import ReadOnlyCell from "./readonlycell";
 import { selectHorizontalCells } from "../reducer";
@@ -26,7 +26,7 @@ const Row = (props: Prop) => {
           onChange={props.onChange}
           headerValues={props.headerValues}
         />
-      )
+      ),
     );
   }
   return (
@@ -37,7 +37,9 @@ const Row = (props: Prop) => {
           data-testid={`${i}-sheet-y-axis`}
           tabIndex={1}
           onClick={(e) => {
-            store.dispatch(selectHorizontalCells, {payload: { i: i, ctrlPressed: e.metaKey || e.ctrlKey }});
+            store.dispatch(selectHorizontalCells, {
+              payload: { i: i, ctrlPressed: e.metaKey || e.ctrlKey },
+            });
           }}
         >
           {i + 1}

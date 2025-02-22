@@ -15,9 +15,11 @@
   width: 100%;
   position: relative;
 }
-.sheet-table *, .sheet-table ::before, .sheet-table ::after {
+.sheet-table *,
+.sheet-table ::before,
+.sheet-table ::after {
   box-sizing: border-box;
-}  
+}
 
 .sheet-table .sheet-axis {
   background-color: #f3f5f8;
@@ -31,20 +33,20 @@
 }
 
 .sheet-table table th {
-  border-bottom: 1px solid #E1E1E1;
-  border-right: 1px solid #E1E1E1;
+  border-bottom: 1px solid #e1e1e1;
+  border-right: 1px solid #e1e1e1;
   padding: 0px;
 }
 .sheet-table th {
-  border-top: 1px solid #E1E1E1;
+  border-top: 1px solid #e1e1e1;
 }
 .sheet-table th:first-child {
-  border-left: 1px solid #E1E1E1;
+  border-left: 1px solid #e1e1e1;
 }
 .sheet-table td:first-child {
-  border-left: 1px solid #E1E1E1;
-  border-bottom: 1px solid #E1E1E1;
-  border-right: 1px solid #E1E1E1;
+  border-left: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e1e1e1;
+  border-right: 1px solid #e1e1e1;
 }
 .sheet-table td {
   border: none;
@@ -61,7 +63,7 @@
   width: auto;
   height: auto;
   min-width: 50px;
-  width: 100px
+  width: 100px;
 }
 
 .sheet-table td,
@@ -72,8 +74,8 @@
 
 .sheet-table .input {
   margin: 0;
-  border-right: 1px solid #E1E1E1;
-  border-bottom: 1px solid #E1E1E1;
+  border-right: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e1e1e1;
   border-top: none;
   border-left: none;
   width: 100%;
@@ -86,19 +88,19 @@
 }
 
 .sheet-table .input:focus {
-  border: 1px solid #0A58D0;
-  box-shadow: inset 0px 0px 0px 1px #0A58D0;
+  border: 1px solid #0a58d0;
+  box-shadow: inset 0px 0px 0px 1px #0a58d0;
 }
 
 .sheet-table input.view_mode {
   caret-color: transparent;
 }
 .sheet-table td.sheet-not-in-view-table {
-  border-right: 1px solid #E1E1E1;
-  border-bottom: 1px solid #E1E1E1;
+  border-right: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e1e1e1;
 }
 .sheet-table td input.sheet-selected-td {
-  border: 1px solid #0A58D0;
+  border: 1px solid #0a58d0;
 }
 
 .sheet-table input:focus {
@@ -147,7 +149,7 @@
   display: flex;
   align-items: center;
   color: grey;
-  border: 1px solid #E1E1E1;
+  border: 1px solid #e1e1e1;
   padding: 0px 10px;
   background-color: white;
   border-radius: 4px;
@@ -164,8 +166,8 @@
 .sheet-table .sheet-tools .sheet-tools-font-size-container {
   margin-left: 15px;
   margin-right: 15px;
-  border-left: 1px solid #E1E1E1;
-  border-right: 1px solid #E1E1E1;
+  border-left: 1px solid #e1e1e1;
+  border-right: 1px solid #e1e1e1;
 }
 .sheet-table .sheet-tools .sheet-tools-font-size-container button {
   border: none;
@@ -181,7 +183,7 @@
   outline: none;
   box-shadow: none;
   height: 28px;
-  border: 1px solid #E1E1E1;
+  border: 1px solid #e1e1e1;
   padding: 0px 10px;
   background-color: white;
   border-radius: 4px;
@@ -189,14 +191,14 @@
 }
 .sheet-table .sheet-tools .sheet-tools-font-size-container input::-webkit-outer-spin-button,
 .sheet-table .sheet-tools .sheet-tools-font-size-container input::-webkit-inner-spin-button {
-	-webkit-appearance: none;
-	margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 .sheet-table .sheet-tools .sheet-tools-text-style-container {
   margin-left: 7px;
   margin-right: 15px;
-  border-left: 1px solid #E1E1E1;
-  border-right: 1px solid #E1E1E1;
+  border-left: 1px solid #e1e1e1;
+  border-right: 1px solid #e1e1e1;
   padding: 0px 3px;
 }
 .sheet-table .sheet-tools .sheet-tools-text-style-container button {
@@ -212,7 +214,7 @@
   min-width: 21px;
 }
 .sheet-table .sheet-tools-container .sheet-tools button.text-style-btn-active {
-  background-color: #E1E1E1;
+  background-color: #e1e1e1;
 }
 .sheet-table .sheet-tools .sheet-tools-text-style-container button.text-style-btn-active-underline {
   text-decoration: underline;
