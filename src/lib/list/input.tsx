@@ -1,5 +1,5 @@
 import React, { ChangeEvent, KeyboardEvent, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../store";
+import { store, useAppSelector } from "../store";
 import { changeData, clearSelection, selectCells, selectCellsDrag, selectOneCell } from "../reducer";
 import { getCalculatedVal } from "./utils";
 interface Prop {
@@ -22,38 +22,38 @@ const Input = (props: Prop) => {
   const { i, j, onChange, headerValues } = props;
   const [editMode, setEdit] = useState(false);
   const [focus, setFocus] = useState(false)
-  const dispatch = useAppDispatch();
-  const selected = useAppSelector((store) => {
-    return store.list.selected.some(p => p[0] === i && p[1] === j)
+  const { dispatch } = store;
+  const selected = useAppSelector(store, (state) => {
+    return state.selected.some(p => p[0] === i && p[1] === j)
   });
-  const value = useAppSelector((store) => {
-    let val = store.list.data[i][j].value;
+  const value = useAppSelector(store, (state) => {
+    let val = state.data[i][j].value;
     if (!focus && val && val.toString().trim().startsWith("=")) {
-      return getCalculatedVal(val, store.list.data, headerValues);
+      return getCalculatedVal(val, state.data, headerValues);
     }
     return val;
   });
-  const styles = useAppSelector((store) => {
-    return store.list.data[i][j].styles;
+  const styles = useAppSelector(store, (state) => {
+    return state.data[i][j].styles;
   });
-  const rowLength = useAppSelector((store) => {
-    return store.list.data.length;
+  const rowLength = useAppSelector(store, (state) => {
+    return state.data.length;
   });
-  const columnLength = useAppSelector((store) => {
-    return store.list.data[i].length
+  const columnLength = useAppSelector(store, (state) => {
+    return state.data[i].length
   });
 
 
   const change = (e: ChangeEvent<HTMLInputElement>) => {
     if (value !== e.target.value) {
       setEdit(true);
-      dispatch(changeData({ value: e.target.value || "", i: i, j: j }));
+      dispatch(changeData, {payload : { value: e.target.value || "", i: i, j: j }});
       onChange && onChange(i, j, e.target.value);
     }
   };
   const keyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if ((!editMode && ["ArrowLeft", "ArrowRight"].includes(e.code)) || ["ArrowUp", "ArrowDown"].includes(e.code)) {
-      dispatch(clearSelection());
+      dispatch(clearSelection);
       moveToNext(e);
     } else if (editMode && e.code === "Backspace") {
       e.stopPropagation();
@@ -86,7 +86,7 @@ const Input = (props: Prop) => {
         break;
     }
     if(e.shiftKey) {
-      dispatch(selectCellsDrag({ i: newI, j: newJ }));
+      dispatch(selectCellsDrag, {payload: { i: newI, j: newJ }});
     } else {
       setSelected(newI, newJ);
     }
@@ -95,11 +95,11 @@ const Input = (props: Prop) => {
 
   const setSelected = (row = i, column = j) => {
     if(row >= 0 && column >= 0 && row && row < rowLength && column < columnLength)
-      dispatch(selectOneCell({i:row,j: column}));
+      dispatch(selectOneCell, {payload: {i:row,j: column}});
   }
   const onClick = (e: { ctrlKey: any; metaKey: any; shiftKey: any }) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey) {
-      dispatch(selectCells({ i, j }));
+      dispatch(selectCells, {payload: { i, j }});
     } else {
       selected && setEdit(true);
       setSelected();
@@ -107,7 +107,7 @@ const Input = (props: Prop) => {
   };
   const onDrag = (e: any) => {
     if(detectLeftButton(e)) {
-      dispatch(selectCellsDrag({i, j}))
+      dispatch(selectCellsDrag, {payload: {i, j}})
     }
   }
   return (

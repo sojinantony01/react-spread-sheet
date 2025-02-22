@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
 import Icons from "../../svg/icons";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { store, useAppSelector } from "../../store";
 import { changeData, redo, undo } from "../../reducer";
+
 let timer: string | number | NodeJS.Timeout | undefined;
 const emptyObject = {}
 const notSelectedIndex = [undefined, undefined]
@@ -15,17 +16,17 @@ const Tools = ({
   const calculationRef = useRef<HTMLInputElement>(null);
   const fontColorRef = useRef<HTMLInputElement>(null);
   const backgroundColorRef = useRef<HTMLInputElement>(null);
-  const dispatch = useAppDispatch();
-  const [i, j] = useAppSelector((store) => store.list.selected[0] || notSelectedIndex);
-  const selectedStyles = useAppSelector<{ [string: string]: string }>((store) => {
-    const index = store.list.selected[0];
+  const {dispatch} = store;
+  const [i, j] = useAppSelector(store, (state) => state.selected[0] || notSelectedIndex);
+  const selectedStyles = useAppSelector(store, (state) => {
+    const index = state.selected[0];
     if (index) {
-      return store.list.data[index[0]][index[1]].styles || emptyObject;
+      return state.data[index[0]][index[1]].styles || emptyObject;
     }
     return emptyObject;
   });
-  const selectedItemVal = useAppSelector(
-    (store) => store.list.data[store.list.selected?.[0]?.[0]]?.[store.list.selected?.[0]?.[1]]?.value || "",
+  const selectedItemVal = useAppSelector(store, 
+    (state) => state.data[state.selected?.[0]?.[0]]?.[state.selected?.[0]?.[1]]?.value || "",
   );
   const selectedFontSize = selectedStyles?.["fontSize"] ? selectedStyles["fontSize"]?.split("px")?.[0] : "12";
   const changeStyleWithDebounce = (type: string, val: string) => {
@@ -35,7 +36,7 @@ const Tools = ({
     }, 200);
   };
   const onValChange = (e: { target: { value: string } }) => {
-      dispatch(changeData({ value: e.target.value || "", i: i, j: j }));
+      dispatch(changeData, {payload: { value: e.target.value || "", i: i, j: j }});
       onChange && onChange(i, j, e.target.value);
   };
   return (
@@ -58,25 +59,25 @@ const Tools = ({
           />
         </div>
         <div className="sheet-tools-text-style-container">
-          <button onClick={() => dispatch(undo())}>
+          <button onClick={() => dispatch(undo)}>
             <svg width={15} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M4 7H15C16.8692 7 17.8039 7 18.5 7.40193C18.9561 7.66523 19.3348 8.04394 19.5981 8.49999C20 9.19615 20 10.1308 20 12C20 13.8692 20 14.8038 19.5981 15.5C19.3348 15.9561 18.9561 16.3348 18.5 16.5981C17.8039 17 16.8692 17 15 17H8.00001M4 7L7 4M4 7L7 10"
                 stroke="#1C274C"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
           </button>
-          <button onClick={() => dispatch(redo())}>
+          <button onClick={() => dispatch(redo)}>
             <svg width={15} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M20 7H9.00001C7.13077 7 6.19615 7 5.5 7.40193C5.04395 7.66523 4.66524 8.04394 4.40193 8.49999C4 9.19615 4 10.1308 4 12C4 13.8692 4 14.8038 4.40192 15.5C4.66523 15.9561 5.04394 16.3348 5.5 16.5981C6.19615 17 7.13077 17 9 17H16M20 7L17 4M20 7L17 10"
                 stroke="#1C274C"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
           </button>

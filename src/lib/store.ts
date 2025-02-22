@@ -1,18 +1,33 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { rootReducer } from "./root-reducer";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { useCallback } from "react";
+import { useSyncExternalStore } from "react";
+import { DispatcherActions, initialState, ListReducer, StoreAction } from "./reducer";
 
-export const store = configureStore({
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
-});
+export interface Store {
+  getState: ()=> ListReducer
+  dispatch: (fn: DispatcherActions[string], action?: StoreAction) => void;
+  subscribe: (onStoreChange: () => void) => () => void;
+}
 
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
+const createStore = (): Store => {
+  let state = initialState;
+  const getState = (): ListReducer => state;
+  const listeners: Set<Function> = new Set();
+  const dispatch = (fn: DispatcherActions[string], action?: StoreAction) => {
+    state = fn(state, action || {payload: undefined});
+    listeners.forEach((l) => l());
+  };
+  const subscribe = (listener: Function) => {
+    listeners.add(listener);
+    return () => listeners.delete(listener);
+  };
+  return { getState, dispatch, subscribe };
+};
 
-// Use throughout your app instead of plain `useDispatch` and `useSelector`
-export const useAppDispatch = () => useDispatch<AppDispatch>();
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+export const store: Store = createStore();
+
+
+export const useAppSelector = (store: Store, selector: (state: ListReducer) => any) =>
+  useSyncExternalStore(
+    store.subscribe,
+    useCallback(() => selector(store.getState()), [store, selector])
+  );

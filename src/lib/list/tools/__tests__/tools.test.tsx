@@ -1,18 +1,15 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { Provider } from "react-redux";
 import { store } from "../../../store";
 import { addData } from "../../../reducer";
 import { generateDummyContent } from "../../utils";
 import Tools from "../tools";
 
 test("Tools render", async () => {
-    store.dispatch(addData(generateDummyContent(3, 3)));
+    store.dispatch(addData, { payload: generateDummyContent(3, 3) });
     const changeStyle = jest.fn()
     render(
-        <Provider store={store}>
-            <Tools changeStyle={changeStyle} />
-        </Provider>,
+        <Tools changeStyle={changeStyle} onChange={() => {}}/>
     );
     const bold = screen.getByRole("button", {
         name: /B/i,

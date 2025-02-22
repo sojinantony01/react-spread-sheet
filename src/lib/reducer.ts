@@ -1,5 +1,3 @@
-import { createSlice, current } from "@reduxjs/toolkit";
-
 type Selected = [number, number];
 
 export interface Data {
@@ -12,33 +10,41 @@ interface Action {
   j: number;
   data: Data;
 }
-export interface Listreducer {
+export interface ListReducer {
   data: Data[][];
   selected: Selected[];
   lastSelected?: Selected;
   undo: Action[][];
   redo: Action[][];
 }
-const initialState: Listreducer = {
+export const initialState: ListReducer = {
   data: [[]],
   selected: [],
   undo: [],
   redo: []
 };
 
-const listSlice = createSlice({
-  name: "list",
-  initialState,
-  reducers: {
+export interface StoreAction {
+    payload: any;
+    type?: string;
+}
+
+export interface DispatcherActions {
+  [key: string]: (state: ListReducer, action: StoreAction) => ListReducer
+}
+
+const actions: DispatcherActions = {
     addData(state, action) {
       state.data = action.payload;
+      return state;
     },
     changeData(state, action) {
       state.undo.push([
-        { i: action.payload.i, j: action.payload.j, data: current(state.data[action.payload.i][action.payload.j]) },
+        { i: action.payload.i, j: action.payload.j, data: {...state.data[action.payload.i][action.payload.j]} },
       ]);
       state.redo = [];
       state.data[action.payload.i][action.payload.j].value = action.payload.value;
+      return state;
     },
     updateStyles(state, action) {
       let add = true;
@@ -53,7 +59,7 @@ const listSlice = createSlice({
       const data: Data[][] = state.data;
       const undo: Action[] = [];
       state.selected.forEach((p) => {
-        undo.push({ i: p[0], j: p[1], data: current(state.data[p[0]][p[1]]) });
+        undo.push({ i: p[0], j: p[1], data: {...state.data[p[0]][p[1]]} });
         if (add) {
           data[p[0]][p[1]].styles = {
             ...data[p[0]][p[1]].styles,
@@ -66,20 +72,23 @@ const listSlice = createSlice({
       state.redo = [];
       state.undo.push(undo);
       state.data = data;
+      return state;
     },
 
     deleteSelectItems(state) {
       const undo: Action[] = [];
       state.selected.forEach((p) => {
-        undo.push({ i: p[0], j: p[1], data: current(state.data[p[0]][p[1]]) });
+        undo.push({ i: p[0], j: p[1], data: {...state.data[p[0]][p[1]]} });
         state.data[p[0]][p[1]].value = "";
       });
       state.undo.push(undo);
+      return state;
     },
 
     selectOneCell(state, action) {
       state.selected = [[action.payload.i, action.payload.j]];
       state.lastSelected = [action.payload.i, action.payload.j];
+      return state;
     },
     selectCells(state, action) {
       const index = state.selected.findIndex((p) => p[0] === action.payload.i && p[1] === action.payload.j);
@@ -89,6 +98,7 @@ const listSlice = createSlice({
         state.selected.push([action.payload.i, action.payload.j]);
       }
       state.lastSelected = [action.payload.i, action.payload.j];
+      return state;
     },
     selectAllCells(state) {
       const selected: Selected[] = [];
@@ -98,6 +108,7 @@ const listSlice = createSlice({
         });
       });
       state.selected = selected;
+      return state;
     },
     selectVerticalCells(state, action) {
       const selected: Selected[] = action.payload.ctrlPressed ? state.selected : [];
@@ -105,6 +116,7 @@ const listSlice = createSlice({
         selected.push([i, action.payload.j]);
       }
       state.selected = selected;
+      return state;
     },
     selectHorizontalCells(state, action) {
       const selected: Selected[] = action.payload.ctrlPressed ? state.selected : [];
@@ -112,16 +124,18 @@ const listSlice = createSlice({
         selected.push([action.payload.i, j]);
       });
       state.selected = selected;
+      return state;
     },
     clearSelection(state) {
       state.selected = [];
+      return state;
     },
     selectCellsDrag(state, action) {
       const [startRow, startCol] = state.lastSelected || [0, 0];
       const [endRow, endCol] = [action.payload.i, action.payload.j];
       const result: Selected[] = [];
       if (startRow === endRow && startCol === endCol) {
-        return;
+        return state
       }
       // Determine iteration directions
       const rowIncrement = startRow <= endRow ? 1 : -1;
@@ -136,6 +150,7 @@ const listSlice = createSlice({
       }
 
       state.selected = result;
+      return state;
     },
     undo(state) {
       const lastAction = state.undo.pop();
@@ -143,12 +158,13 @@ const listSlice = createSlice({
       if (lastAction && lastAction.length) {
         const redo: Action[] = []
         lastAction.forEach((p) => {
-          redo.push({ ...p, data: current(state.data[p.i][p.j]) });
+          redo.push({ ...p, data: {...state.data[p.i][p.j]} });
           data[p.i][p.j] = p.data;
         });
         state.redo.push(redo);
         state.data = data;
       }
+      return state;
     },
     redo(state) {
       const lastAction = state.redo.pop();
@@ -156,15 +172,15 @@ const listSlice = createSlice({
       if (lastAction && lastAction.length) {
         const undo: Action[] = [];
         lastAction.forEach((p) => {
-          undo.push({ ...p, data: current(state.data[p.i][p.j]) });
+          undo.push({ ...p, data: {...state.data[p.i][p.j]} });
           data[p.i][p.j] = p.data;
         });
         state.undo.push(undo);
         state.data = data;
       }
+      return state;
     },
-  },
-});
+  };
 
 export const {
   changeData,
@@ -180,6 +196,4 @@ export const {
   selectCellsDrag,
   undo,
   redo
-} = listSlice.actions;
-
-export default listSlice.reducer;
+} = actions;

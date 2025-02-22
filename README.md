@@ -1,7 +1,7 @@
 # React-spread-sheet-excel
 A high-performance React component for building Excel-like spreadsheets with advanced features.
 
-A light weight component to Render large lists of input boxes in the table using React JS and Redux, Render a table with a large number of rows and columns.
+A light weight component to Render large lists of input boxes in the table using React JS, Render a table with a large number of rows and columns.
 Able to render 1Lakh+ input boxes in react, A quick solution for web based spreadsheet or excel.
 
 [![npm version](https://badge.fury.io/js/react-spread-sheet-excel.svg)](https://badge.fury.io/js/react-spread-sheet-excel) ![Downloads](https://img.shields.io/npm/dm/react-spread-sheet-excel.svg)
@@ -138,7 +138,7 @@ export default App;
 ## Performance
 
 Benchmark: Rendered 1000 rows and 100 columns in mills.
-Optimization Techniques: Redux, Lazy loading.
+Optimization Techniques: Global state, Lazy loading.
 
 
 [Sojin Antony](https://github.com/sojinantony01)
@@ -149,4 +149,3 @@ Optimization Techniques: Redux, Lazy loading.
 ## Acknowledgments
 
 * React-intersection-observer
-* Redux, React Redux

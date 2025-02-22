@@ -1,5 +1,4 @@
 import React, { forwardRef, useImperativeHandle } from "react";
-import { Provider } from "react-redux";
 import List, { Props } from "./list";
 import { store } from "./store";
 import "./sheet.css";
@@ -10,15 +9,16 @@ export type SheetRef = {
   setData: (data: any[][]) => void;
   exportCsv: (fileName: string, includeHeaders?: boolean) => void;
 };
+
 const Sheet = forwardRef((props: Props, ref) => {
   const getData = () => {
-    return store.getState().list.data;
+    return store.getState().data;
   };
   const setData = (data: Data[][]) => {
-    store.dispatch(addData(data));
+    store.dispatch(addData, { payload: data });
   };
   const exportCsv = (fileName: string, includeHeaders: boolean = false) => {
-    let results = store.getState().list.data;
+    let results = store.getState().data;
     exportToCsv(results, fileName, props.headerValues, includeHeaders);
   };
 
@@ -29,9 +29,7 @@ const Sheet = forwardRef((props: Props, ref) => {
   }));
 
   return (
-    <Provider store={store}>
-      <List {...props} />
-    </Provider>
+    <List {...props} />
   );
 });
 

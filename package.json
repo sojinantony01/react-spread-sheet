@@ -1,7 +1,7 @@
 {
   "name": "react-spread-sheet-excel",
   "version": "2.1.6",
-  "description": "A quick example of rendering large number of input boxes in table using React JS and Redux, React Spread-sheet (Excel sheet)",
+  "description": "A quick example of rendering large number of input boxes in table using React JS, React Spread-sheet (Excel sheet)",
   "keywords": [
     "React spreadsheet",
     "React Excel",
@@ -13,10 +13,9 @@
   ],
   "author": "Sojin antony",
   "dependencies": {
-    "@reduxjs/toolkit": "^1.9.5",
-    "react-intersection-observer": "9.5.2",
-    "react-redux": "^8.1.2"
+    "react-intersection-observer": "9.5.2"
   },
+  "type": "module",
   "main": "build/index.js",
   "module": "build/index.js",
   "files": [
@@ -28,8 +27,8 @@
     "url": "https://github.com/sojinantony01/react-spread-sheet.git"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": ">=18.2.0",
+    "react-dom": ">=18.2.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "22.0.2",
@@ -74,7 +73,9 @@
       "!src/index.tsx",
       "!src/reportWebVitals.ts"
     ],
-    "coveragePathIgnorePatterns": ["./node_modules/"]
+    "coveragePathIgnorePatterns": [
+      "./node_modules/"
+    ]
   },
   "license": "ISC",
   "browserslist": {
