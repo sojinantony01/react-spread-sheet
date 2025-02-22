@@ -1,4 +1,4 @@
-import { printToLetter, solveMathExpression } from "../utils"
+import { printToLetter, solveMathExpression } from "../utils";
 describe("printToLetter", () => {
   it("should convert a number to letters using the default alphabet", () => {
     expect(printToLetter(1)).toEqual("A");
@@ -25,7 +25,6 @@ describe("solveMathExpression", () => {
     expect(solveMathExpression("4*2")).toBe("8");
     expect(solveMathExpression("6/3")).toBe("2");
   });
-
 
   // Test 3: Operations with decimal numbers
   test("Operations with decimal numbers", () => {
@@ -55,5 +54,4 @@ describe("solveMathExpression", () => {
   test("Operations with complex expressions", () => {
     expect(solveMathExpression("1+2*3-4/2")).toBe("5");
   });
-})
-
+});

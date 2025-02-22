@@ -2,21 +2,20 @@ import React, { useRef, useState } from "react";
 import Sheet, { SheetRef } from "./lib";
 import packageConf from "../package.json";
 
-
 //Create dummy data.
 const createData = (count?: number) => {
   const val: any[][] = [];
-  for (let i = 0; i < (count || 1000) ; i++) {
+  for (let i = 0; i < (count || 1000); i++) {
     val.push(
       Array.from({ length: count || 40 }, () => ({
         value: Math.floor(Math.random() * 10),
-      }))
+      })),
     );
   }
   return val;
 };
 
-function App({count}: {count?: number}) {
+function App({ count }: { count?: number }) {
   const [state] = useState<any[][]>(createData(count));
   const childRef = useRef<SheetRef>(null);
   const onChange = (i: number, j: number, value: string) => {
@@ -34,15 +33,19 @@ function App({count}: {count?: number}) {
     childRef?.current?.exportCsv("myCsvFile", false);
   };
   return (
-    <div style={{height: '100%'}}>
-      <div style={{marginBottom: "10px"}}>
+    <div style={{ height: "100%" }}>
+      <div style={{ marginBottom: "10px" }}>
         React excel sheet: V{packageConf.version}{" "}
-        <button data-testid="get-updated-data" onClick={getData}>Get Updated data</button>{" "}
-        <button data-testid="csv-export" onClick={exportCSV}>Export CSV data</button>
+        <button data-testid="get-updated-data" onClick={getData}>
+          Get Updated data
+        </button>{" "}
+        <button data-testid="csv-export" onClick={exportCSV}>
+          Export CSV data
+        </button>
       </div>
-      <div style={{height: 'calc(100% - 31px)'}}>
+      <div style={{ height: "calc(100% - 31px)" }}>
         {/* Data is optional, if data is empty it will render empty input boxes */}
-        <Sheet data={state} onChange={onChange} ref={childRef} resize={true}/>
+        <Sheet data={state} onChange={onChange} ref={childRef} resize={true} />
       </div>
     </div>
   );

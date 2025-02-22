@@ -1,6 +1,12 @@
 import React, { ChangeEvent, KeyboardEvent, useState } from "react";
 import { store, useAppSelector } from "../store";
-import { changeData, clearSelection, selectCells, selectCellsDrag, selectOneCell } from "../reducer";
+import {
+  changeData,
+  clearSelection,
+  selectCells,
+  selectCellsDrag,
+  selectOneCell,
+} from "../reducer";
 import { getCalculatedVal } from "./utils";
 interface Prop {
   i: number;
@@ -16,15 +22,15 @@ const detectLeftButton = (evt: any) => {
   }
   var button = evt.which || evt.button;
   return button == 1;
-}
+};
 
 const Input = (props: Prop) => {
   const { i, j, onChange, headerValues } = props;
   const [editMode, setEdit] = useState(false);
-  const [focus, setFocus] = useState(false)
+  const [focus, setFocus] = useState(false);
   const { dispatch } = store;
   const selected = useAppSelector(store, (state) => {
-    return state.selected.some(p => p[0] === i && p[1] === j)
+    return state.selected.some((p) => p[0] === i && p[1] === j);
   });
   const value = useAppSelector(store, (state) => {
     let val = state.data[i][j].value;
@@ -40,19 +46,21 @@ const Input = (props: Prop) => {
     return state.data.length;
   });
   const columnLength = useAppSelector(store, (state) => {
-    return state.data[i].length
+    return state.data[i].length;
   });
-
 
   const change = (e: ChangeEvent<HTMLInputElement>) => {
     if (value !== e.target.value) {
       setEdit(true);
-      dispatch(changeData, {payload : { value: e.target.value || "", i: i, j: j }});
+      dispatch(changeData, { payload: { value: e.target.value || "", i: i, j: j } });
       onChange && onChange(i, j, e.target.value);
     }
   };
   const keyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if ((!editMode && ["ArrowLeft", "ArrowRight"].includes(e.code)) || ["ArrowUp", "ArrowDown"].includes(e.code)) {
+    if (
+      (!editMode && ["ArrowLeft", "ArrowRight"].includes(e.code)) ||
+      ["ArrowUp", "ArrowDown"].includes(e.code)
+    ) {
       dispatch(clearSelection);
       moveToNext(e);
     } else if (editMode && e.code === "Backspace") {
@@ -61,7 +69,7 @@ const Input = (props: Prop) => {
       e.stopPropagation();
     } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
-    } else if (e.code === "KeyZ" && e.shiftKey &&  (e.ctrlKey || e.metaKey)) {
+    } else if (e.code === "KeyZ" && e.shiftKey && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
     }
   };
@@ -85,8 +93,8 @@ const Input = (props: Prop) => {
         newJ = j;
         break;
     }
-    if(e.shiftKey) {
-      dispatch(selectCellsDrag, {payload: { i: newI, j: newJ }});
+    if (e.shiftKey) {
+      dispatch(selectCellsDrag, { payload: { i: newI, j: newJ } });
     } else {
       setSelected(newI, newJ);
     }
@@ -94,22 +102,22 @@ const Input = (props: Prop) => {
   };
 
   const setSelected = (row = i, column = j) => {
-    if(row >= 0 && column >= 0 && row && row < rowLength && column < columnLength)
-      dispatch(selectOneCell, {payload: {i:row,j: column}});
-  }
+    if (row >= 0 && column >= 0 && row && row < rowLength && column < columnLength)
+      dispatch(selectOneCell, { payload: { i: row, j: column } });
+  };
   const onClick = (e: { ctrlKey: any; metaKey: any; shiftKey: any }) => {
     if (e.ctrlKey || e.metaKey || e.shiftKey) {
-      dispatch(selectCells, {payload: { i, j }});
+      dispatch(selectCells, { payload: { i, j } });
     } else {
       selected && setEdit(true);
       setSelected();
     }
   };
   const onDrag = (e: any) => {
-    if(detectLeftButton(e)) {
-      dispatch(selectCellsDrag, {payload: {i, j}})
+    if (detectLeftButton(e)) {
+      dispatch(selectCellsDrag, { payload: { i, j } });
     }
-  }
+  };
   return (
     <input
       id={`${i}-${j}`}

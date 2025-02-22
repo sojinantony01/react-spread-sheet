@@ -20,10 +20,10 @@ export const exportToCsv = (
   results: any[][],
   fileName: string,
   headerValues?: string[],
-  includeHeaders: boolean = false
+  includeHeaders: boolean = false,
 ) => {
-  const header = results[0].map((d, i) => printToLetter(i+1, headerValues));
-  var CsvString = ""
+  const header = results[0].map((d, i) => printToLetter(i + 1, headerValues));
+  var CsvString = "";
   if (includeHeaders) {
     CsvString += " ,";
     header.forEach((head) => {
@@ -31,9 +31,9 @@ export const exportToCsv = (
     });
     CsvString += "\r\n";
   }
-   
+
   results.forEach((rowItem, RowIndex) => {
-    if(includeHeaders) CsvString += RowIndex + ",";
+    if (includeHeaders) CsvString += RowIndex + ",";
     rowItem.forEach((colVal, ColIndex) => {
       let val = colVal.value;
       if (val && val.toString().trim().startsWith("=")) {
@@ -55,7 +55,7 @@ export const exportToCsv = (
 export const getCalculatedVal = (
   val: string,
   data: any[][],
-  headerValues?: string[]
+  headerValues?: string[],
 ): string | number => {
   try {
     val = val.toString().trim();
@@ -83,9 +83,7 @@ interface Calcs {
 export const solveMathExpression = (expr: string) => {
   let str = expr.replace(/ +/g, "");
 
-  const m = [...str.matchAll(/(-?[\d.]+)([*\/+-])?/g)]
-    .flat()
-    .filter((x, i) => x && i % 3);
+  const m = [...str.matchAll(/(-?[\d.]+)([*\/+-])?/g)].flat().filter((x, i) => x && i % 3);
 
   const calc: Calcs = {
     "*": (a: number, b: number) => (a * b).toString(),

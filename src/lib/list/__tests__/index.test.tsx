@@ -6,13 +6,11 @@ import { store } from "../../store";
 import { generateDummyContent } from "../utils";
 
 describe("index tests", () => {
-  afterEach(()=> {
-    cleanup()
-  })
+  afterEach(() => {
+    cleanup();
+  });
   test("Table render", async () => {
-    render(
-        <List data={generateDummyContent(310, 1)} />
-    );
+    render(<List data={generateDummyContent(310, 1)} />);
     const data = store.getState().data;
 
     expect(data.length).toBe(310);
@@ -23,9 +21,7 @@ describe("index tests", () => {
   });
 
   test("Table KeyboardActions", async () => {
-    render(
-        <List data={generateDummyContent(10, 1)} />
-    );
+    render(<List data={generateDummyContent(10, 1)} />);
     const table = screen.getByTestId(`sheet-table`);
     fireEvent.keyDown(table, { code: "KeyA", ctrlKey: true });
     await waitFor(() => {
@@ -54,9 +50,7 @@ describe("index tests", () => {
   });
 
   test("Undo-Redo", async () => {
-    render(
-        <List data={generateDummyContent(10, 1)} />
-    );
+    render(<List data={generateDummyContent(10, 1)} />);
     const table = screen.getByTestId(`sheet-table`);
 
     fireEvent.keyDown(table, { code: "KeyB", ctrlKey: true });
@@ -75,4 +69,4 @@ describe("index tests", () => {
       expect(store.getState().data?.[0][0]?.styles?.["fontWeight"]).toBe("bold");
     });
   });
-})
+});

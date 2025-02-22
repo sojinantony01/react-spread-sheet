@@ -28,9 +28,7 @@ const Sheet = forwardRef((props: Props, ref) => {
     exportCsv,
   }));
 
-  return (
-    <List {...props} />
-  );
+  return <List {...props} />;
 });
 
 export default Sheet;

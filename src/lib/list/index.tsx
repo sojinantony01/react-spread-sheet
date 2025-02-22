@@ -4,7 +4,7 @@ import Row from "./row";
 import { addData, deleteSelectItems, redo, selectAllCells, undo, updateStyles } from "../reducer";
 import SheetXAxis from "./sheet-x-axis";
 import { generateDummyContent } from "./utils";
-import Tools from "./tools/tools"
+import Tools from "./tools/tools";
 export interface Props {
   data?: any[][];
   onChange?(i: number, j: number, value: string): void;
@@ -25,9 +25,12 @@ const List = (props: Props) => {
     setJ(itemLength < 300 ? itemLength : 300);
   }, [itemLength]);
   useEffect(() => {
-    dispatch(
-      addData, {payload: props.data && props.data.length && props.data[0].length ? props.data : generateDummyContent(1000, 30)}
-    );
+    dispatch(addData, {
+      payload:
+        props.data && props.data.length && props.data[0].length
+          ? props.data
+          : generateDummyContent(1000, 30),
+    });
   }, []);
 
   const items = [];
@@ -40,7 +43,7 @@ const List = (props: Props) => {
         onChange={props.onChange}
         hideYAxisHeader={props.hideYAxisHeader}
         readonly={props.readonly}
-      />
+      />,
     );
   }
   const onsCroll = () => {
@@ -51,9 +54,7 @@ const List = (props: Props) => {
       setJ(nextVal > itemLength ? itemLength : nextVal);
     }
   };
-  const handleKeyDown = (e: {
-    shiftKey: boolean; code: string; ctrlKey: any; metaKey: any; 
-}) => {
+  const handleKeyDown = (e: { shiftKey: boolean; code: string; ctrlKey: any; metaKey: any }) => {
     if (e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
       dispatch(selectAllCells);
     }
@@ -70,8 +71,8 @@ const List = (props: Props) => {
     } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey) && !props.readonly) {
       dispatch(undo);
     }
-  }
-  const getStyle = (key: string, value?:string) => {
+  };
+  const getStyle = (key: string, value?: string) => {
     switch (key) {
       case "B":
         return { value: { key: "fontWeight", value: "bold" } };
@@ -96,7 +97,7 @@ const List = (props: Props) => {
     }
   };
   const changeStyle = (key: string, value?: string) => {
-    dispatch(updateStyles, {payload: getStyle(key, value)});
+    dispatch(updateStyles, { payload: getStyle(key, value) });
   };
 
   return (
@@ -113,7 +114,11 @@ const List = (props: Props) => {
             {items.length && (
               <table>
                 <tbody>
-                  {!props.hideXAxisHeader ? <SheetXAxis resize={props.resize} headerValues={props.headerValues} /> : ""}
+                  {!props.hideXAxisHeader ? (
+                    <SheetXAxis resize={props.resize} headerValues={props.headerValues} />
+                  ) : (
+                    ""
+                  )}
                   {items}
                 </tbody>
               </table>

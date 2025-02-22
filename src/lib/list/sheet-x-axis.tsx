@@ -14,9 +14,7 @@ const SheetXAxis = ({ resize, headerValues }: Props) => {
   const items: any = [];
   useEffect(() => {
     if (headerValues?.find((d) => d.match(/[0-9]/))) {
-      console.warn(
-        "React-spread-sheet-excel: Header values should not contain numbers"
-      );
+      console.warn("React-spread-sheet-excel: Header values should not contain numbers");
     }
   }, [headerValues]);
   for (let i = 0; i <= itemLength; i++) {
@@ -29,10 +27,17 @@ const SheetXAxis = ({ resize, headerValues }: Props) => {
         onClick={(e) => {
           if (i === 0) {
             dispatch(selectAllCells);
-          } else dispatch(selectVerticalCells, {payload: { j: i - 1, ctrlPressed: e.metaKey || e.ctrlKey }});
+          } else
+            dispatch(selectVerticalCells, {
+              payload: { j: i - 1, ctrlPressed: e.metaKey || e.ctrlKey },
+            });
         }}
       >
-        {resize && i > 0 ? <div>{printToLetter(i, headerValues)}</div> : i > 0 && printToLetter(i, headerValues)}
+        {resize && i > 0 ? (
+          <div>{printToLetter(i, headerValues)}</div>
+        ) : (
+          i > 0 && printToLetter(i, headerValues)
+        )}
       </th>,
     );
   }

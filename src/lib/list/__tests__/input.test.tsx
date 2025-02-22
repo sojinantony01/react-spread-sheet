@@ -10,58 +10,54 @@ let j = 1;
 describe("input tests", () => {
   test("input render", () => {
     store.dispatch(addData, { payload: generateDummyContent(3, 3) });
-    render(
-        <Input i={i} j={j} />
-    );
+    render(<Input i={i} j={j} />);
 
     expect(screen.getByTestId(`${i}-${j}`)).toBeInTheDocument();
   });
   test("input render value", () => {
     store.dispatch(addData, { payload: generateDummyContent(3, 3) });
     const data = store.getState().data;
-    render(
-        <Input i={i} j={j} />
-    );
+    render(<Input i={i} j={j} />);
     expect(screen.getByTestId(`${i}-${j}`)).toHaveValue(data[i][j].value);
   });
 
   test("input render calc", () => {
     store.dispatch(addData, { payload: generateDummyContent(3, 3) });
-    store.dispatch(changeData, {payload: { value: "= 2+2-1", i: i, j: j }});
+    store.dispatch(changeData, { payload: { value: "= 2+2-1", i: i, j: j } });
 
-    render(
-        <Input i={i} j={j} />
-    );
+    render(<Input i={i} j={j} />);
     expect(screen.getByTestId(`${i}-${j}`)).toHaveValue("3");
   });
 
   test("input render calc with cell nan", () => {
     store.dispatch(addData, { payload: generateDummyContent(3, 3) });
-    store.dispatch(changeData, {payload:  { value: "= 2+2-1 + A1", i: i, j: j }});
+    store.dispatch(changeData, { payload: { value: "= 2+2-1 + A1", i: i, j: j } });
 
-    render(
-        <Input i={i} j={j} />
-    );
+    render(<Input i={i} j={j} />);
     expect(screen.getByTestId(`${i}-${j}`)).toHaveValue("NaN");
   });
 
   test("input render calc with cell", async () => {
-    store.dispatch(addData, {payload: generateDummyContent(12, 12)});
+    store.dispatch(addData, { payload: generateDummyContent(12, 12) });
     await new Promise((r) => setTimeout(r, 100));
 
-    store.dispatch(changeData, {payload: { value: 5, i: 0, j: 0 }});
+    store.dispatch(changeData, { payload: { value: 5, i: 0, j: 0 } });
     await new Promise((r) => setTimeout(r, 100));
-    store.dispatch(changeData, {payload: { value: "= 2+2-1 + ( A1 * 2 ) + ( 2/2 ) ", i: i, j: j }});
+    store.dispatch(changeData, {
+      payload: { value: "= 2+2-1 + ( A1 * 2 ) + ( 2/2 ) ", i: i, j: j },
+    });
     await new Promise((r) => setTimeout(r, 100));
-    store.dispatch(changeData, {payload: { value: 5, i: 11, j: 0 }});
+    store.dispatch(changeData, { payload: { value: 5, i: 11, j: 0 } });
     await new Promise((r) => setTimeout(r, 100));
-    store.dispatch(changeData, {payload: { value: "= 2+2-1 + ( A12 * 2 ) + ( 4/2 ) ", i: i, j: j + 1 }});
+    store.dispatch(changeData, {
+      payload: { value: "= 2+2-1 + ( A12 * 2 ) + ( 4/2 ) ", i: i, j: j + 1 },
+    });
     await new Promise((r) => setTimeout(r, 100));
     render(
       <>
         <Input i={i} j={j} />
         <Input i={i} j={j + 1} />
-      </>
+      </>,
     );
 
     expect(screen.getByTestId(`${i}-${j}`)).toHaveValue("14");
@@ -71,9 +67,7 @@ describe("input tests", () => {
   test("input render change", () => {
     store.dispatch(addData, { payload: generateDummyContent(3, 3) });
 
-    render(
-        <Input i={i} j={j} />
-    );
+    render(<Input i={i} j={j} />);
     fireEvent.change(screen.getByTestId(`${i}-${j}`), {
       target: { value: "new value" },
     });
@@ -81,7 +75,7 @@ describe("input tests", () => {
   });
 
   test("input check keyboard arrow keys", async () => {
-      store.dispatch(addData, { payload: generateDummyContent(3, 3) });
+    store.dispatch(addData, { payload: generateDummyContent(3, 3) });
 
     render(
       <>
