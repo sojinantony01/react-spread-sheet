@@ -58,8 +58,7 @@ npm install react-spread-sheet-excel
 
 ```js
 import React, { useRef, useState } from "react";
-import Sheet, { SheetRef } from "./lib";
-import packageConf from "../package.json";
+import Sheet, { SheetRef } from "react-spread-sheet-excel";
 
 //Create dummy data.
 const createData = (count?: number) => {
