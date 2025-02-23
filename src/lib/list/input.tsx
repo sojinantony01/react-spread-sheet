@@ -102,7 +102,7 @@ const Input = (props: Prop) => {
   };
 
   const setSelected = (row = i, column = j) => {
-    if (row >= 0 && column >= 0 && row && row < rowLength && column < columnLength)
+    if (row >= 0 && column >= 0 && row < rowLength && column < columnLength)
       dispatch(selectOneCell, { payload: { i: row, j: column } });
   };
   const onClick = (e: { ctrlKey: any; metaKey: any; shiftKey: any }) => {
