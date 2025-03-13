@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle } from "react";
+import React, { forwardRef, Profiler, useImperativeHandle } from "react";
 import { Provider } from "react-redux";
 import List, { Props } from "./list";
 import { store } from "./store";
@@ -30,9 +30,11 @@ const Sheet = forwardRef((props: Props, ref) => {
   }));
 
   return (
-    <Provider store={store}>
-        <List {...props} />
-    </Provider>
+    <Profiler id="myprofiler" onRender={(id, phase, actualDuration) => console.log("rendered ", id, phase, actualDuration)}>
+      <Provider store={store}>
+          <List {...props} />
+      </Provider>
+    </Profiler>
   );
 });
 

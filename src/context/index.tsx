@@ -1,4 +1,4 @@
-import React, { createContext, useMemo, useState } from "react";
+import React, { createContext, Profiler, useMemo, useState } from "react";
 import Table from "./table"
 
 export const DataContext = createContext({ data: [[{value: ""}]], getValue: (i,j) => "", updateData: (i, j, val) => {} });
@@ -18,9 +18,11 @@ const App = (props) => {
    );
 
   return (
-    <DataContext.Provider value={contextValue}>
-      <Table />
-    </DataContext.Provider>
+    <Profiler id="myprofiler" onRender={(id, phase, actualDuration) => console.log("rendered ", id, phase, actualDuration)}>
+      <DataContext.Provider value={contextValue}>
+        <Table />
+      </DataContext.Provider>
+    </Profiler>
   );
 };
 

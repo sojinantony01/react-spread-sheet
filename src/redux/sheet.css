@@ -1,26 +1,26 @@
-.sheet-table .input-dummy {
+.sheet-table-redux .input-dummy {
   height: 100%;
 }
 
-.sheet-table .pv-4 {
+.sheet-table-redux .pv-4 {
   padding: 0px 4px;
 }
 
-.sheet-table,
-.sheet-table table {
+.sheet-table-redux,
+.sheet-table-redux table {
   max-width: 100vw;
   max-height: 100vh;
   overflow: auto;
   position: relative;
 }
 
-.sheet-table .sheet-axis {
+.sheet-table-redux .sheet-axis {
   background-color: #f5f6f7;
   padding: 0px 4px;
   text-align: center;
 }
 
-.sheet-table table,
+.sheet-table-redux table,
 td,
 th {
   border: 1px solid #e1e1e1;
@@ -29,11 +29,11 @@ th {
   padding: 0px;
 }
 
-.sheet-table .sheet-x-axis {
+.sheet-table-redux .sheet-x-axis {
   min-width: 50px;
 }
 
-.sheet-table .sheet-axis div {
+.sheet-table-redux .sheet-axis div {
   resize: horizontal;
   overflow: auto;
   width: auto;
@@ -42,13 +42,13 @@ th {
   width: 100px
 }
 
-.sheet-table td,
-.sheet-table th {
+.sheet-table-redux td,
+.sheet-table-redux th {
   height: 28px;
   overflow: auto;
 }
 
-.sheet-table input {
+.sheet-table-redux input {
   margin: 0;
   box-sizing: border-box;
   border: none;
@@ -59,28 +59,28 @@ th {
   border-spacing: 0;
 }
 
-.sheet-table input.view_mode {
+.sheet-table-redux input.view_mode {
   caret-color: transparent;
 }
 
-.sheet-table input:focus {
+.sheet-table-redux input:focus {
   border-radius: 0;
 }
 
-.sheet-table th {
+.sheet-table-redux th {
   position: sticky;
   top: -2px;
   z-index: 1;
 }
 
-.sheet-table th:first-child {
+.sheet-table-redux th:first-child {
   position: sticky;
   top: -2px;
   left: -2px;
   z-index: 2;
 }
 
-.sheet-table tr td:first-child {
+.sheet-table-redux tr td:first-child {
   position: sticky;
   left: -2px;
 }

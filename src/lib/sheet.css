@@ -1,0 +1,278 @@
+.sheet-table .input-dummy {
+  height: 100%;
+}
+.sheet-table .sheet-table-table-container {
+  height: calc(100% - 50px);
+  overflow: auto;
+}
+.sheet-table .pv-4 {
+  padding: 0px 4px;
+}
+
+.sheet-table,
+.sheet-table table {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+.sheet-table *,
+.sheet-table ::before,
+.sheet-table ::after {
+  box-sizing: border-box;
+}
+
+.sheet-table .sheet-axis {
+  background-color: #f3f5f8;
+  padding: 0px 4px;
+  text-align: center;
+}
+
+.sheet-table table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.sheet-table table th {
+  border-bottom: 1px solid #e1e1e1;
+  border-right: 1px solid #e1e1e1;
+  padding: 0px;
+}
+.sheet-table th {
+  border-top: 1px solid #e1e1e1;
+}
+.sheet-table th:first-child {
+  border-left: 1px solid #e1e1e1;
+}
+.sheet-table td:first-child {
+  border-left: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e1e1e1;
+  border-right: 1px solid #e1e1e1;
+}
+.sheet-table td {
+  border: none;
+  padding: 0 0;
+}
+
+.sheet-table .sheet-x-axis {
+  min-width: 50px;
+}
+
+.sheet-table .sheet-axis div {
+  resize: horizontal;
+  overflow: auto;
+  width: auto;
+  height: auto;
+  min-width: 50px;
+  width: 100px;
+}
+
+.sheet-table td,
+.sheet-table th {
+  height: 32px;
+  overflow: auto;
+}
+
+.sheet-table .input {
+  margin: 0;
+  border-right: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e1e1e1;
+  border-top: none;
+  border-left: none;
+  width: 100%;
+  padding: 0px 4px;
+  min-height: 32px;
+  height: 100%;
+  outline: none;
+  width: 100%;
+  max-width: 100%;
+}
+
+.sheet-table .input:focus {
+  border: 1px solid #0a58d0;
+  box-shadow: inset 0px 0px 0px 1px #0a58d0;
+}
+
+.sheet-table input.view_mode {
+  caret-color: transparent;
+}
+.sheet-table td.sheet-not-in-view-table {
+  border-right: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e1e1e1;
+}
+.sheet-table td input.sheet-selected-td {
+  border: 1px solid #0a58d0;
+}
+
+.sheet-table input:focus {
+  border-radius: 0;
+}
+
+.sheet-table th {
+  position: sticky;
+  top: 0px;
+  z-index: 1;
+}
+
+.sheet-table th:first-child {
+  position: sticky;
+  top: 0px;
+  left: 0px;
+  z-index: 2;
+}
+
+.sheet-table tr td:first-child {
+  position: sticky;
+  left: 0px;
+}
+.sheet-table .sheet-tools {
+  background-color: #f3f5f8;
+  padding: 8px 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+}
+.sheet-table .tools .font-size-input {
+  width: 50px;
+  padding-top: 6px;
+}
+.sheet-table .sheet-tools button {
+  font-size: 18px;
+}
+.sheet-table .sheet-tools-container {
+  padding-bottom: 10px;
+  background-color: white;
+  z-index: 99;
+}
+.sheet-table .sheet-tools .sheet-tools-calculation-input-container {
+  flex: 1 1 10px;
+  max-width: 500px;
+  display: flex;
+  align-items: center;
+  color: grey;
+  border: 1px solid #e1e1e1;
+  padding: 0px 10px;
+  background-color: white;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.sheet-table .sheet-tools .sheet-tools-calculation-input-container input {
+  margin-left: 10px;
+  height: 28px;
+  flex: 1 1 10px;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+.sheet-table .sheet-tools .sheet-tools-font-size-container {
+  margin-left: 15px;
+  margin-right: 15px;
+  border-left: 1px solid #e1e1e1;
+  border-right: 1px solid #e1e1e1;
+}
+.sheet-table .sheet-tools .sheet-tools-font-size-container button {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding: 0px 10px;
+  height: 28px;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.sheet-table .sheet-tools .sheet-tools-font-size-container input {
+  outline: none;
+  box-shadow: none;
+  height: 28px;
+  border: 1px solid #e1e1e1;
+  padding: 0px 10px;
+  background-color: white;
+  border-radius: 4px;
+  width: 50px;
+}
+.sheet-table .sheet-tools .sheet-tools-font-size-container input::-webkit-outer-spin-button,
+.sheet-table .sheet-tools .sheet-tools-font-size-container input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.sheet-table .sheet-tools .sheet-tools-text-style-container {
+  margin-left: 7px;
+  margin-right: 15px;
+  border-left: 1px solid #e1e1e1;
+  border-right: 1px solid #e1e1e1;
+  padding: 0px 3px;
+}
+.sheet-table .sheet-tools .sheet-tools-text-style-container button {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding: 0px 5px;
+  height: 28px;
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 0px 2px;
+  min-width: 21px;
+}
+.sheet-table .sheet-tools-container .sheet-tools button.text-style-btn-active {
+  background-color: #e1e1e1;
+}
+.sheet-table .sheet-tools .sheet-tools-text-style-container button.text-style-btn-active-underline {
+  text-decoration: underline;
+}
+.sheet-table .sheet-tools .sheet-tools-text-align-container {
+  display: flex;
+  align-items: center;
+}
+.sheet-table .sheet-tools .sheet-tools-text-align-container button {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding: 0px 5px;
+  height: 28px;
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 0px 2px;
+  min-width: 21px;
+  display: flex;
+  align-items: center;
+}
+.sheet-tools-text-cell-color-container input {
+  opacity: 0;
+  position: relative;
+  height: 0;
+  width: 0;
+  z-index: -1;
+}
+.sheet-table .sheet-tools .sheet-tools-text-cell-color-container {
+  display: flex;
+  align-items: center;
+}
+.sheet-table .sheet-tools .sheet-tools-text-cell-color-container button {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding: 0px 5px;
+  height: 28px;
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 0px 2px;
+  min-width: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+}
+.sheet-table .sheet-tools .sheet-tools-text-cell-color-container button .sheet-color-strip {
+  height: 3px;
+  width: 100%;
+  border-radius: 4px;
+  background-color: transparent;
+  position: absolute;
+  bottom: 0px;
+}
+.sheet-table .sheet-tools .sheet-tools-text-cell-color-container button svg {
+  width: 16px;
+}

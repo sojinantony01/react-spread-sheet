@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import Column  from "./column";
 
 const Row = ({ data, update, i }) => {
@@ -11,4 +11,4 @@ const Row = ({ data, update, i }) => {
     );
 };
 
-export default Row;
+export default memo(Row);

@@ -5,9 +5,11 @@ import FirstSolution from "./worst"
 import SecondSolution from "./child-componets"
 import LazyLoading from "./lazyloading"
 import ContextSolution from "./context"
+import WithMemo from "./with-memo"
+import Sheet from "./lib";
 const createData = () => {
   const val: any[][] = [];
-  for (let i = 0; i < (2000) ; i++) {
+  for (let i = 0; i < 800 ; i++) {
     val.push(
       Array.from({ length: 60 }, () => ({
         value: Math.floor(Math.random() * 10),
@@ -45,19 +47,25 @@ function App() {
           <Route
             path="worst"
             element={
-              <FirstSolution data={state} onChange={onChange} ref={childRef} />
+              <FirstSolution data={state} onChange={onChange} />
             }
           />
           <Route
             path="child-components"
             element={
-              <SecondSolution data={state} onChange={onChange} ref={childRef} />
+              <SecondSolution data={state} onChange={onChange} />
+            }
+          />
+          <Route
+            path="with-memo"
+            element={
+              <WithMemo data={state} onChange={onChange} />
             }
           />
           <Route
             path="lazy-loading"
             element={
-              <LazyLoading data={state} onChange={onChange} ref={childRef} />
+              <LazyLoading data={state} onChange={onChange}/>
             }
           />
           <Route
@@ -66,17 +74,16 @@ function App() {
               <ContextSolution
                 data={state}
                 onChange={onChange}
-                ref={childRef}
               />
             }
           />
           <Route
             path="/redux"
-            element={<WithRedux data={state} onChange={onChange}/>}
+            element={<WithRedux data={state} onChange={onChange} />}
           />
           <Route
             path="/own-store"
-            element={<WithRedux data={state} onChange={onChange}/>}
+            element={<Sheet data={state} onChange={onChange} ref={childRef}/>}
           />
         </Routes>
       </div>

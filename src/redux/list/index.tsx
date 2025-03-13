@@ -48,7 +48,7 @@ const List = (props: Props) => {
     }
   };
   return (
-    <div className="sheet-table" onScroll={onsCroll} ref={parentDivRef} data-testid="sheet-table">
+    <div className="sheet-table-redux" onScroll={onsCroll} ref={parentDivRef} data-testid="sheet-table">
       <div style={{ height: (itemLength + 1) * 28 }}>
         <div ref={divRef}>
           {items.length && (

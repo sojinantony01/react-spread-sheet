@@ -8,7 +8,7 @@ const Row = ({ i }) => {
     return (
         <tr>
         {data[i].map((p, j) => {
-            return <Column i={i} j={j}/>;
+            return <Column key={`row-${i}-col-${j}`} i={i} j={j}/>;
         })}
         </tr>
     );

@@ -5,7 +5,7 @@ const Row = ({ data, update, i }) => {
   return (
         <tr>
         {data.map((p, j) => {
-            return <Column data={p} update={update} i={i} j={j}/>;
+            return <Column key={`row-${i}-col-${j}`} data={p} update={update} i={i} j={j}/>;
         })}
         </tr>
     );
