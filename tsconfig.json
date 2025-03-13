@@ -30,6 +30,6 @@
     "dist"
   ],
   "include": [
-    "src/lib/*"
+    "src/redux/*"
   ]
 }

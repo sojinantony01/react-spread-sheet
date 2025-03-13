@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import Sheet, { SheetRef } from "./lib";
+import WithRedux, { SheetRef } from "./redux";
 import { Routes, Route} from "react-router-dom";
 import FirstSolution from "./worst"
 import SecondSolution from "./child-componets"
@@ -71,10 +71,14 @@ function App() {
             }
           />
           <Route
-            path="/best"
-            element={<Sheet data={state} onChange={onChange} ref={childRef} />}
+            path="/redux"
+            element={<WithRedux data={state} onChange={onChange}/>}
           />
-        </Routes>{" "}
+          <Route
+            path="/own-store"
+            element={<WithRedux data={state} onChange={onChange}/>}
+          />
+        </Routes>
       </div>
     </div>
   );
