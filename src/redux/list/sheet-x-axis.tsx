@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
-import { useAppSelector } from "../store";
+import { useAppSelector, useAppDispatch } from "../store";
 import { printToLetter } from "./utils";
+import { selectAllCells, selectVerticalCells } from "../reducer";
 interface Props {
   resize?: boolean;
   headerValues?: string[];
@@ -9,6 +10,8 @@ interface Props {
 const SheetXAxis = ({ resize, headerValues }: Props) => {
   const itemLength = useAppSelector((store) => store.list.data[0].length);
   const items: any = [];
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (headerValues?.find((d) => d.match(/[0-9]/))) {
       console.warn(
@@ -21,13 +24,16 @@ const SheetXAxis = ({ resize, headerValues }: Props) => {
       <th
         className={`sheet-axis ${i > 0 && "sheet-x-axis"}`}
         key={`${i}-x-axis`}
+        data-testid={`${i}-x-axis`}
+        tabIndex={0}
+        onClick={(e) => {
+          if (i === 0) {
+            dispatch(selectAllCells());
+          } else dispatch(selectVerticalCells({ j: i - 1, ctrlPressed: e.metaKey || e.ctrlKey }));
+        }}
       >
-        {resize && i > 0 ? (
-          <div>{printToLetter(i, headerValues)}</div>
-        ) : (
-          i > 0 && printToLetter(i, headerValues)
-        )}
-      </th>
+        {resize && i > 0 ? <div>{printToLetter(i, headerValues)}</div> : i > 0 && printToLetter(i, headerValues)}
+      </th>,
     );
   }
   return <tr data-testid="sheet-table-x-axis-header">{items}</tr>;

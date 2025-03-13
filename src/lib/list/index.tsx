@@ -109,7 +109,7 @@ const List = (props: Props) => {
         onScroll={onsCroll}
         data-testid="sheet-table-content"
       >
-        <div style={{ height: (itemLength + 1) * 32 }}>
+        <div style={{ height: (itemLength + 1) * 32 }} onScroll={onsCroll}>
           <div ref={divRef}>
             {items.length && (
               <table>

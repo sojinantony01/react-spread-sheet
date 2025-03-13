@@ -36,7 +36,7 @@ function App() {
       <div>
         <button data-testid="get-updated-data" onClick={getData}>
           Get Updated data
-        </button>{" "}
+        </button>
         <button data-testid="csv-export" onClick={exportCSV}>
           Export CSV data
         </button>

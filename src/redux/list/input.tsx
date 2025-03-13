@@ -1,6 +1,6 @@
 import React, { ChangeEvent, KeyboardEvent, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
-import { changeData } from "../reducer";
+import { changeData, clearSelection, selectCells, selectCellsDrag, selectOneCell } from "../reducer";
 import { getCalculatedVal } from "./utils";
 interface Prop {
   i: number;
@@ -9,19 +9,41 @@ interface Prop {
   headerValues?: string[];
 }
 
+//Mouse clicked check
+const detectLeftButton = (evt: any) => {
+  if ("buttons" in evt) {
+    return evt.buttons == 1;
+  }
+  var button = evt.which || evt.button;
+  return button == 1;
+}
+
 const Input = (props: Prop) => {
   const { i, j, onChange, headerValues } = props;
-  const [focused, setFocus] = useState(false);
   const [editMode, setEdit] = useState(false);
-  const [clicked, setClicked] = useState(false);
+  const [focus, setFocus] = useState(false)
   const dispatch = useAppDispatch();
+  const selected = useAppSelector((store) => {
+    return store.list.selected.some(p => p[0] === i && p[1] === j)
+  });
   const value = useAppSelector((store) => {
     let val = store.list.data[i][j].value;
-    if (!focused && val && val.toString().trim().startsWith("=")) {
+    if (!focus && val && val.toString().trim().startsWith("=")) {
       return getCalculatedVal(val, store.list.data, headerValues);
     }
     return val;
   });
+  const styles = useAppSelector((store) => {
+    return store.list.data[i][j].styles;
+  });
+  const rowLength = useAppSelector((store) => {
+    return store.list.data.length;
+  });
+  const columnLength = useAppSelector((store) => {
+    return store.list.data[i].length
+  });
+
+
   const change = (e: ChangeEvent<HTMLInputElement>) => {
     if (value !== e.target.value) {
       setEdit(true);
@@ -30,43 +52,79 @@ const Input = (props: Prop) => {
     }
   };
   const keyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (
-      (!editMode && [37, 39].includes(e.keyCode)) ||
-      [38, 40].includes(e.keyCode)
-    ) {
-      moveToNext(e.keyCode);
+    if ((!editMode && ["ArrowLeft", "ArrowRight"].includes(e.code)) || ["ArrowUp", "ArrowDown"].includes(e.code)) {
+      dispatch(clearSelection());
+      moveToNext(e);
+    } else if (editMode && e.code === "Backspace") {
+      e.stopPropagation();
+    } else if (editMode && e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
+      e.stopPropagation();
+    } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+    } else if (e.code === "KeyZ" && e.shiftKey &&  (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
     }
   };
-  const moveToNext = (keyCode: number) => {
-    switch (keyCode) {
-      case 37:
-        document.getElementById(`${i}-${j - 1}`)?.focus();
+  const moveToNext = (e: KeyboardEvent<HTMLInputElement>) => {
+    let newI, newJ;
+    switch (e.code) {
+      case "ArrowLeft":
+        newI = i;
+        newJ = j - 1;
         break;
-      case 38:
-        document.getElementById(`${i - 1}-${j}`)?.focus();
+      case "ArrowUp":
+        newI = i - 1;
+        newJ = j;
         break;
-      case 39:
-        document.getElementById(`${i}-${j + 1}`)?.focus();
+      case "ArrowRight":
+        newI = i;
+        newJ = j + 1;
         break;
-      case 40:
-        document.getElementById(`${i + 1}-${j}`)?.focus();
+      case "ArrowDown":
+        newI = i + 1;
+        newJ = j;
         break;
     }
+    if(e.shiftKey) {
+      dispatch(selectCellsDrag({ i: newI, j: newJ }));
+    } else {
+      setSelected(newI, newJ);
+    }
+    document.getElementById(`${newI}-${newJ}`)?.focus();
   };
+
+  const setSelected = (row = i, column = j) => {
+    if(row >= 0 && column >= 0 && row && row < rowLength && column < columnLength)
+      dispatch(selectOneCell({i:row,j: column}));
+  }
+  const onClick = (e: { ctrlKey: any; metaKey: any; shiftKey: any }) => {
+    if (e.ctrlKey || e.metaKey || e.shiftKey) {
+      dispatch(selectCells({ i, j }));
+    } else {
+      selected && setEdit(true);
+      setSelected();
+    }
+  };
+  const onDrag = (e: any) => {
+    if(detectLeftButton(e)) {
+      dispatch(selectCellsDrag({i, j}))
+    }
+  }
   return (
     <input
       id={`${i}-${j}`}
       data-testid={`${i}-${j}`}
       value={value}
+      style={styles}
       onFocus={() => setFocus(true)}
       onKeyDown={keyDown}
-      className={`${editMode ? "" : "view_mode"}`}
+      onMouseMoveCapture={onDrag}
+      onMouseDown={onClick}
+      className={`input ${editMode ? "" : "view_mode"} ${selected ? "sheet-selected-td" : ""}`}
       onBlur={() => {
-        setFocus(false);
         setEdit(false);
-        setClicked(false);
+        setFocus(false);
       }}
-      onClick={() => (!clicked ? setClicked(true) : setEdit(true))}
       onDoubleClick={() => setEdit(true)}
       onChange={change}
     />

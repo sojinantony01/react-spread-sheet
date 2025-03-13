@@ -1,6 +1,5 @@
 import React, { Profiler } from "react";
 import { useState } from "react";
-import "./worst.css"
 const App = (props) => {
     const [data, setData] = useState(props.data)
     const update = (e, i, j) => {

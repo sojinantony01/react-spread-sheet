@@ -13,7 +13,7 @@ interface Prop {
 const Row = (props: Prop) => {
   const { i } = props;
   const itemLength = useAppSelector(store, (state) => state.data[i].length);
-  const items = [];
+  const items: React.JSX.Element[] = [];
   for (let j = 0; j < itemLength; j++) {
     items.push(
       props.readonly ? (

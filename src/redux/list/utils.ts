@@ -19,13 +19,22 @@ export const printToLetter = (num: number, headerValues?: string[]): string => {
 export const exportToCsv = (
   results: any[][],
   fileName: string,
-  headerValues?: string[]
+  headerValues?: string[],
+  includeHeaders: boolean = false
 ) => {
-  const header = results[0].map((d, i) => printToLetter(i, headerValues));
-  results = [header, ...results];
-  var CsvString = "";
-  results.forEach((RowItem, RowIndex) => {
-    RowItem.forEach((colVal, ColIndex) => {
+  const header = results[0].map((d, i) => printToLetter(i+1, headerValues));
+  var CsvString = ""
+  if (includeHeaders) {
+    CsvString += " ,";
+    header.forEach((head) => {
+      CsvString += head + ",";
+    });
+    CsvString += "\r\n";
+  }
+   
+  results.forEach((rowItem, RowIndex) => {
+    if(includeHeaders) CsvString += RowIndex + ",";
+    rowItem.forEach((colVal, ColIndex) => {
       let val = colVal.value;
       if (val && val.toString().trim().startsWith("=")) {
         CsvString += getCalculatedVal(val, results, headerValues) + ",";
@@ -71,7 +80,7 @@ export const getCalculatedVal = (
 interface Calcs {
   [key: string]: (a: number, b: number) => string;
 }
-const solveMathExpression = (expr: string) => {
+export const solveMathExpression = (expr: string) => {
   let str = expr.replace(/ +/g, "");
 
   const m = [...str.matchAll(/(-?[\d.]+)([*\/+-])?/g)]
