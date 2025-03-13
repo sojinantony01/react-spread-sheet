@@ -2,7 +2,8 @@ Math for columns, select other columns while editing
 Add more demos
 Calc in Read only mode 
 Minimum Number of cells, ex: if data is having 10x10 cells, make it 1000x50
-Fix new Unit test warnings *
+Fix new Unit test warnings *, increase coverage
+js docs
 Top input box *, 
 Sandbox example height issue
 
