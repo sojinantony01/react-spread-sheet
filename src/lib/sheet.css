@@ -2,7 +2,7 @@
   height: 100%;
 }
 .sheet-table .sheet-table-table-container {
-  height: calc(100% - 50px);
+  height: calc(100vh - 50px);
   overflow: auto;
 }
 .sheet-table .pv-4 {

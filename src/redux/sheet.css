@@ -1,8 +1,8 @@
 .sheet-table-redux .input-dummy {
   height: 100%;
 }
-.sheet-table-redux .sheet-table-redux-table-container {
-  height: calc(100% - 50px);
+.sheet-table-redux .sheet-table-table-container {
+  height: calc(100vh - 50px);
   overflow: auto;
 }
 .sheet-table-redux .pv-4 {

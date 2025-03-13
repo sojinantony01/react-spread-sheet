@@ -32,17 +32,16 @@ function App() {
     childRef?.current?.exportCsv("myCsvFile");
   };
   return (
-    <div>
-      <div>
+   <div style={{ height: "100%" }}>
+      <div style={{ marginBottom: "10px" }}>
         <button data-testid="get-updated-data" onClick={getData}>
           Get Updated data
-        </button>
+        </button>{" "}
         <button data-testid="csv-export" onClick={exportCSV}>
           Export CSV data
         </button>
       </div>
-      <br />
-      <div>
+      <div style={{ height: "calc(100% - 31px)" }}>
         <Routes>
           <Route
             path="worst"
