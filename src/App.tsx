@@ -9,9 +9,9 @@ import WithMemo from "./with-memo"
 import Sheet from "./lib";
 const createData = () => {
   const val: any[][] = [];
-  for (let i = 0; i < 800 ; i++) {
+  for (let i = 0; i < 1000 ; i++) {
     val.push(
-      Array.from({ length: 60 }, () => ({
+      Array.from({ length: 100 }, () => ({
         value: Math.floor(Math.random() * 10),
       }))
     );

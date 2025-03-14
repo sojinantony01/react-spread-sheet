@@ -1,4 +1,4 @@
-import React, { Profiler } from "react";
+import React from "react";
 import { useState } from "react";
 const App = (props) => {
     const [data, setData] = useState(props.data)
@@ -8,7 +8,6 @@ const App = (props) => {
         setData(temp)
     }
     return (
-      <Profiler id="myprofiler" onRender={(id, phase, actualDuration) => console.log("rendered ", id, phase, actualDuration)}>
         <div className="sheet-table-worst">
           <table>
             <tbody>{data.map((d, i) => {
@@ -18,7 +17,6 @@ const App = (props) => {
             })}</tbody>
           </table>
         </div>
-      </Profiler>
     );
 }
 export default App;
