@@ -11,7 +11,7 @@ const createData = () => {
   const val: any[][] = [];
   for (let i = 0; i < 1000 ; i++) {
     val.push(
-      Array.from({ length: 100 }, () => ({
+      Array.from({ length: 40 }, () => ({
         value: Math.floor(Math.random() * 10),
       }))
     );
