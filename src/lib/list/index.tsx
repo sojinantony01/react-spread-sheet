@@ -17,13 +17,10 @@ export interface Props {
 }
 const List = (props: Props) => {
   const { dispatch } = store;
-  const itemLength = useAppSelector(store, (state) => state.data.length);
+  const j = useAppSelector(store, (state) => state.data.length);
   const divRef = useRef<HTMLDivElement>(null);
   const parentDivRef = useRef<HTMLDivElement>(null);
-  const [j, setJ] = useState(0);
-  useEffect(() => {
-    setJ(itemLength < 300 ? itemLength : 300);
-  }, [itemLength]);
+
   useEffect(() => {
     dispatch(addData, {
       payload:
@@ -46,14 +43,7 @@ const List = (props: Props) => {
       />,
     );
   }
-  const onsCroll = () => {
-    const el = divRef.current;
-    const parentEl = parentDivRef.current;
-    if (el && parentEl && parentEl?.scrollTop > el?.scrollHeight - 3200) {
-      const nextVal = 300 + Math.round(parentEl?.scrollTop / 32);
-      setJ(nextVal > itemLength ? itemLength : nextVal);
-    }
-  };
+
   const handleKeyDown = (e: { shiftKey: boolean; code: string; ctrlKey: any; metaKey: any }) => {
     if (e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
       dispatch(selectAllCells);
@@ -106,10 +96,9 @@ const List = (props: Props) => {
       <div
         className="sheet-table-table-container"
         ref={parentDivRef}
-        onScroll={onsCroll}
         data-testid="sheet-table-content"
       >
-        <div style={{ height: (itemLength + 1) * 32 }} onScroll={onsCroll}>
+        <div>
           <div ref={divRef}>
             {items.length && (
               <table>

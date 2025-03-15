@@ -78,11 +78,11 @@ function App() {
           />
           <Route
             path="/redux"
-            element={<WithRedux data={state} onChange={onChange} />}
+            element={<WithRedux data={state} onChange={onChange} resize/>}
           />
           <Route
             path="/own-store"
-            element={<Sheet data={state} onChange={onChange} ref={childRef}/>}
+            element={<Sheet data={state} onChange={onChange} ref={childRef} resize/>}
           />
         </Routes>
       </div>

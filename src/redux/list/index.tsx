@@ -17,14 +17,11 @@ export interface Props {
 }
 const List = (props: Props) => {
   const dispatch = useAppDispatch();
-  const itemLength = useAppSelector((store) => store.list.data.length);
+  const j = useAppSelector((store) => store.list.data.length);
   
   const divRef = useRef<HTMLDivElement>(null);
   const parentDivRef = useRef<HTMLDivElement>(null);
-  const [j, setJ] = useState(0);
-  useEffect(() => {
-    setJ(itemLength < 300 ? itemLength : 300);
-  }, [itemLength]);
+
   useEffect(() => {
     dispatch(
       addData(props.data && props.data.length && props.data[0].length ? props.data : generateDummyContent(1000, 30)),
@@ -44,14 +41,7 @@ const List = (props: Props) => {
       />
     );
   }
-  const onsCroll = () => {
-    const el = divRef.current;
-    const parentEl = parentDivRef.current;
-    if (el && parentEl && parentEl?.scrollTop > el?.scrollHeight - 3200) {
-      const nextVal = 300 + Math.round(parentEl?.scrollTop / 32);
-      setJ(nextVal > itemLength ? itemLength : nextVal);
-    }
-  };
+
   const handleKeyDown = (e: {
     shiftKey: boolean; code: string; ctrlKey: any; metaKey: any; 
 }) => {
@@ -106,10 +96,9 @@ const List = (props: Props) => {
       <div
         className="sheet-table-table-container"
         ref={parentDivRef}
-        onScroll={onsCroll}
         data-testid="sheet-table-content"
       >
-        <div style={{ height: (itemLength + 1) * 32 }}>
+        <div>
           <div ref={divRef}>
             {items.length && (
               <table>
