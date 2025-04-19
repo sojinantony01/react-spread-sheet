@@ -7,6 +7,7 @@ import LazyLoading from "./lazyloading"
 import ContextSolution from "./context"
 import WithMemo from "./with-memo"
 import Sheet from "./lib";
+import Tanstack  from "./tanstack"
 const createData = () => {
   const val: any[][] = [];
   for (let i = 0; i < 1000 ; i++) {
@@ -75,6 +76,10 @@ function App() {
                 onChange={onChange}
               />
             }
+          />
+          <Route /* not completed */
+            path="/tanstack"
+            element={<Tanstack data={state} onChange={onChange} ref={childRef} resize/>}
           />
           <Route
             path="/redux"
