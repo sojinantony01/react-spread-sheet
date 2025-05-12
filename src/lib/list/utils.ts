@@ -1,3 +1,5 @@
+import * as XLSX from "@e965/xlsx";
+
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 export const printToLetter = (num: number, headerValues?: string[]): string => {
@@ -52,6 +54,45 @@ export const exportToCsv = (
   x.click();
 };
 
+export const importFromXlsx = (
+  file: File,
+  onSuccess: (data: any[][]) => void,
+  onError?: (err: Error) => void,
+) => {
+  const reader = new FileReader();
+  console.log("reader", reader);
+  reader.onload = (e) => {
+    try {
+      const arrayBuffer = e.target?.result as ArrayBuffer;
+      //const data = new Uint8Array(e.target?.result as ArrayBuffer);
+      const workbook = XLSX.read(arrayBuffer, { type: "array" });
+      const workSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const jsonData = XLSX.utils.sheet_to_json(workSheet, { header: 1 }) as any[][];
+
+      const formatted = jsonData.map((row) => row.map((cell) => ({ value: cell })));
+      console.log("formmted", formatted);
+      onSuccess(formatted);
+    } catch (err) {
+      console.log("error parsing XLSX");
+      onError?.(err as Error);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+};
+
+export const exportToXlsx = (results: any[][], fileName = "spreadsheet_export.xlsx") => {
+  const aoa = results.map((row) =>
+    row.map((cell) => {
+      const val = cell?.value ?? "";
+      return val.toString().startsWith("=") ? "" : val;
+    }),
+  );
+  const worksheet = XLSX.utils.aoa_to_sheet(aoa);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  XLSX.writeFile(workbook, fileName);
+};
+
 export const getCalculatedVal = (
   val: string,
   data: any[][],
@@ -84,7 +125,7 @@ export const solveMathExpression = (expr: string) => {
   let str = expr.replace(/ +/g, "");
 
   const m = [...str.matchAll(/(-?[\d.]+)([*\/+-])?/g)].flat().filter((x, i) => x && i % 3);
-
+  
   const calc: Calcs = {
     "*": (a: number, b: number) => (a * b).toString(),
     "/": (a: number, b: number) => (a / b).toString(),
