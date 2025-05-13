@@ -59,6 +59,7 @@ npm install react-spread-sheet-excel
 ```js
 import React, { useRef, useState } from "react";
 import Sheet, { SheetRef } from "react-spread-sheet-excel";
+import { importFromXlsx, exportToXlsx } from "./lib/list/utils";
 
 //Create dummy data.
 const createData = (count?: number) => {
@@ -76,6 +77,8 @@ const createData = (count?: number) => {
 function App() {
   const [state] = useState<any[][]>(createData());
   const childRef = useRef<SheetRef>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
 
   const onChange = (i: number, j: number, value: string) => {
     //Do not try to update state with this action, it will slow down your application
@@ -90,12 +93,35 @@ function App() {
   const exportCSV = () => {
     childRef?.current?.exportCsv("myCsvFile", false);
   };
+    const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+    const handleFileChange = (e:any) =>{
+  const file = e.target.files?.[0];
+              if (file) {
+                importFromXlsx(file, (data) => {
+                  childRef?.current?.setData(data);
+                });
+              }
+  }
 
   return (
     <div>
       <div>
         <button onClick={getData}>Get Updated data</button>
         <button data-testid="csv-export" onClick={exportCSV}>Export CSV data</button>
+        <button onClick={() => exportToXlsx(childRef?.current?.getData() ?? [])}>Export XLSX</button>
+        <label>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".xlsx"
+            hidden
+            onChange={handleFileChange}
+          />
+          <button onClick={handleImportClick}>Import XLSX</button>
+        </label>
       </div>
       <div>
         <Sheet data={state} onChange={onChange} ref={childRef} />
@@ -106,8 +132,73 @@ function App() {
 
 export default App;
 
+``
+
+``
+npm i @e965/xlsx
 
 ```
+## Example
+
+```js
+import React, { useRef, useState } from "react";
+import { importFromXlsx, exportToXlsx } from "./lib/list/utils";
+
+//Create dummy data.
+const createData = (count?: number) => {
+  const val: any[][] = [];
+  for (let i = 0; i < (count || 500) ; i++) {
+    val.push(
+      Array.from({ length: count || 30 }, () => ({
+        value: "",
+      }))
+    );
+  }
+  return val;
+};
+
+function App() {
+ 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleImportClick = () => {
+  fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e:any) =>{
+  const file = e.target.files?.[0];
+  if (file) {
+  importFromXlsx(file, (data) => {
+  childRef?.current?.setData(data);
+  });
+  }
+  }
+
+  return (
+    <div>
+      <div>
+        <button onClick={() => exportToXlsx(childRef?.current?.getData() ?? [])}>Export XLSX</button>
+        <label>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".xlsx"
+            hidden
+            onChange={handleFileChange}
+          />
+          <button onClick={handleImportClick}>Import XLSX</button>
+        </label>
+      </div>
+      <div>
+        <Sheet data={state} onChange={onChange} ref={childRef} />
+      </div>
+    </div>
+  );
+}
+
+export default App;
+
+```
+
 ## props
 
 | Prop | Description | Default | Mandatory | type
@@ -129,6 +220,13 @@ export default App;
 | setData | Set new data to sheet | [{ value: string; styles?: {[key: string]: string}}, ...] |
 | exportCsv | Export to CSV | filename: (Mandatory), IncludeHeaders (default false) |
 
+## import xlsx
+
+| RchildRefef | Description | Params |
+| --- | --- | --- |
+| exportToXlsx | Set new data to sheet | [{ value: string; styles?: {[key: string]: string}}, ...] |
+| handleImportClick | Export to xlsx | filename: (Mandatory), IncludeHeaders (default false) |
+
 ## Try here
 [Sandbox](https://codesandbox.io/p/sandbox/dry-water-gy2g6k)
 
@@ -148,3 +246,6 @@ Optimization Techniques: Global state, Lazy loading.
 ## Acknowledgments
 
 * React-intersection-observer
+
+
+
