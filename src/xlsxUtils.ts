@@ -1,5 +1,5 @@
 import * as XLSX from "@e965/xlsx";
-import { getCalculatedVal, printToLetter } from "../src/lib/list/utils";
+import { getCalculatedVal, printToLetter } from "./lib";
 
 export const importFromXlsx = (
   file: File,
@@ -10,7 +10,6 @@ export const importFromXlsx = (
   reader.onload = (e) => {
     try {
       const arrayBuffer = e.target?.result as ArrayBuffer;
-      //const data = new Uint8Array(e.target?.result as ArrayBuffer);
       const workbook = XLSX.read(arrayBuffer, { type: "array" });
       const workSheet = workbook.Sheets[workbook.SheetNames[0]];
       const jsonData = XLSX.utils.sheet_to_json(workSheet, { header: 1 }) as any[][];

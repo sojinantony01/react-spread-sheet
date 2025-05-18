@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import Sheet, { SheetRef } from "./lib";
 import packageConf from "../package.json";
-import { importFromXlsx, exportToXlsx } from "../src/xlsxUtils"
+import { importFromXlsx, exportToXlsx } from "./xlsxUtils"
 //Create dummy data.
 const createData = (count?: number) => {
   const val: any[][] = [];
@@ -16,7 +16,7 @@ const createData = (count?: number) => {
 };
 
 function App({ count }: { count?: number }) {
-  const [state] = useState<any[][]>(createData(count));
+  const [state] = useState<any[][]>([[]]);
   const childRef = useRef<SheetRef>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const onChange = (i: number, j: number, value: string) => {
@@ -38,12 +38,12 @@ function App({ count }: { count?: number }) {
   };
 
   const handleFileChange = (e:any) =>{
-  const file = e.target.files?.[0];
-              if (file) {
-                importFromXlsx(file, (data) => {
-                  childRef?.current?.setData(data);
-                });
-              }
+    const file = e.target.files?.[0];
+    if (file) {
+      importFromXlsx(file, (data) => {
+        childRef?.current?.setData(data);
+      });
+    }
   }
 
   return (
@@ -55,10 +55,10 @@ function App({ count }: { count?: number }) {
         </button>{" "}
         <button data-testid="csv-export" onClick={exportCSV}>
           Export CSV data
-        </button>
+        </button>{" "}
         <button onClick={() => exportToXlsx(childRef?.current?.getData() ?? [])}>
           Export XLSX
-        </button>
+        </button>{" "}
         <label>
           <input
             ref={fileInputRef}

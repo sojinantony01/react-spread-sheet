@@ -78,7 +78,6 @@ function App() {
   const childRef = useRef<SheetRef>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-
   const onChange = (i: number, j: number, value: string) => {
     //Do not try to update state with this action, it will slow down your application
     console.log(`Value Updated at ${j}, ${j}`, value);
@@ -91,9 +90,6 @@ function App() {
   //Generate CSV
   const exportCSV = () => {
     childRef?.current?.exportCsv("myCsvFile", false);
-  };
-    const handleImportClick = () => {
-    fileInputRef.current?.click();
   };
 
   return (
@@ -122,46 +118,92 @@ function App() {
 
 export default App;
 
-``
+```
 
-``
+## XLSX Export/Import
+
+```
 npm i @e965/xlsx
 
 ```
-## Example
 
 ```js
 import React, { useRef, useState } from "react";
-import { importFromXlsx, exportToXlsx } from "react-spread-sheet-excel";
+import { getCalculatedVal, printToLetter } from "react-spread-sheet-excel";
+import * as XLSX from "@e965/xlsx";
 
-//Create dummy data.
-const createData = (count?: number) => {
-  const val: any[][] = [];
-  for (let i = 0; i < (count || 500) ; i++) {
-    val.push(
-      Array.from({ length: count || 30 }, () => ({
-        value: "",
-      }))
-    );
+
+const importFromXlsx = (
+  file: File,
+  onSuccess: (data: any[][]) => void,
+  onError?: (err: Error) => void,
+) => {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const arrayBuffer = e.target?.result as ArrayBuffer;
+      const workbook = XLSX.read(arrayBuffer, { type: "array" });
+      const workSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const jsonData = XLSX.utils.sheet_to_json(workSheet, { header: 1 }) as any[][];
+
+      const formatted = jsonData.map((row) => row.map((cell) => ({ value: cell })));
+      onSuccess(formatted);
+    } catch (err) {
+      onError?.(err as Error);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+};
+
+const exportToXlsx = (
+  results: any[][],
+  fileName = "myXlsxFile.xlsx",
+  headerValues?: string[],
+  includeHeaders: boolean = false,
+) => {
+  const header = results[0].map((d, i) => printToLetter(i + 1, headerValues));
+  const aoa: any[][] = [];
+
+  if (includeHeaders) {
+    aoa.push(["", ...header]); // Add column letters as header row
   }
-  return val;
+  results.forEach((rowItem, rowIndex) => {
+    const row: any[] = [];
+    if (includeHeaders) row.push(rowIndex); // Add row number
+    rowItem.forEach((colVal) => {
+      let val = colVal.value;
+      if (typeof val === "string" && val.trim().startsWith("=")) {
+        row.push(getCalculatedVal(val, results, headerValues)); // using calculated val func
+      } else {
+        row.push(val);
+      }
+    });
+
+    aoa.push(row);
+  });
+
+  const worksheet = XLSX.utils.aoa_to_sheet(aoa);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+  XLSX.writeFile(workbook, fileName);
 };
 
 function App() {
- 
+  const [state] = useState<any[][]>([[]]);
+  const childRef = useRef<SheetRef>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  const handleImportXlsx = () => {
-  fileInputRef.current?.click();
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
   };
 
   const handleFileChange = (e:any) =>{
-  const file = e.target.files?.[0];
-  if (file) {
-  importFromXlsx(file, (data) => {
-  childRef?.current?.setData(data);
-  });
-  }
+    const file = e.target.files?.[0];
+    if (file) {
+      importFromXlsx(file, (data) => {
+        childRef?.current?.setData(data);
+      });
+    }
   }
 
   return (
@@ -176,7 +218,7 @@ function App() {
             hidden
             onChange={handleFileChange}
           />
-          <button onClick={handleImportXlsx}>Import XLSX</button>
+          <button onClick={handleImportClick}>Import XLSX</button>
         </label>
       </div>
       <div>
@@ -211,11 +253,6 @@ export default App;
 | setData | Set new data to sheet | [{ value: string; styles?: {[key: string]: string}}, ...] |
 | exportCsv | Export to CSV | filename: (Mandatory), IncludeHeaders (default false) |
 
-## import xlsx
-
-| RchildRefef | Description | Params |
-| --- | --- | --- |
-| handleImportClick | Export to xlsx | filename: (Mandatory), IncludeHeaders (default false) |
 
 ## Try here
 [Sandbox](https://codesandbox.io/p/sandbox/dry-water-gy2g6k)
