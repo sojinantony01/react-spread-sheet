@@ -16,7 +16,7 @@ const createData = (count?: number) => {
 };
 
 function App({ count }: { count?: number }) {
-  const [state] = useState<any[][]>([[]]);
+  const [state] = useState<any[][]>(createData(count));
   const childRef = useRef<SheetRef>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const onChange = (i: number, j: number, value: string) => {
