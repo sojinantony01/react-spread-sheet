@@ -59,7 +59,6 @@ npm install react-spread-sheet-excel
 ```js
 import React, { useRef, useState } from "react";
 import Sheet, { SheetRef } from "react-spread-sheet-excel";
-import { importFromXlsx, exportToXlsx } from "./lib/list/utils";
 
 //Create dummy data.
 const createData = (count?: number) => {
@@ -97,15 +96,6 @@ function App() {
     fileInputRef.current?.click();
   };
 
-    const handleFileChange = (e:any) =>{
-  const file = e.target.files?.[0];
-              if (file) {
-                importFromXlsx(file, (data) => {
-                  childRef?.current?.setData(data);
-                });
-              }
-  }
-
   return (
     <div>
       <div>
@@ -142,7 +132,7 @@ npm i @e965/xlsx
 
 ```js
 import React, { useRef, useState } from "react";
-import { importFromXlsx, exportToXlsx } from "./lib/list/utils";
+import { importFromXlsx, exportToXlsx } from "react-spread-sheet-excel";
 
 //Create dummy data.
 const createData = (count?: number) => {
@@ -160,7 +150,8 @@ const createData = (count?: number) => {
 function App() {
  
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const handleImportClick = () => {
+  
+  const handleImportXlsx = () => {
   fileInputRef.current?.click();
   };
 
@@ -185,7 +176,7 @@ function App() {
             hidden
             onChange={handleFileChange}
           />
-          <button onClick={handleImportClick}>Import XLSX</button>
+          <button onClick={handleImportXlsx}>Import XLSX</button>
         </label>
       </div>
       <div>
@@ -224,7 +215,6 @@ export default App;
 
 | RchildRefef | Description | Params |
 | --- | --- | --- |
-| exportToXlsx | Set new data to sheet | [{ value: string; styles?: {[key: string]: string}}, ...] |
 | handleImportClick | Export to xlsx | filename: (Mandatory), IncludeHeaders (default false) |
 
 ## Try here

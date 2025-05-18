@@ -13,7 +13,6 @@
   ],
   "author": "Sojin antony",
   "dependencies": {
-    "@e965/xlsx": "^0.20.3",
     "react-intersection-observer": "9.5.2"
   },
   "type": "module",
