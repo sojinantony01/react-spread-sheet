@@ -21,6 +21,7 @@ function App({ count }: { count?: number }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const onChange = (i: number, j: number, value: string) => {
     //Do not try to update state with this action, it will slow down your application
+    console.log(`Value Updated at ${i}, ${j}`, value);
   };
 
   //Read data from excel sheet
