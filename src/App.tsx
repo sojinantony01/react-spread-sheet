@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import Sheet, { SheetRef } from "./lib";
 import packageConf from "../package.json";
-import { importFromXlsx, exportToXlsx } from "./xlsxUtils"
+import { importFromXlsx, exportToXlsx } from "./xlsxUtils";
 //Create dummy data.
 const createData = (count?: number) => {
   const val: any[][] = [];
@@ -37,14 +37,14 @@ function App({ count }: { count?: number }) {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e:any) =>{
+  const handleFileChange = (e: any) => {
     const file = e.target.files?.[0];
     if (file) {
       importFromXlsx(file, (data) => {
         childRef?.current?.setData(data);
       });
     }
-  }
+  };
 
   return (
     <div style={{ height: "100%" }}>
@@ -60,13 +60,7 @@ function App({ count }: { count?: number }) {
           Export XLSX
         </button>{" "}
         <label>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".xlsx"
-            hidden
-            onChange={handleFileChange}
-          />
+          <input ref={fileInputRef} type="file" accept=".xlsx" hidden onChange={handleFileChange} />
           <button onClick={handleImportClick}>Import XLSX</button>
         </label>
       </div>
