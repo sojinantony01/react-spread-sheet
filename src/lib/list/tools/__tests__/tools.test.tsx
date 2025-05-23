@@ -8,7 +8,7 @@ import Tools from "../tools";
 test("Tools render", async () => {
   store.dispatch(addData, { payload: generateDummyContent(3, 3) });
   const changeStyle = jest.fn();
-  render(<Tools changeStyle={changeStyle} onChange={() => {}} />);
+  render(<Tools changeStyle={changeStyle} onChange={() => { } } />);
   const bold = screen.getByRole("button", {
     name: /B/i,
   });
