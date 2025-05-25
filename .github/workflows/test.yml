@@ -26,6 +26,8 @@ jobs:
       run: npm install
     - name: Lint checks
       run: npm run format-check
+    - name: install react separately  
+      run: npm install react@18.2.0 react-dom@18.2.0
     - name: Unit test
       run: npm run test:ci
 
