@@ -77,7 +77,8 @@
       "!src/reportWebVitals.ts"
     ],
     "coveragePathIgnorePatterns": [
-      "./node_modules/"
+      "./node_modules/",
+      "./src/demo/*"
     ]
   },
   "license": "ISC",

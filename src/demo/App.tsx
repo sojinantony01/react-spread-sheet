@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
-import Sheet, { SheetRef } from "./lib";
-import packageConf from "../package.json";
+import Sheet, { SheetRef } from "../lib";
+import packageConf from "../../package.json";
 import { importFromXlsx, exportToXlsx } from "./xlsxUtils";
 //Create dummy data.
 const createData = (count?: number) => {

@@ -1,5 +1,5 @@
 import * as XLSX from "@e965/xlsx";
-import { getCalculatedVal, printToLetter } from "./lib";
+import { getCalculatedVal, printToLetter } from "../lib";
 
 export const importFromXlsx = (
   file: File,
