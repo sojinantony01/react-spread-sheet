@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [22.x]
 
     steps:
     - name: Checkout repository
@@ -25,7 +25,7 @@ jobs:
     - name: Install dependencies
       run: npm install
     - name: install gh pages separately  
-      run: npm install gh-pages react@18.2.0 react-dom@18.2.0
+      run: npm install react@18.2.0 react-dom@18.2.0 gh-pages
     - name: Unit test
       run: npm run test:ci
     - name: Upload coverage reports to Codecov
