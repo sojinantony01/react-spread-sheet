@@ -1,12 +1,12 @@
-import { store } from '../store';
-import { initialState, addData } from '../reducer';
+import { store } from "../store";
+import { initialState, addData } from "../reducer";
 
-describe('store', () => {
-  it('should get initial state', () => {
+describe("store", () => {
+  it("should get initial state", () => {
     expect(store.getState()).toEqual(initialState);
   });
 
-  it('should update state and notify subscribers', () => {
+  it("should update state and notify subscribers", () => {
     const callback = jest.fn();
     const unsubscribe = store.subscribe(callback);
 

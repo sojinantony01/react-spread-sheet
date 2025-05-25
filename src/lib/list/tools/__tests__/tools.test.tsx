@@ -7,10 +7,12 @@ import Tools from "../tools";
 
 beforeEach(() => {
   store.dispatch(addData, { payload: generateDummyContent(3, 3) });
-})
+});
 test("Tools render", async () => {
   const changeStyle = jest.fn();
-  const { getByRole, getByTestId } = render(<Tools changeStyle={changeStyle} onChange={() => { } } />);
+  const { getByRole, getByTestId } = render(
+    <Tools changeStyle={changeStyle} onChange={() => {}} />,
+  );
   const bold = getByRole("button", {
     name: /B/i,
   });
@@ -37,7 +39,6 @@ test("Tools render", async () => {
   fireEvent.change(fontInput, { target: { value: "23" } });
   fireEvent.keyDown(fontInput);
   await waitFor(() => expect(changeStyle).toHaveBeenLastCalledWith("FONT", "23"));
-
 
   const fontDecrease = getByTestId("font-size-decrease");
   expect(fontDecrease).toBeInTheDocument();
@@ -87,27 +88,29 @@ test("Tools render", async () => {
 
 it("should focus calculation input on container click", async () => {
   const changeStyle = jest.fn();
-  const { getByTestId, getByText } = render(<Tools changeStyle={changeStyle} onChange={() => {}} />);
+  const { getByTestId, getByText } = render(
+    <Tools changeStyle={changeStyle} onChange={() => {}} />,
+  );
   expect(getByTestId("fx-input")).toHaveAttribute("readOnly");
   store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
   await waitFor(() => {
     expect(getByTestId("fx-input")).not.toHaveAttribute("readOnly");
-  })
+  });
   const container = getByTestId("sheet-tools-calculation-input-container");
   fireEvent.click(container);
-    expect(getByTestId("fx-input")).toHaveFocus();
+  expect(getByTestId("fx-input")).toHaveFocus();
 });
 
-it("should call onChange when calculation value changes", async() => {
+it("should call onChange when calculation value changes", async () => {
   const changeStyle = jest.fn();
   const onChange = jest.fn();
   const { getByTestId } = render(<Tools changeStyle={changeStyle} onChange={onChange} />);
   store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
   await waitFor(() => {
     expect(getByTestId("fx-input")).not.toHaveAttribute("readOnly");
-  })
+  });
   const input = getByTestId("fx-input");
-  fireEvent.change(input, { target: { value: "123", } });
+  fireEvent.change(input, { target: { value: "123" } });
   expect(onChange).toHaveBeenCalled();
 });
 
@@ -116,20 +119,20 @@ test("Undo redo", async () => {
   const onChange = jest.fn();
   const { getByTestId } = render(<Tools changeStyle={changeStyle} onChange={onChange} />);
   store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
-    await waitFor(() => {
+  await waitFor(() => {
     expect(getByTestId("fx-input")).not.toHaveAttribute("readOnly");
-  })
+  });
   const input = getByTestId("fx-input");
-  fireEvent.change(input, { target: { value: "123", } });
+  fireEvent.change(input, { target: { value: "123" } });
   await waitFor(() => {
-    expect(store.getState().data[0][0].value).toBe("123")
-  })
-  fireEvent.click(getByTestId("undo-button-tools"))
+    expect(store.getState().data[0][0].value).toBe("123");
+  });
+  fireEvent.click(getByTestId("undo-button-tools"));
   await waitFor(() => {
-    expect(store.getState().data[0][0].value).not.toBe("123")
-  })
-  fireEvent.click(getByTestId("redo-button-tools"))
+    expect(store.getState().data[0][0].value).not.toBe("123");
+  });
+  fireEvent.click(getByTestId("redo-button-tools"));
   await waitFor(() => {
-    expect(store.getState().data[0][0].value).toBe("123")
-  })
-})
+    expect(store.getState().data[0][0].value).toBe("123");
+  });
+});

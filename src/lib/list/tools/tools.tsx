@@ -88,7 +88,10 @@ const Tools = ({
           </button>
         </div>
         <div className="sheet-tools-font-size-container">
-          <button data-testid="font-size-decrease" onClick={() => changeStyle("FONT", (parseInt(selectedFontSize) - 1).toString())}>
+          <button
+            data-testid="font-size-decrease"
+            onClick={() => changeStyle("FONT", (parseInt(selectedFontSize) - 1).toString())}
+          >
             <svg width={10} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
               <path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z" />
             </svg>
@@ -104,7 +107,10 @@ const Tools = ({
               onKeyDown={(e) => e.stopPropagation()}
             />
           </span>
-          <button data-testid="font-size-increase" onClick={() => changeStyle("FONT", (parseInt(selectedFontSize) + 1).toString())}>
+          <button
+            data-testid="font-size-increase"
+            onClick={() => changeStyle("FONT", (parseInt(selectedFontSize) + 1).toString())}
+          >
             <svg width={10} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
               <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
             </svg>
@@ -125,7 +131,10 @@ const Tools = ({
             value={selectedStyles?.["color"] || "#000000"}
             onChange={(e) => changeStyleWithDebounce("COLOR", e.target.value)}
           />
-          <button data-testid="background-color-button" onClick={() => backgroundColorRef.current?.click()}>
+          <button
+            data-testid="background-color-button"
+            onClick={() => backgroundColorRef.current?.click()}
+          >
             <svg
               fill={selectedStyles?.["background"]}
               xmlns="http://www.w3.org/2000/svg"

@@ -31,11 +31,11 @@ test("header cell render headervalues", async () => {
   expect(consoleSpy).toHaveBeenCalled();
 
   fireEvent.click(screen.getByText("Test header 1"));
-    await waitFor(() => {
-      expect(store.getState().selected).toHaveLength(3);
-    })
+  await waitFor(() => {
+    expect(store.getState().selected).toHaveLength(3);
+  });
   fireEvent.click(screen.getByTestId("0-x-axis"));
-    await waitFor(() => {
-      expect(store.getState().selected).toHaveLength(9);
-    })
+  await waitFor(() => {
+    expect(store.getState().selected).toHaveLength(9);
+  });
 });

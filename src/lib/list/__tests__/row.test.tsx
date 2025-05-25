@@ -31,5 +31,5 @@ test("row  render", async () => {
   fireEvent.click(screen.getByTestId("1-sheet-y-axis"));
   await waitFor(() => {
     expect(store.getState().selected).toHaveLength(3);
-  })
+  });
 });

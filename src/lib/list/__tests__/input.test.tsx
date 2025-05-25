@@ -64,17 +64,17 @@ describe("input tests", () => {
     expect(screen.getByTestId(`${i}-${j + 1}`)).toHaveValue("15");
   });
 
- test("input render change", async () => {
-  store.dispatch(addData, { payload: generateDummyContent(3, 3) });
+  test("input render change", async () => {
+    store.dispatch(addData, { payload: generateDummyContent(3, 3) });
 
-  render(<Input i={i} j={j} />);
-  fireEvent.change(screen.getByTestId(`${i}-${j}`), {
-    target: { value: "new value" },
+    render(<Input i={i} j={j} />);
+    fireEvent.change(screen.getByTestId(`${i}-${j}`), {
+      target: { value: "new value" },
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId(`${i}-${j}`)).toHaveValue("new value");
+    });
   });
-  await waitFor(() => {
-    expect(screen.getByTestId(`${i}-${j}`)).toHaveValue("new value");
-  });
-});
   test("input check keyboard arrow keys", async () => {
     store.dispatch(addData, { payload: generateDummyContent(3, 3) });
 
