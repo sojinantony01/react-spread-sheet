@@ -1,6 +1,5 @@
-/* eslint-disable testing-library/no-node-access */
 import React from "react";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import List from "../index";
 import { store } from "../../store";
 import { generateDummyContent } from "../utils";
@@ -9,20 +8,19 @@ describe("index tests", () => {
   afterEach(() => {
     cleanup();
   });
-  test("Table render", async () => {
-    render(<List data={generateDummyContent(310, 1)} />);
-    const data = store.getState().data;
 
-    expect(data.length).toBe(310);
-    let tr = await screen.findAllByTestId("sheet-table-tr");
+  test("Table render", async () => {
+    const { findAllByTestId, getByTestId } = render(<List data={generateDummyContent(310, 1)} />);
+    expect(store.getState().data.length).toBe(310);
+    const tr = await findAllByTestId("sheet-table-tr");
     expect(tr).toHaveLength(300);
-    fireEvent.scroll(screen.getByTestId(`sheet-table-content`), { target: { scrollTo: 300 * 28 } });
-    //FIXME: assert new rows based index
+    fireEvent.scroll(getByTestId(`sheet-table-content`), { target: { scrollTo: 300 * 28 } });
+    // Optional: Add waitFor/check for more rows if needed
   });
 
   test("Table KeyboardActions", async () => {
-    render(<List data={generateDummyContent(10, 1)} />);
-    const table = screen.getByTestId(`sheet-table`);
+    const { getByTestId } = render(<List data={generateDummyContent(10, 1)} />);
+    const table = getByTestId(`sheet-table`);
     fireEvent.keyDown(table, { code: "KeyA", ctrlKey: true });
     await waitFor(() => {
       expect(store.getState().selected).toHaveLength(10);
@@ -50,15 +48,15 @@ describe("index tests", () => {
   });
 
   test("Undo-Redo", async () => {
-    render(<List data={generateDummyContent(10, 1)} />);
-    const table = screen.getByTestId(`sheet-table`);
+    const { getByTestId } = render(<List data={generateDummyContent(10, 1)} />);
+    const table = getByTestId(`sheet-table`);
 
     fireEvent.keyDown(table, { code: "KeyB", ctrlKey: true });
     await waitFor(() => {
       expect(store.getState().data?.[0][0]?.styles?.["fontWeight"]).toBe("bold");
     });
 
-    //undo
+    // undo
     fireEvent.keyDown(table, { code: "KeyZ", ctrlKey: true });
     await waitFor(() => {
       expect(store.getState().data?.[0][0]?.styles?.["fontWeight"]).toBe(undefined);

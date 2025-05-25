@@ -1,6 +1,6 @@
 {
   "name": "react-spread-sheet-excel",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "A quick example of rendering large number of input boxes in table using React JS, React Spread-sheet (Excel sheet)",
   "keywords": [
     "React spreadsheet",
@@ -13,7 +13,7 @@
   ],
   "author": "Sojin antony",
   "dependencies": {
-    "react-intersection-observer": "9.5.2"
+    "react-intersection-observer": "^9.16.0"
   },
   "type": "module",
   "main": "build/index.js",
@@ -34,10 +34,9 @@
     "@rollup/plugin-commonjs": "22.0.2",
     "@rollup/plugin-json": "4.1.0",
     "@rollup/plugin-node-resolve": "14.1.0",
-    "@testing-library/jest-dom": "6.4.8",
-    "@testing-library/react": "16.0.0",
+    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/react": "^14.2.1",
     "@types/jest": "29.5.12",
-    "@types/node": "18.11.18",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "postcss": "^8.4.16",
@@ -78,7 +77,8 @@
       "!src/reportWebVitals.ts"
     ],
     "coveragePathIgnorePatterns": [
-      "./node_modules/"
+      "./node_modules/",
+      "./src/demo/*"
     ]
   },
   "license": "ISC",

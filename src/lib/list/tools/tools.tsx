@@ -47,6 +47,7 @@ const Tools = ({
       <div className="sheet-tools">
         <div
           className="sheet-tools-calculation-input-container"
+          data-testid="sheet-tools-calculation-input-container"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -55,6 +56,7 @@ const Tools = ({
         >
           fx
           <input
+            data-testid="fx-input"
             ref={calculationRef}
             value={selectedItemVal}
             readOnly={i == undefined || j == undefined}
@@ -62,7 +64,7 @@ const Tools = ({
           />
         </div>
         <div className="sheet-tools-text-style-container">
-          <button onClick={() => dispatch(undo)}>
+          <button data-testid="undo-button-tools" onClick={() => dispatch(undo)}>
             <svg width={15} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M4 7H15C16.8692 7 17.8039 7 18.5 7.40193C18.9561 7.66523 19.3348 8.04394 19.5981 8.49999C20 9.19615 20 10.1308 20 12C20 13.8692 20 14.8038 19.5981 15.5C19.3348 15.9561 18.9561 16.3348 18.5 16.5981C17.8039 17 16.8692 17 15 17H8.00001M4 7L7 4M4 7L7 10"
@@ -73,7 +75,7 @@ const Tools = ({
               />
             </svg>
           </button>
-          <button onClick={() => dispatch(redo)}>
+          <button data-testid="redo-button-tools" onClick={() => dispatch(redo)}>
             <svg width={15} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M20 7H9.00001C7.13077 7 6.19615 7 5.5 7.40193C5.04395 7.66523 4.66524 8.04394 4.40193 8.49999C4 9.19615 4 10.1308 4 12C4 13.8692 4 14.8038 4.40192 15.5C4.66523 15.9561 5.04394 16.3348 5.5 16.5981C6.19615 17 7.13077 17 9 17H16M20 7L17 4M20 7L17 10"
@@ -86,7 +88,10 @@ const Tools = ({
           </button>
         </div>
         <div className="sheet-tools-font-size-container">
-          <button onClick={() => changeStyle("FONT", (parseInt(selectedFontSize) - 1).toString())}>
+          <button
+            data-testid="font-size-decrease"
+            onClick={() => changeStyle("FONT", (parseInt(selectedFontSize) - 1).toString())}
+          >
             <svg width={10} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
               <path d="M432 256c0 17.7-14.3 32-32 32L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l352 0c17.7 0 32 14.3 32 32z" />
             </svg>
@@ -102,14 +107,17 @@ const Tools = ({
               onKeyDown={(e) => e.stopPropagation()}
             />
           </span>
-          <button onClick={() => changeStyle("FONT", (parseInt(selectedFontSize) + 1).toString())}>
+          <button
+            data-testid="font-size-increase"
+            onClick={() => changeStyle("FONT", (parseInt(selectedFontSize) + 1).toString())}
+          >
             <svg width={10} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
               <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
             </svg>
           </button>
         </div>
         <div className="sheet-tools-text-cell-color-container">
-          <button onClick={() => fontColorRef.current?.click()}>
+          <button data-testid="font-color-button" onClick={() => fontColorRef.current?.click()}>
             A{" "}
             <span
               className="sheet-color-strip"
@@ -123,7 +131,10 @@ const Tools = ({
             value={selectedStyles?.["color"] || "#000000"}
             onChange={(e) => changeStyleWithDebounce("COLOR", e.target.value)}
           />
-          <button onClick={() => backgroundColorRef.current?.click()}>
+          <button
+            data-testid="background-color-button"
+            onClick={() => backgroundColorRef.current?.click()}
+          >
             <svg
               fill={selectedStyles?.["background"]}
               xmlns="http://www.w3.org/2000/svg"
