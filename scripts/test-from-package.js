@@ -6,4 +6,4 @@ const replaceWordInFile = (filePath, oldWord, newWord) => {
   fs.writeFileSync(filePath, newData);
 };
 
-replaceWordInFile('src/App.tsx', './lib', 'react-spread-sheet-excel');
+replaceWordInFile('src/demo/App.tsx', './lib', 'react-spread-sheet-excel');
