@@ -1,6 +1,6 @@
-import React from 'react';
-import { store } from '../store';
-import { deleteSelectItems, changeData, updateStyles, setClipboard } from '../reducer';
+import React from "react";
+import { store } from "../store";
+import { deleteSelectItems, changeData, updateStyles, setClipboard } from "../reducer";
 
 interface ContextMenuProps {
   x: number;
@@ -14,9 +14,9 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, onClose }) => {
   const handleCut = () => {
     const selectedData = store.getState().selected.map(([i, j]) => ({
       value: store.getState().data[i][j].value,
-      styles: store.getState().data[i][j].styles
+      styles: store.getState().data[i][j].styles,
     }));
-    
+
     dispatch(setClipboard, { payload: selectedData });
     dispatch(deleteSelectItems);
     onClose();
@@ -25,9 +25,9 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, onClose }) => {
   const handleCopy = () => {
     const selectedData = store.getState().selected.map(([i, j]) => ({
       value: store.getState().data[i][j].value,
-      styles: store.getState().data[i][j].styles
+      styles: store.getState().data[i][j].styles,
     }));
-    
+
     dispatch(setClipboard, { payload: selectedData });
     onClose();
   };
@@ -41,7 +41,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, onClose }) => {
         clipboardData.forEach((item: any, index: number) => {
           const [i, j] = selectedCells[index] || [
             startI + Math.floor(index / store.getState().data[0].length),
-            startJ + (index % store.getState().data[0].length)
+            startJ + (index % store.getState().data[0].length),
           ];
           if (i < store.getState().data.length && j < store.getState().data[0].length) {
             dispatch(changeData, { payload: { value: item.value, i, j } });
@@ -56,20 +56,26 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, onClose }) => {
   };
 
   return (
-    <div 
+    <div
       className="sheet-context-menu"
-      style={{ 
-        position: 'fixed',
+      style={{
+        position: "fixed",
         left: x,
         top: y,
-        zIndex: 1000
+        zIndex: 1000,
       }}
     >
-      <div className="sheet-context-menu-item" onClick={handleCut}>Cut</div>
-      <div className="sheet-context-menu-item" onClick={handleCopy}>Copy</div>
-      <div className="sheet-context-menu-item" onClick={handlePaste}>Paste</div>
+      <div className="sheet-context-menu-item" onClick={handleCut}>
+        Cut
+      </div>
+      <div className="sheet-context-menu-item" onClick={handleCopy}>
+        Copy
+      </div>
+      <div className="sheet-context-menu-item" onClick={handlePaste}>
+        Paste
+      </div>
     </div>
   );
 };
 
-export default ContextMenu; 
+export default ContextMenu;

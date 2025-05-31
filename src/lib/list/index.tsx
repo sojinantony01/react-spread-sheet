@@ -120,16 +120,16 @@ const List = (props: Props) => {
   };
 
   useEffect(() => {
-    document.addEventListener('click', handleClick);
+    document.addEventListener("click", handleClick);
     return () => {
-      document.removeEventListener('click', handleClick);
+      document.removeEventListener("click", handleClick);
     };
   }, []);
 
   return (
-    <div 
-      onKeyDown={handleKeyDown} 
-      className="sheet-table" 
+    <div
+      onKeyDown={handleKeyDown}
+      className="sheet-table"
       data-testid="sheet-table"
       onContextMenu={handleContextMenu}
     >
@@ -158,11 +158,7 @@ const List = (props: Props) => {
         </div>
       </div>
       {contextMenu && (
-        <ContextMenu
-          x={contextMenu.x}
-          y={contextMenu.y}
-          onClose={() => setContextMenu(null)}
-        />
+        <ContextMenu x={contextMenu.x} y={contextMenu.y} onClose={() => setContextMenu(null)} />
       )}
     </div>
   );

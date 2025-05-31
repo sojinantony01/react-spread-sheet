@@ -195,13 +195,13 @@ const actions: DispatcherActions = {
   setClipboard(state, action) {
     return {
       ...state,
-      clipboard: action.payload
+      clipboard: action.payload,
     };
   },
   clearClipboard(state) {
     return {
       ...state,
-      clipboard: null
+      clipboard: null,
     };
   },
 };
