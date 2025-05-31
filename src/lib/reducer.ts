@@ -16,12 +16,18 @@ export interface ListReducer {
   lastSelected?: Selected;
   undo: Action[][];
   redo: Action[][];
+  history: any[];
+  historyIndex: number;
+  clipboard: { value: string; styles: any }[] | null;
 }
 export const initialState: ListReducer = {
   data: [[]],
   selected: [],
   undo: [],
   redo: [],
+  history: [],
+  historyIndex: -1,
+  clipboard: null,
 };
 
 export interface StoreAction {
@@ -186,6 +192,18 @@ const actions: DispatcherActions = {
     }
     return state;
   },
+  setClipboard(state, action) {
+    return {
+      ...state,
+      clipboard: action.payload
+    };
+  },
+  clearClipboard(state) {
+    return {
+      ...state,
+      clipboard: null
+    };
+  },
 };
 
 export const {
@@ -202,4 +220,6 @@ export const {
   selectCellsDrag,
   undo,
   redo,
+  setClipboard,
+  clearClipboard,
 } = actions;
