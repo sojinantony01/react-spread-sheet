@@ -213,7 +213,14 @@ const List = (props: Props) => {
         </div>
       </div>
       {contextMenu && (
-        <ContextMenu x={contextMenu.x} y={contextMenu.y} onClose={() => setContextMenu(null)} />
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          copyToClipBoard={copyToClipBoard}
+          cutItemsToClipBoard={cutItemsToClipBoard}
+          pasteFromClipBoard={pasteFromClipBoard}
+          onClose={() => setContextMenu(null)}
+        />
       )}
     </div>
   );
