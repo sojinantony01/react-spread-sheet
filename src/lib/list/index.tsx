@@ -14,6 +14,8 @@ import {
 import SheetXAxis from "./sheet-x-axis";
 import { generateDummyContent, getItemsToCopy } from "./utils";
 import Tools from "./tools/tools";
+import ContextMenu from "./context-menu";
+
 export interface Props {
   data?: any[][];
   onChange?(i: number, j: number, value: string): void;
@@ -24,15 +26,19 @@ export interface Props {
   readonly?: boolean;
   hideTools?: boolean;
 }
+
 const List = (props: Props) => {
   const { dispatch } = store;
   const itemLength = useAppSelector(store, (state) => state.data.length);
   const divRef = useRef<HTMLDivElement>(null);
   const parentDivRef = useRef<HTMLDivElement>(null);
   const [j, setJ] = useState(0);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
+
   useEffect(() => {
     setJ(itemLength < 300 ? itemLength : 300);
   }, [itemLength]);
+
   useEffect(() => {
     dispatch(addData, {
       payload:
@@ -55,6 +61,7 @@ const List = (props: Props) => {
       />,
     );
   }
+
   const onsCroll = () => {
     const el = divRef.current;
     const parentEl = parentDivRef.current;
@@ -63,6 +70,7 @@ const List = (props: Props) => {
       setJ(nextVal > itemLength ? itemLength : nextVal);
     }
   };
+
   const copyToClipBoard = () => {
     navigator.clipboard.writeText(
       JSON.stringify(getItemsToCopy(store.getState().selected, store.getState().data)),
@@ -127,6 +135,7 @@ const List = (props: Props) => {
       dispatch(undo);
     }
   };
+
   const getStyle = (key: string, value?: string) => {
     switch (key) {
       case "B":
@@ -151,12 +160,34 @@ const List = (props: Props) => {
         return { value: { key: "background", value: value }, replace: true };
     }
   };
+
   const changeStyle = (key: string, value?: string) => {
     dispatch(updateStyles, { payload: getStyle(key, value) });
   };
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setContextMenu({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleClick = () => {
+    setContextMenu(null);
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClick);
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  }, []);
+
   return (
-    <div onKeyDown={handleKeyDown} className="sheet-table" data-testid="sheet-table">
+    <div
+      onKeyDown={handleKeyDown}
+      className="sheet-table"
+      data-testid="sheet-table"
+      onContextMenu={handleContextMenu}
+    >
       {!props.hideTools && <Tools changeStyle={changeStyle} onChange={props.onChange} />}
       <div
         className="sheet-table-table-container"
@@ -181,6 +212,16 @@ const List = (props: Props) => {
           </div>
         </div>
       </div>
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          copyToClipBoard={copyToClipBoard}
+          cutItemsToClipBoard={cutItemsToClipBoard}
+          pasteFromClipBoard={pasteFromClipBoard}
+          onClose={() => setContextMenu(null)}
+        />
+      )}
     </div>
   );
 };
