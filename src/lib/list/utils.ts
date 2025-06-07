@@ -1,3 +1,5 @@
+import { Data, Selected } from "../reducer";
+
 const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 export const printToLetter = (num: number, headerValues?: string[]): string => {
@@ -113,4 +115,16 @@ export const generateDummyContent = (n: number, m: number) => {
     val.push(Array.from({ length: m }, () => ({ value: "" })));
   }
   return val;
+};
+
+interface ItemsToCopy {
+  index: Selected;
+  data: Data;
+}
+
+export const getItemsToCopy = (selected: Selected[], data: Data[][]): ItemsToCopy[] => {
+  return selected.map((d) => ({
+    index: d,
+    data: data[d[0]][d[1]],
+  }));
 };

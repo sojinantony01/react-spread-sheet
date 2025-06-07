@@ -63,7 +63,7 @@ const Input = (props: Prop) => {
     ) {
       dispatch(clearSelection);
       moveToNext(e);
-    } else if (editMode && e.code === "Backspace") {
+    } else if (editMode && (e.code === "Backspace" || e.code === "Delete")) {
       e.stopPropagation();
     } else if (editMode && e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
       e.stopPropagation();
@@ -71,6 +71,13 @@ const Input = (props: Prop) => {
       e.preventDefault();
     } else if (e.code === "KeyZ" && e.shiftKey && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
+    } else if (
+      editMode &&
+      window.getSelection()?.toString() &&
+      e.code === "KeyC" &&
+      (e.ctrlKey || e.metaKey)
+    ) {
+      e.stopPropagation();
     }
   };
   const moveToNext = (e: KeyboardEvent<HTMLInputElement>) => {

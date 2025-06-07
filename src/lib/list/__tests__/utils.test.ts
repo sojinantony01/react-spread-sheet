@@ -1,4 +1,4 @@
-import { printToLetter, solveMathExpression } from "../utils";
+import { getItemsToCopy, printToLetter, solveMathExpression } from "../utils";
 describe("printToLetter", () => {
   it("should convert a number to letters using the default alphabet", () => {
     expect(printToLetter(1)).toEqual("A");
@@ -54,4 +54,19 @@ describe("solveMathExpression", () => {
   test("Operations with complex expressions", () => {
     expect(solveMathExpression("1+2*3-4/2")).toBe("5");
   });
+});
+
+describe("getItemsToCopy", () => {
+  expect(
+    getItemsToCopy(
+      [
+        [0, 1],
+        [0, 0],
+      ],
+      [[{ value: "test" }, { value: "test1" }, { value: "sdf" }]],
+    ),
+  ).toStrictEqual([
+    { data: { value: "test1" }, index: [0, 1] },
+    { data: { value: "test" }, index: [0, 0] },
+  ]);
 });

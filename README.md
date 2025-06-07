@@ -18,24 +18,25 @@ Able to render 1Lakh+ input boxes in react, A quick solution for web based sprea
 
 ## Features
 
-* Blazing Fast Rendering: Handles large datasets efficiently (1Lakh+ input boxes).
-* Comprehensive Calculation Engine: Supports complex formulas and calculations. (= 2 * A2 + (B2 * C4))
-* Rich Formatting Options: Customize cell appearance with bold, italic, underline, and more.
-* Undo, Redo actions.
-* Calculations Support, value should starts with "="
-* Select Multiple cells
-* Intuitive Keyboard Navigation: Navigate and edit cells effortlessly.
-* Delete values in selected cells.
-* Customizable header values - (Do not pass numbers in header values, will affect calc)
-* Resize columns
-* Can Use as a Spreadsheet or Excel with react
-* Flexible Data Management: Import, export, and manipulate data.
-* Customizable Headers and Columns: Tailor the spreadsheet to your application.
-* Read-Only Mode: Protect data from accidental modifications.
-* CSV Export: Easily share data in a common format.
-* Sticky Headers: Keep headers visible while scrolling.
-* 100% Unit Test Coverage: Ensures reliability and stability.
-* JSON based SpreadSheet
+* __Blazing Fast Rendering: Handles large datasets efficiently (1Lakh+ input boxes).__
+* __Comprehensive Calculation Engine: Supports complex formulas and calculations. (= 2 * A2 + (B2 * C4))__
+* __Rich Formatting Options: Customize cell appearance with bold, italic, underline, and more.__
+* __Undo, Redo actions.__
+* __Calculations Support, value should starts with "="__
+* __Select Multiple cells.__
+* __copy,cut and paste all selected cells.__
+* __Intuitive Keyboard Navigation: Navigate and edit cells effortlessly.__
+* __Delete values in selected cells.__
+* __Customizable header values - (Do not pass numbers in header values, will affect calc)__
+* __Resize columns__
+* __Can Use as a Spreadsheet or Excel with react__
+* __Flexible Data Management: Import, export, and manipulate data.__
+* __Customizable Headers and Columns: Tailor the spreadsheet to your application.__
+* __Read-Only Mode: Protect data from accidental modifications.__
+* __CSV Export: Easily share data in a common format.__
+* __Sticky Headers: Keep headers visible while scrolling.__
+* __100% Unit Test Coverage: Ensures reliability and stability.__
+* __JSON based SpreadSheet__
 
 ![React-spread-sheet-excel](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/sample.png)
 
@@ -119,6 +120,28 @@ function App() {
 export default App;
 
 ```
+
+## props
+
+| Prop | Description | Default | Mandatory | type
+| --- | --- | -- | -- | -- |
+| data | Array of array with values (matrix)  | [[]]  |  No | any[][] |
+| onChange | Calls when a change is detected in input boxes, Do not set render component when value changes, the component should be uncontrolled |  | No | 
+| resize | show column resize option | false | No | boolean |
+| hideXAxisHeader | Show serial numbers in X axis | false | No | boolean |
+| hideYAxisHeader | Show serial numbers in Y axis | false | No | boolean |
+| headerValues | array of header values, Number in header values could affect calculations | alphabets | No | string[] |
+| hideTools | Hide tools | false | No | boolean |
+
+
+## Ref (API's)
+
+| Ref | Description | Params |
+| --- | --- | --- |
+| getData | Get updated data from sheet |  |
+| setData | Set new data to sheet | [{ value: string; styles?: {[key: string]: string}}, ...] |
+| exportCsv | Export to CSV | filename: (Mandatory), IncludeHeaders (default false) |
+
 
 ## XLSX Export/Import
 
@@ -231,28 +254,6 @@ function App() {
 export default App;
 
 ```
-
-## props
-
-| Prop | Description | Default | Mandatory | type
-| --- | --- | -- | -- | -- |
-| data | Array of array with values (matrix)  | [[]]  |  No | any[][] |
-| onChange | Calls when a change is detected in input boxes, Do not set render component when value changes, the component should be uncontrolled |  | No | 
-| resize | show column resize option | false | No | boolean |
-| hideXAxisHeader | Show serial numbers in X axis | false | No | boolean |
-| hideYAxisHeader | Show serial numbers in Y axis | false | No | boolean |
-| headerValues | array of header values, Number in header values could affect calculations | alphabets | No | string[] |
-| hideTools | Hide tools | false | No | boolean |
-
-
-## Ref (API's)
-
-| Ref | Description | Params |
-| --- | --- | --- |
-| getData | Get updated data from sheet |  |
-| setData | Set new data to sheet | [{ value: string; styles?: {[key: string]: string}}, ...] |
-| exportCsv | Export to CSV | filename: (Mandatory), IncludeHeaders (default false) |
-
 
 ## Try here
 [Sandbox](https://codesandbox.io/p/sandbox/dry-water-gy2g6k)
