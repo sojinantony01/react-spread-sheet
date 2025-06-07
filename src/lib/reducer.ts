@@ -1,4 +1,4 @@
-type Selected = [number, number];
+export type Selected = [number, number];
 
 export interface Data {
   value: string;
@@ -33,6 +33,28 @@ export interface DispatcherActions {
   [key: string]: (state: ListReducer, action: StoreAction) => ListReducer;
 }
 
+const findSelection = (
+  startRow: number,
+  startCol: number,
+  endRow: number,
+  endCol: number,
+  data: Data[][],
+): Selected[] => {
+  const result: Selected[] = [];
+  // Determine iteration directions
+  const rowIncrement = startRow <= endRow ? 1 : -1;
+  const colIncrement = startCol <= endCol ? 1 : -1;
+  const matrix = data;
+  for (let row = startRow; row !== endRow + rowIncrement; row += rowIncrement) {
+    for (let col = startCol; col !== endCol + colIncrement; col += colIncrement) {
+      if (row >= 0 && row < matrix.length && col >= 0 && col < matrix[row].length) {
+        result.push([row, col]);
+      }
+    }
+  }
+  return result;
+};
+
 const actions: DispatcherActions = {
   addData(state, action) {
     state.data = action.payload;
@@ -48,6 +70,9 @@ const actions: DispatcherActions = {
     ]);
     state.redo = [];
     state.data[action.payload.i][action.payload.j].value = action.payload.value;
+    if (action.payload.styles) {
+      state.data[action.payload.i][action.payload.j].styles = action.payload.styles;
+    }
     return state;
   },
   updateStyles(state, action) {
@@ -139,23 +164,11 @@ const actions: DispatcherActions = {
   selectCellsDrag(state, action) {
     const [startRow, startCol] = state.lastSelected || [0, 0];
     const [endRow, endCol] = [action.payload.i, action.payload.j];
-    const result: Selected[] = [];
     if (startRow === endRow && startCol === endCol) {
       return state;
     }
-    // Determine iteration directions
-    const rowIncrement = startRow <= endRow ? 1 : -1;
-    const colIncrement = startCol <= endCol ? 1 : -1;
-    const matrix = state.data;
-    for (let row = startRow; row !== endRow + rowIncrement; row += rowIncrement) {
-      for (let col = startCol; col !== endCol + colIncrement; col += colIncrement) {
-        if (row >= 0 && row < matrix.length && col >= 0 && col < matrix[row].length) {
-          result.push([row, col]);
-        }
-      }
-    }
 
-    state.selected = result;
+    state.selected = findSelection(startRow, startCol, endRow, endCol, state.data);
     return state;
   },
   undo(state) {
@@ -186,6 +199,34 @@ const actions: DispatcherActions = {
     }
     return state;
   },
+  bulkUpdate(state, action) {
+    const data = state.data;
+    const selected = state.selected[0];
+    const colDif = action.payload[action.payload.length - 1].index[1] - action.payload[0].index[1];
+    const rowDif = action.payload[action.payload.length - 1].index[0] - action.payload[0].index[0];
+    if (colDif < 0 || rowDif < 0) {
+      action.payload.reverse();
+    }
+    let endCol = selected[1] + Math.abs(colDif);
+    let endRow = selected[0] + Math.abs(rowDif);
+    let startCol = selected[1];
+    let startRow = selected[0];
+
+    const newSelected = findSelection(startRow, startCol, endRow, endCol, data);
+    const undo: Action[] = [];
+    newSelected.forEach((p, i) => {
+      undo.push({
+        i: p[0],
+        j: p[1],
+        data: { ...state.data[p[0]][p[1]] },
+      });
+      data[p[0]][p[1]] = action.payload[i]?.data || data[p[0]][p[1]];
+    });
+    state.data = data;
+    state.selected = newSelected;
+    state.undo.push(undo);
+    return state;
+  },
 };
 
 export const {
@@ -202,4 +243,5 @@ export const {
   selectCellsDrag,
   undo,
   redo,
+  bulkUpdate,
 } = actions;
