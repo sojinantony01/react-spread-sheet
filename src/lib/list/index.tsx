@@ -1,9 +1,18 @@
 import React, { memo, useEffect, useRef, useState } from "react";
 import { store, useAppSelector } from "../store";
 import Row from "./row";
-import { addData, deleteSelectItems, redo, selectAllCells, undo, updateStyles } from "../reducer";
+import {
+  addData,
+  bulkUpdate,
+  changeData,
+  deleteSelectItems,
+  redo,
+  selectAllCells,
+  undo,
+  updateStyles,
+} from "../reducer";
 import SheetXAxis from "./sheet-x-axis";
-import { generateDummyContent } from "./utils";
+import { generateDummyContent, getItemsToCopy } from "./utils";
 import Tools from "./tools/tools";
 import ContextMenu from "./context-menu";
 
@@ -62,12 +71,58 @@ const List = (props: Props) => {
     }
   };
 
-  const handleKeyDown = (e: { shiftKey: boolean; code: string; ctrlKey: any; metaKey: any }) => {
+  const copyToClipBoard = () => {
+    navigator.clipboard.writeText(
+      JSON.stringify(getItemsToCopy(store.getState().selected, store.getState().data)),
+    );
+  };
+
+  const cutItemsToClipBoard = () => {
+    copyToClipBoard();
+    dispatch(deleteSelectItems);
+  };
+
+  const pasteFromClipBoard = () => {
+    navigator.clipboard.readText().then((v) => {
+      const selected = store.getState().selected;
+      try {
+        const val = JSON.parse(v);
+        if (Array.isArray(val) && val.length > 0 && val[0].index?.length === 2 && selected.length) {
+          dispatch(bulkUpdate, { payload: val });
+        } else {
+          throw new Error("execute catch part");
+        }
+      } catch {
+        if (selected.length) {
+          const i = selected[0][0];
+          const j = selected[0][1];
+          dispatch(changeData, { payload: { value: v || "", i: i, j: j } });
+          props.onChange && props.onChange(i, j, v);
+        }
+      }
+    });
+  };
+  const handleKeyDown = (e: {
+    preventDefault(): unknown;
+    shiftKey: boolean;
+    code: string;
+    ctrlKey: any;
+    metaKey: any;
+  }) => {
     if (e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
       dispatch(selectAllCells);
     }
-    if (e.code === "Backspace") {
+    if (e.code === "Backspace" || e.code === "Delete") {
       dispatch(deleteSelectItems);
+    } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyC") {
+      e.preventDefault();
+      copyToClipBoard();
+    } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyX") {
+      e.preventDefault();
+      cutItemsToClipBoard();
+    } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyV") {
+      e.preventDefault();
+      pasteFromClipBoard();
     } else if (e.code === "KeyB" && (e.ctrlKey || e.metaKey)) {
       changeStyle("B");
     } else if (e.code === "KeyU" && (e.ctrlKey || e.metaKey)) {

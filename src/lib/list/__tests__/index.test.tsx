@@ -1,8 +1,11 @@
 import React from "react";
-import { cleanup, fireEvent, render, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, screen, render, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import List from "../index";
 import { store } from "../../store";
 import { generateDummyContent } from "../utils";
+import { changeData, selectCellsDrag, selectOneCell } from "../../reducer";
+import { mockAllIsIntersecting } from "react-intersection-observer/test-utils";
 
 describe("index tests", () => {
   afterEach(() => {
@@ -65,6 +68,64 @@ describe("index tests", () => {
     fireEvent.keyDown(table, { code: "KeyZ", ctrlKey: true, shiftKey: true });
     await waitFor(() => {
       expect(store.getState().data?.[0][0]?.styles?.["fontWeight"]).toBe("bold");
+    });
+  });
+
+  test("copy-paste, cut-paste", async () => {
+    const user = userEvent.setup();
+    const { getByTestId } = render(<List data={generateDummyContent(10, 1)} />);
+    mockAllIsIntersecting(true);
+    store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+    store.dispatch(changeData, {
+      payload: { value: "1", i: 0, j: 0 },
+    });
+    store.dispatch(changeData, {
+      payload: { value: "2", i: 1, j: 0 },
+    });
+    store.dispatch(changeData, {
+      payload: { value: "3", i: 2, j: 0 },
+    });
+    store.dispatch(selectCellsDrag, { payload: { i: 2, j: 0 } });
+    const table = getByTestId(`sheet-table`);
+    fireEvent.keyDown(table, { code: "KeyC", ctrlKey: true });
+    store.dispatch(selectOneCell, { payload: { i: 3, j: 0 } });
+    fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
+    await waitFor(() => {
+      expect(getByTestId(`3-0`)).toHaveValue("1");
+    });
+    expect(getByTestId(`4-0`)).toHaveValue("2");
+
+    store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+    store.dispatch(selectCellsDrag, { payload: { i: 2, j: 0 } });
+    fireEvent.keyDown(table, { code: "KeyX", ctrlKey: true });
+    await waitFor(() => {
+      expect(getByTestId(`0-0`)).toHaveValue("");
+    });
+    store.dispatch(selectOneCell, { payload: { i: 3, j: 0 } });
+    fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
+
+    await waitFor(() => {
+      expect(getByTestId(`3-0`)).toHaveValue("1");
+    });
+  });
+
+  test("paste a normal value", async () => {
+    const user = userEvent.setup();
+    const { getByTestId } = render(<List data={generateDummyContent(10, 1)} />);
+    mockAllIsIntersecting(true);
+    navigator.clipboard.writeText("test value");
+    store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+    const table = getByTestId(`sheet-table`);
+    fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
+    await waitFor(() => {
+      expect(getByTestId(`0-0`)).toHaveValue("test value");
+    });
+
+    navigator.clipboard.writeText(JSON.stringify([{ index: [], data: ["testValue"] }]));
+    store.dispatch(selectOneCell, { payload: { i: 1, j: 0 } });
+    fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
+    await waitFor(() => {
+      expect(getByTestId(`1-0`)).toHaveValue(`[{"index":[],"data":["testValue"]}]`);
     });
   });
 });

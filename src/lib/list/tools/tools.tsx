@@ -61,6 +61,9 @@ const Tools = ({
             value={selectedItemVal}
             readOnly={i == undefined || j == undefined}
             onChange={onValChange}
+            onKeyDown={(e) => {
+              e.stopPropagation();
+            }}
           />
         </div>
         <div className="sheet-tools-text-style-container">
