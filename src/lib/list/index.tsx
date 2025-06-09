@@ -16,7 +16,7 @@ import { generateDummyContent, getItemsToCopy } from "./utils";
 import Tools from "./tools/tools";
 export interface Props {
   data?: any[][];
-  onChange?(i: number, j: number, value: string): void;
+  onChange?(i?: number, j?: number, value?: string): void;
   resize?: boolean;
   hideXAxisHeader?: boolean;
   hideYAxisHeader?: boolean;
@@ -30,9 +30,11 @@ const List = (props: Props) => {
   const divRef = useRef<HTMLDivElement>(null);
   const parentDivRef = useRef<HTMLDivElement>(null);
   const [j, setJ] = useState(0);
+  
   useEffect(() => {
     setJ(itemLength < 300 ? itemLength : 300);
   }, [itemLength]);
+
   useEffect(() => {
     dispatch(addData, {
       payload:
@@ -72,6 +74,7 @@ const List = (props: Props) => {
   const cutItemsToClipBoard = () => {
     copyToClipBoard();
     dispatch(deleteSelectItems);
+    props.onChange && props.onChange()
   };
 
   const pasteFromClipBoard = () => {
@@ -81,6 +84,7 @@ const List = (props: Props) => {
         const val = JSON.parse(v);
         if (Array.isArray(val) && val.length > 0 && val[0].index?.length === 2 && selected.length) {
           dispatch(bulkUpdate, { payload: val });
+          props.onChange && props.onChange()
         } else {
           throw new Error("execute catch part");
         }
@@ -106,25 +110,33 @@ const List = (props: Props) => {
     }
     if (e.code === "Backspace" || e.code === "Delete") {
       dispatch(deleteSelectItems);
+      props.onChange && props.onChange()
     } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyC") {
       e.preventDefault();
       copyToClipBoard();
     } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyX") {
       e.preventDefault();
       cutItemsToClipBoard();
+      props.onChange && props.onChange()
     } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyV") {
       e.preventDefault();
       pasteFromClipBoard();
+      props.onChange && props.onChange()
     } else if (e.code === "KeyB" && (e.ctrlKey || e.metaKey)) {
       changeStyle("B");
+      props.onChange && props.onChange()
     } else if (e.code === "KeyU" && (e.ctrlKey || e.metaKey)) {
       changeStyle("U");
+      props.onChange && props.onChange()
     } else if (e.code === "KeyI" && (e.ctrlKey || e.metaKey)) {
       changeStyle("I");
+      props.onChange && props.onChange()
     } else if (e.code === "KeyZ" && e.shiftKey && (e.ctrlKey || e.metaKey)) {
       dispatch(redo);
+      props.onChange && props.onChange()
     } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey) && !props.readonly) {
       dispatch(undo);
+      props.onChange && props.onChange()
     }
   };
   const getStyle = (key: string, value?: string) => {
@@ -153,6 +165,7 @@ const List = (props: Props) => {
   };
   const changeStyle = (key: string, value?: string) => {
     dispatch(updateStyles, { payload: getStyle(key, value) });
+    props.onChange && props.onChange()
   };
 
   return (

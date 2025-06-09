@@ -131,7 +131,7 @@ export default App;
 | Prop | Description | Default | Mandatory | type
 | --- | --- | -- | -- | -- |
 | data | Array of array with values (matrix)  | [[]]  |  No | any[][] |
-| onChange | Calls when a change is detected in input boxes, Do not set render component when value changes, the component should be uncontrolled |  | No | 
+| onChange | Calls when a change is detected in input boxes, Do not set render component when value changes, the component should be uncontrolled, All arguments will be undefined for bulk changes |  | No | 
 | resize | show column resize option | false | No | boolean |
 | hideXAxisHeader | Show serial numbers in X axis | false | No | boolean |
 | hideYAxisHeader | Show serial numbers in Y axis | false | No | boolean |

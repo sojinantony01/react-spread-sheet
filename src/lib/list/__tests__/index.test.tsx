@@ -13,17 +13,18 @@ describe("index tests", () => {
   });
 
   test("Table render", async () => {
-    const { findAllByTestId, getByTestId } = render(<List data={generateDummyContent(310, 1)} />);
+    render(<List data={generateDummyContent(310, 1)} />);
     expect(store.getState().data.length).toBe(310);
-    const tr = await findAllByTestId("sheet-table-tr");
+    const tr = await screen.findAllByTestId("sheet-table-tr");
     expect(tr).toHaveLength(300);
-    fireEvent.scroll(getByTestId(`sheet-table-content`), { target: { scrollTo: 300 * 28 } });
+    fireEvent.scroll(screen.getByTestId(`sheet-table-content`), { target: { scrollTo: 300 * 28 } });
     // Optional: Add waitFor/check for more rows if needed
   });
 
   test("Table KeyboardActions", async () => {
-    const { getByTestId } = render(<List data={generateDummyContent(10, 1)} />);
-    const table = getByTestId(`sheet-table`);
+    const onChange = jest.fn();
+    render(<List data={generateDummyContent(10, 1)} onChange={onChange}/>);
+    const table = screen.getByTestId(`sheet-table`);
     fireEvent.keyDown(table, { code: "KeyA", ctrlKey: true });
     await waitFor(() => {
       expect(store.getState().selected).toHaveLength(10);
@@ -48,11 +49,13 @@ describe("index tests", () => {
     await waitFor(() => {
       expect(store.getState().data?.[0][0]?.styles?.["fontStyle"]).toBe("italic");
     });
+    expect(onChange).toHaveBeenCalledTimes(7);
   });
 
   test("Undo-Redo", async () => {
-    const { getByTestId } = render(<List data={generateDummyContent(10, 1)} />);
-    const table = getByTestId(`sheet-table`);
+    const onChange = jest.fn();
+    render(<List data={generateDummyContent(10, 1)} onChange={onChange}/>);
+    const table = screen.getByTestId(`sheet-table`);
 
     fireEvent.keyDown(table, { code: "KeyB", ctrlKey: true });
     await waitFor(() => {
@@ -69,11 +72,12 @@ describe("index tests", () => {
     await waitFor(() => {
       expect(store.getState().data?.[0][0]?.styles?.["fontWeight"]).toBe("bold");
     });
+    expect(onChange).toHaveBeenCalledTimes(4);
   });
 
   test("copy-paste, cut-paste", async () => {
     const user = userEvent.setup();
-    const { getByTestId } = render(<List data={generateDummyContent(10, 1)} />);
+    render(<List data={generateDummyContent(10, 1)} />);
     mockAllIsIntersecting(true);
     store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
     store.dispatch(changeData, {
@@ -86,46 +90,46 @@ describe("index tests", () => {
       payload: { value: "3", i: 2, j: 0 },
     });
     store.dispatch(selectCellsDrag, { payload: { i: 2, j: 0 } });
-    const table = getByTestId(`sheet-table`);
+    const table = screen.getByTestId(`sheet-table`);
     fireEvent.keyDown(table, { code: "KeyC", ctrlKey: true });
     store.dispatch(selectOneCell, { payload: { i: 3, j: 0 } });
     fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
     await waitFor(() => {
-      expect(getByTestId(`3-0`)).toHaveValue("1");
+      expect(screen.getByTestId(`3-0`)).toHaveValue("1");
     });
-    expect(getByTestId(`4-0`)).toHaveValue("2");
+    expect(screen.getByTestId(`4-0`)).toHaveValue("2");
 
     store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
     store.dispatch(selectCellsDrag, { payload: { i: 2, j: 0 } });
     fireEvent.keyDown(table, { code: "KeyX", ctrlKey: true });
     await waitFor(() => {
-      expect(getByTestId(`0-0`)).toHaveValue("");
+      expect(screen.getByTestId(`0-0`)).toHaveValue("");
     });
     store.dispatch(selectOneCell, { payload: { i: 3, j: 0 } });
     fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
 
     await waitFor(() => {
-      expect(getByTestId(`3-0`)).toHaveValue("1");
+      expect(screen.getByTestId(`3-0`)).toHaveValue("1");
     });
   });
 
   test("paste a normal value", async () => {
-    const user = userEvent.setup();
-    const { getByTestId } = render(<List data={generateDummyContent(10, 1)} />);
+    userEvent.setup();
+    render(<List data={generateDummyContent(10, 1)} />);
     mockAllIsIntersecting(true);
     navigator.clipboard.writeText("test value");
     store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
-    const table = getByTestId(`sheet-table`);
+    const table = screen.getByTestId(`sheet-table`);
     fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
     await waitFor(() => {
-      expect(getByTestId(`0-0`)).toHaveValue("test value");
+      expect(screen.getByTestId(`0-0`)).toHaveValue("test value");
     });
 
     navigator.clipboard.writeText(JSON.stringify([{ index: [], data: ["testValue"] }]));
     store.dispatch(selectOneCell, { payload: { i: 1, j: 0 } });
     fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
     await waitFor(() => {
-      expect(getByTestId(`1-0`)).toHaveValue(`[{"index":[],"data":["testValue"]}]`);
+      expect(screen.getByTestId(`1-0`)).toHaveValue(`[{"index":[],"data":["testValue"]}]`);
     });
   });
 });
