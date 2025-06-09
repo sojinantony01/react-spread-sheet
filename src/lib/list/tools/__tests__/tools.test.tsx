@@ -12,9 +12,7 @@ beforeEach(() => {
 });
 test("Tools render", async () => {
   const changeStyle = jest.fn();
-  render(
-    <Tools changeStyle={changeStyle} onChange={() => {}} />,
-  );
+  render(<Tools changeStyle={changeStyle} onChange={() => {}} />);
   const bold = screen.getByRole("button", {
     name: /B/i,
   });
@@ -90,12 +88,10 @@ test("Tools render", async () => {
 
 it("should focus calculation input on container click", async () => {
   const changeStyle = jest.fn();
-  render(
-    <Tools changeStyle={changeStyle} onChange={() => {}} />,
-  );
+  render(<Tools changeStyle={changeStyle} onChange={() => {}} />);
   expect(screen.getByTestId("fx-input")).toHaveAttribute("readOnly");
   act(() => {
-      store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+    store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
   });
 
   await waitFor(() => {
@@ -111,7 +107,7 @@ it("should call onChange when calculation value changes", async () => {
   const onChange = jest.fn();
   render(<Tools changeStyle={changeStyle} onChange={onChange} />);
   act(() => {
-      store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+    store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
   });
 
   await waitFor(() => {
@@ -127,7 +123,7 @@ test("Undo redo", async () => {
   const onChange = jest.fn();
   render(<Tools changeStyle={changeStyle} onChange={onChange} />);
   act(() => {
-      store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+    store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
   });
 
   await waitFor(() => {

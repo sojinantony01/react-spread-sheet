@@ -1,5 +1,6 @@
 Math for columns, select other columns while editing
 Add more demos
+add minimum number of columns
 Calc in Read only mode 
 Increase test coverage
 js docs

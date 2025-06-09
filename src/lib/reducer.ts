@@ -227,10 +227,10 @@ const actions: DispatcherActions = {
     state.undo.push(undo);
     return state;
   },
-  addRows(state, action) {    
-    state.data.push(...action.payload)
+  addRows(state, action) {
+    state.data.push(...action.payload);
     return state;
-  }
+  },
 };
 
 export const {
@@ -248,5 +248,5 @@ export const {
   undo,
   redo,
   bulkUpdate,
-  addRows
+  addRows,
 } = actions;

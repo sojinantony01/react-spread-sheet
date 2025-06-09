@@ -23,7 +23,7 @@ describe("index tests", () => {
 
   test("Table KeyboardActions", async () => {
     const onChange = jest.fn();
-    render(<List data={generateDummyContent(10, 1)} onChange={onChange}/>);
+    render(<List data={generateDummyContent(10, 1)} onChange={onChange} />);
     const table = screen.getByTestId(`sheet-table`);
     fireEvent.keyDown(table, { code: "KeyA", ctrlKey: true });
     await waitFor(() => {
@@ -54,7 +54,7 @@ describe("index tests", () => {
 
   test("Undo-Redo", async () => {
     const onChange = jest.fn();
-    render(<List data={generateDummyContent(10, 1)} onChange={onChange}/>);
+    render(<List data={generateDummyContent(10, 1)} onChange={onChange} />);
     const table = screen.getByTestId(`sheet-table`);
 
     fireEvent.keyDown(table, { code: "KeyB", ctrlKey: true });
@@ -120,7 +120,7 @@ describe("index tests", () => {
     });
     act(() => {
       store.dispatch(selectOneCell, { payload: { i: 3, j: 0 } });
-    })
+    });
     fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
 
     await waitFor(() => {
@@ -135,7 +135,7 @@ describe("index tests", () => {
     navigator.clipboard.writeText("test value");
     act(() => {
       store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
-    })
+    });
     const table = screen.getByTestId(`sheet-table`);
     fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
     await waitFor(() => {
@@ -145,7 +145,7 @@ describe("index tests", () => {
     navigator.clipboard.writeText(JSON.stringify([{ index: [], data: ["testValue"] }]));
     act(() => {
       store.dispatch(selectOneCell, { payload: { i: 1, j: 0 } });
-    })
+    });
     fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
     await waitFor(() => {
       expect(screen.getByTestId(`1-0`)).toHaveValue(`[{"index":[],"data":["testValue"]}]`);

@@ -24,7 +24,7 @@ export interface Props {
   headerValues?: string[];
   readonly?: boolean;
   hideTools?: boolean;
-  autoAddAdditionalRows?: boolean
+  autoAddAdditionalRows?: boolean;
 }
 const List = (props: Props) => {
   const { dispatch } = store;
@@ -42,11 +42,11 @@ const List = (props: Props) => {
     headerValues,
     readonly,
     hideTools,
-    autoAddAdditionalRows = true
+    autoAddAdditionalRows = true,
   } = props;
-  
+
   useEffect(() => {
-    if(j !== 0 && itemLength > initialItemLength) {
+    if (j !== 0 && itemLength > initialItemLength) {
       setJ(initialItemLength);
     } else {
       setJ(itemLength < 300 ? itemLength : 300);
@@ -58,8 +58,13 @@ const List = (props: Props) => {
     dispatch(addData, {
       payload:
         data && data.length && data[0].length
-          ? [...data, ...(data.length < 200 && autoAddAdditionalRows ? generateDummyContent(300, data[0].length) : [])]
-          : generateDummyContent(1000, 30)
+          ? [
+              ...data,
+              ...(data.length < 200 && autoAddAdditionalRows
+                ? generateDummyContent(300, data[0].length)
+                : []),
+            ]
+          : generateDummyContent(1000, 30),
     });
   }, []);
 
@@ -81,9 +86,9 @@ const List = (props: Props) => {
     const parentEl = parentDivRef.current;
     if (el && parentEl && parentEl?.scrollTop > el?.scrollHeight - 3200) {
       const nextVal = 300 + Math.round(parentEl?.scrollTop / 32);
-      if(autoAddAdditionalRows && nextVal >= itemLength && itemLength < 2000) {
+      if (autoAddAdditionalRows && nextVal >= itemLength && itemLength < 2000) {
         //Add additional rows
-        dispatch(addRows, {payload: generateDummyContent(300, store.getState().data[0].length)});
+        dispatch(addRows, { payload: generateDummyContent(300, store.getState().data[0].length) });
       } else {
         setJ(nextVal > itemLength ? itemLength : nextVal);
       }
@@ -98,7 +103,7 @@ const List = (props: Props) => {
   const cutItemsToClipBoard = () => {
     copyToClipBoard();
     dispatch(deleteSelectItems);
-    onChange && onChange()
+    onChange && onChange();
   };
 
   const pasteFromClipBoard = () => {
@@ -108,7 +113,7 @@ const List = (props: Props) => {
         const val = JSON.parse(v);
         if (Array.isArray(val) && val.length > 0 && val[0].index?.length === 2 && selected.length) {
           dispatch(bulkUpdate, { payload: val });
-          onChange && onChange()
+          onChange && onChange();
         } else {
           throw new Error("execute catch part");
         }
@@ -134,33 +139,33 @@ const List = (props: Props) => {
     }
     if (e.code === "Backspace" || e.code === "Delete") {
       dispatch(deleteSelectItems);
-      onChange && onChange()
+      onChange && onChange();
     } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyC") {
       e.preventDefault();
       copyToClipBoard();
     } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyX") {
       e.preventDefault();
       cutItemsToClipBoard();
-      onChange && onChange()
+      onChange && onChange();
     } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyV") {
       e.preventDefault();
       pasteFromClipBoard();
-      onChange && onChange()
+      onChange && onChange();
     } else if (e.code === "KeyB" && (e.ctrlKey || e.metaKey)) {
       changeStyle("B");
-      onChange && onChange()
+      onChange && onChange();
     } else if (e.code === "KeyU" && (e.ctrlKey || e.metaKey)) {
       changeStyle("U");
-      onChange && onChange()
+      onChange && onChange();
     } else if (e.code === "KeyI" && (e.ctrlKey || e.metaKey)) {
       changeStyle("I");
-      onChange && onChange()
+      onChange && onChange();
     } else if (e.code === "KeyZ" && e.shiftKey && (e.ctrlKey || e.metaKey)) {
       dispatch(redo);
-      onChange && onChange()
+      onChange && onChange();
     } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey) && !readonly) {
       dispatch(undo);
-      onChange && onChange()
+      onChange && onChange();
     }
   };
   const getStyle = (key: string, value?: string) => {
@@ -189,7 +194,7 @@ const List = (props: Props) => {
   };
   const changeStyle = (key: string, value?: string) => {
     dispatch(updateStyles, { payload: getStyle(key, value) });
-    onChange && onChange()
+    onChange && onChange();
   };
 
   return (
