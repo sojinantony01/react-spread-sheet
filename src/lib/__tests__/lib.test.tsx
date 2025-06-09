@@ -1,6 +1,11 @@
-import React, { createRef } from "react";
+import React, { act, createRef } from "react";
 import { render } from "@testing-library/react";
 import Sheet from "../lib";
+
+
+beforeAll(() => {
+    HTMLAnchorElement.prototype.click = jest.fn();
+})
 
 describe("Sheet imperative API", () => {
   it("getData, setData, exportCsv work", () => {
@@ -10,7 +15,9 @@ describe("Sheet imperative API", () => {
     expect(ref.current.getData()).toBeDefined();
 
     // setData updates store
-    ref.current.setData([[{ value: "x" }]]);
+    act(() => {
+      ref.current.setData([[{ value: "x" }]]);
+    })
     expect(ref.current.getData()[0][0].value).toBe("x");
 
     // exportCsv does not throw

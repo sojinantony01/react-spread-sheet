@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { store, useAppSelector } from "../store";
 
 interface Prop {

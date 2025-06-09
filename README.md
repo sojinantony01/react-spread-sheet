@@ -67,11 +67,11 @@ import React, { useRef, useState } from "react";
 import Sheet, { SheetRef } from "react-spread-sheet-excel";
 
 //Create dummy data.
-const createData = (count?: number) => {
+const createData = () => {
   const val: any[][] = [];
-  for (let i = 0; i < (count || 500) ; i++) {
+  for (let i = 0; i < 500 ; i++) {
     val.push(
-      Array.from({ length: count || 30 }, () => ({
+      Array.from({ length: 30 }, () => ({
         value: "",
       }))
     );
@@ -137,6 +137,7 @@ export default App;
 | hideYAxisHeader | Show serial numbers in Y axis | false | No | boolean |
 | headerValues | array of header values, Number in header values could affect calculations | alphabets | No | string[] |
 | hideTools | Hide tools | false | No | boolean |
+| autoAddAdditionalRows | sheet adds additional rows automatically | true | No | boolean |
 
 
 ## Ref (API's)
@@ -216,8 +217,21 @@ const exportToXlsx = (
   XLSX.writeFile(workbook, fileName);
 };
 
+//Create dummy data.
+const createData = () => {
+  const val: any[][] = [];
+  for (let i = 0; i < 500 ; i++) {
+    val.push(
+      Array.from({ length: 30 }, () => ({
+        value: "",
+      }))
+    );
+  }
+  return val;
+};
+
 function App() {
-  const [state] = useState<any[][]>([[]]);
+  const [state] = useState<any[][]>(createData());
   const childRef = useRef<SheetRef>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
