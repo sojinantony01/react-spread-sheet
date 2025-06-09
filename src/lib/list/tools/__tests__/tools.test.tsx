@@ -1,4 +1,4 @@
-import React from "react";
+import React, { act } from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { store } from "../../../store";
 import { addData, selectOneCell } from "../../../reducer";
@@ -6,13 +6,13 @@ import { generateDummyContent } from "../../utils";
 import Tools from "../tools";
 
 beforeEach(() => {
-  store.dispatch(addData, { payload: generateDummyContent(3, 3) });
+  act(() => {
+    store.dispatch(addData, { payload: generateDummyContent(3, 3) });
+  });
 });
 test("Tools render", async () => {
   const changeStyle = jest.fn();
-  render(
-    <Tools changeStyle={changeStyle} onChange={() => {}} />,
-  );
+  render(<Tools changeStyle={changeStyle} onChange={() => {}} />);
   const bold = screen.getByRole("button", {
     name: /B/i,
   });
@@ -88,11 +88,12 @@ test("Tools render", async () => {
 
 it("should focus calculation input on container click", async () => {
   const changeStyle = jest.fn();
-  render(
-    <Tools changeStyle={changeStyle} onChange={() => {}} />,
-  );
+  render(<Tools changeStyle={changeStyle} onChange={() => {}} />);
   expect(screen.getByTestId("fx-input")).toHaveAttribute("readOnly");
-  store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+  act(() => {
+    store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+  });
+
   await waitFor(() => {
     expect(screen.getByTestId("fx-input")).not.toHaveAttribute("readOnly");
   });
@@ -105,7 +106,10 @@ it("should call onChange when calculation value changes", async () => {
   const changeStyle = jest.fn();
   const onChange = jest.fn();
   render(<Tools changeStyle={changeStyle} onChange={onChange} />);
-  store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+  act(() => {
+    store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+  });
+
   await waitFor(() => {
     expect(screen.getByTestId("fx-input")).not.toHaveAttribute("readOnly");
   });
@@ -118,7 +122,10 @@ test("Undo redo", async () => {
   const changeStyle = jest.fn();
   const onChange = jest.fn();
   render(<Tools changeStyle={changeStyle} onChange={onChange} />);
-  store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+  act(() => {
+    store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+  });
+
   await waitFor(() => {
     expect(screen.getByTestId("fx-input")).not.toHaveAttribute("readOnly");
   });

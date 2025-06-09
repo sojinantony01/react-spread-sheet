@@ -1,4 +1,4 @@
-import React from "react";
+import React, { act } from "react";
 import { cleanup, fireEvent, screen, render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import List from "../index";
@@ -23,11 +23,11 @@ describe("index tests", () => {
 
   test("Table KeyboardActions", async () => {
     const onChange = jest.fn();
-    render(<List data={generateDummyContent(10, 1)} onChange={onChange}/>);
+    render(<List data={generateDummyContent(10, 1)} onChange={onChange} />);
     const table = screen.getByTestId(`sheet-table`);
     fireEvent.keyDown(table, { code: "KeyA", ctrlKey: true });
     await waitFor(() => {
-      expect(store.getState().selected).toHaveLength(10);
+      expect(store.getState().selected).toHaveLength(310);
     });
 
     fireEvent.keyDown(table, { code: "Backspace" });
@@ -54,7 +54,7 @@ describe("index tests", () => {
 
   test("Undo-Redo", async () => {
     const onChange = jest.fn();
-    render(<List data={generateDummyContent(10, 1)} onChange={onChange}/>);
+    render(<List data={generateDummyContent(10, 1)} onChange={onChange} />);
     const table = screen.getByTestId(`sheet-table`);
 
     fireEvent.keyDown(table, { code: "KeyB", ctrlKey: true });
@@ -76,36 +76,51 @@ describe("index tests", () => {
   });
 
   test("copy-paste, cut-paste", async () => {
-    const user = userEvent.setup();
+    userEvent.setup();
     render(<List data={generateDummyContent(10, 1)} />);
     mockAllIsIntersecting(true);
-    store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
-    store.dispatch(changeData, {
-      payload: { value: "1", i: 0, j: 0 },
+    act(() => {
+      store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
     });
-    store.dispatch(changeData, {
-      payload: { value: "2", i: 1, j: 0 },
+    act(() => {
+      store.dispatch(changeData, {
+        payload: { value: "1", i: 0, j: 0 },
+      });
     });
-    store.dispatch(changeData, {
-      payload: { value: "3", i: 2, j: 0 },
+    act(() => {
+      store.dispatch(changeData, {
+        payload: { value: "2", i: 1, j: 0 },
+      });
     });
-    store.dispatch(selectCellsDrag, { payload: { i: 2, j: 0 } });
+    act(() => {
+      store.dispatch(changeData, {
+        payload: { value: "3", i: 2, j: 0 },
+      });
+    });
+    act(() => {
+      store.dispatch(selectCellsDrag, { payload: { i: 2, j: 0 } });
+    });
     const table = screen.getByTestId(`sheet-table`);
     fireEvent.keyDown(table, { code: "KeyC", ctrlKey: true });
-    store.dispatch(selectOneCell, { payload: { i: 3, j: 0 } });
+    act(() => {
+      store.dispatch(selectOneCell, { payload: { i: 3, j: 0 } });
+    });
     fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
     await waitFor(() => {
       expect(screen.getByTestId(`3-0`)).toHaveValue("1");
     });
     expect(screen.getByTestId(`4-0`)).toHaveValue("2");
-
-    store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
-    store.dispatch(selectCellsDrag, { payload: { i: 2, j: 0 } });
+    act(() => {
+      store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+      store.dispatch(selectCellsDrag, { payload: { i: 2, j: 0 } });
+    });
     fireEvent.keyDown(table, { code: "KeyX", ctrlKey: true });
     await waitFor(() => {
       expect(screen.getByTestId(`0-0`)).toHaveValue("");
     });
-    store.dispatch(selectOneCell, { payload: { i: 3, j: 0 } });
+    act(() => {
+      store.dispatch(selectOneCell, { payload: { i: 3, j: 0 } });
+    });
     fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
 
     await waitFor(() => {
@@ -118,7 +133,9 @@ describe("index tests", () => {
     render(<List data={generateDummyContent(10, 1)} />);
     mockAllIsIntersecting(true);
     navigator.clipboard.writeText("test value");
-    store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+    act(() => {
+      store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+    });
     const table = screen.getByTestId(`sheet-table`);
     fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
     await waitFor(() => {
@@ -126,7 +143,9 @@ describe("index tests", () => {
     });
 
     navigator.clipboard.writeText(JSON.stringify([{ index: [], data: ["testValue"] }]));
-    store.dispatch(selectOneCell, { payload: { i: 1, j: 0 } });
+    act(() => {
+      store.dispatch(selectOneCell, { payload: { i: 1, j: 0 } });
+    });
     fireEvent.keyDown(table, { key: "V", code: "KeyV", ctrlKey: true });
     await waitFor(() => {
       expect(screen.getByTestId(`1-0`)).toHaveValue(`[{"index":[],"data":["testValue"]}]`);

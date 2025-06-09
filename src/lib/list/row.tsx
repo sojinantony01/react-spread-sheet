@@ -1,4 +1,4 @@
-import React, { memo, useContext } from "react";
+import React, { memo } from "react";
 import { store, useAppSelector } from "../store";
 import Cell from "./cell";
 import ReadOnlyCell from "./readonlycell";
@@ -12,7 +12,7 @@ interface Prop {
 }
 const Row = (props: Prop) => {
   const { i } = props;
-  const itemLength = useAppSelector(store, (state) => state.data[i].length);
+  const itemLength = useAppSelector(store, (state) => state.data[i]?.length || 0);
   const items = [];
   for (let j = 0; j < itemLength; j++) {
     items.push(

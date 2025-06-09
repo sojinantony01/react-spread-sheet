@@ -3,6 +3,7 @@ import { store, useAppSelector } from "../store";
 import Row from "./row";
 import {
   addData,
+  addRows,
   bulkUpdate,
   changeData,
   deleteSelectItems,
@@ -23,6 +24,7 @@ export interface Props {
   headerValues?: string[];
   readonly?: boolean;
   hideTools?: boolean;
+  autoAddAdditionalRows?: boolean;
 }
 const List = (props: Props) => {
   const { dispatch } = store;
@@ -30,16 +32,38 @@ const List = (props: Props) => {
   const divRef = useRef<HTMLDivElement>(null);
   const parentDivRef = useRef<HTMLDivElement>(null);
   const [j, setJ] = useState(0);
-  
+  const [initialItemLength, setInitialItemLength] = useState(itemLength);
+  const {
+    data,
+    onChange,
+    resize,
+    hideXAxisHeader,
+    hideYAxisHeader,
+    headerValues,
+    readonly,
+    hideTools,
+    autoAddAdditionalRows = true,
+  } = props;
+
   useEffect(() => {
-    setJ(itemLength < 300 ? itemLength : 300);
+    if (j !== 0 && itemLength > initialItemLength) {
+      setJ(initialItemLength);
+    } else {
+      setJ(itemLength < 300 ? itemLength : 300);
+    }
+    setInitialItemLength(itemLength);
   }, [itemLength]);
 
   useEffect(() => {
     dispatch(addData, {
       payload:
-        props.data && props.data.length && props.data[0].length
-          ? props.data
+        data && data.length && data[0].length
+          ? [
+              ...data,
+              ...(data.length < 200 && autoAddAdditionalRows
+                ? generateDummyContent(300, data[0].length)
+                : []),
+            ]
           : generateDummyContent(1000, 30),
     });
   }, []);
@@ -50,10 +74,10 @@ const List = (props: Props) => {
       <Row
         i={i}
         key={i}
-        headerValues={props.headerValues}
-        onChange={props.onChange}
-        hideYAxisHeader={props.hideYAxisHeader}
-        readonly={props.readonly}
+        headerValues={headerValues}
+        onChange={onChange}
+        hideYAxisHeader={hideYAxisHeader}
+        readonly={readonly}
       />,
     );
   }
@@ -62,7 +86,12 @@ const List = (props: Props) => {
     const parentEl = parentDivRef.current;
     if (el && parentEl && parentEl?.scrollTop > el?.scrollHeight - 3200) {
       const nextVal = 300 + Math.round(parentEl?.scrollTop / 32);
-      setJ(nextVal > itemLength ? itemLength : nextVal);
+      if (autoAddAdditionalRows && nextVal >= itemLength && itemLength < 2000) {
+        //Add additional rows
+        dispatch(addRows, { payload: generateDummyContent(300, store.getState().data[0].length) });
+      } else {
+        setJ(nextVal > itemLength ? itemLength : nextVal);
+      }
     }
   };
   const copyToClipBoard = () => {
@@ -74,7 +103,7 @@ const List = (props: Props) => {
   const cutItemsToClipBoard = () => {
     copyToClipBoard();
     dispatch(deleteSelectItems);
-    props.onChange && props.onChange()
+    onChange && onChange();
   };
 
   const pasteFromClipBoard = () => {
@@ -84,7 +113,7 @@ const List = (props: Props) => {
         const val = JSON.parse(v);
         if (Array.isArray(val) && val.length > 0 && val[0].index?.length === 2 && selected.length) {
           dispatch(bulkUpdate, { payload: val });
-          props.onChange && props.onChange()
+          onChange && onChange();
         } else {
           throw new Error("execute catch part");
         }
@@ -93,7 +122,7 @@ const List = (props: Props) => {
           const i = selected[0][0];
           const j = selected[0][1];
           dispatch(changeData, { payload: { value: v || "", i: i, j: j } });
-          props.onChange && props.onChange(i, j, v);
+          onChange && onChange(i, j, v);
         }
       }
     });
@@ -110,33 +139,33 @@ const List = (props: Props) => {
     }
     if (e.code === "Backspace" || e.code === "Delete") {
       dispatch(deleteSelectItems);
-      props.onChange && props.onChange()
+      onChange && onChange();
     } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyC") {
       e.preventDefault();
       copyToClipBoard();
     } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyX") {
       e.preventDefault();
       cutItemsToClipBoard();
-      props.onChange && props.onChange()
+      onChange && onChange();
     } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyV") {
       e.preventDefault();
       pasteFromClipBoard();
-      props.onChange && props.onChange()
+      onChange && onChange();
     } else if (e.code === "KeyB" && (e.ctrlKey || e.metaKey)) {
       changeStyle("B");
-      props.onChange && props.onChange()
+      onChange && onChange();
     } else if (e.code === "KeyU" && (e.ctrlKey || e.metaKey)) {
       changeStyle("U");
-      props.onChange && props.onChange()
+      onChange && onChange();
     } else if (e.code === "KeyI" && (e.ctrlKey || e.metaKey)) {
       changeStyle("I");
-      props.onChange && props.onChange()
+      onChange && onChange();
     } else if (e.code === "KeyZ" && e.shiftKey && (e.ctrlKey || e.metaKey)) {
       dispatch(redo);
-      props.onChange && props.onChange()
-    } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey) && !props.readonly) {
+      onChange && onChange();
+    } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey) && !readonly) {
       dispatch(undo);
-      props.onChange && props.onChange()
+      onChange && onChange();
     }
   };
   const getStyle = (key: string, value?: string) => {
@@ -165,12 +194,12 @@ const List = (props: Props) => {
   };
   const changeStyle = (key: string, value?: string) => {
     dispatch(updateStyles, { payload: getStyle(key, value) });
-    props.onChange && props.onChange()
+    onChange && onChange();
   };
 
   return (
     <div onKeyDown={handleKeyDown} className="sheet-table" data-testid="sheet-table">
-      {!props.hideTools && <Tools changeStyle={changeStyle} onChange={props.onChange} />}
+      {!hideTools && <Tools changeStyle={changeStyle} onChange={onChange} />}
       <div
         className="sheet-table-table-container"
         ref={parentDivRef}
@@ -182,8 +211,8 @@ const List = (props: Props) => {
             {items.length && (
               <table>
                 <tbody>
-                  {!props.hideXAxisHeader ? (
-                    <SheetXAxis resize={props.resize} headerValues={props.headerValues} />
+                  {!hideXAxisHeader ? (
+                    <SheetXAxis resize={resize} headerValues={headerValues} />
                   ) : (
                     ""
                   )}

@@ -109,10 +109,10 @@ export const solveMathExpression = (expr: string) => {
   return m[0];
 };
 
-export const generateDummyContent = (n: number, m: number) => {
+export const generateDummyContent = (row: number, col: number) => {
   const val: any[][] = [];
-  for (let i = 0; i < n; i++) {
-    val.push(Array.from({ length: m }, () => ({ value: "" })));
+  for (let i = 0; i < row; i++) {
+    val.push(Array.from({ length: col }, () => ({ value: "" })));
   }
   return val;
 };
