@@ -38,9 +38,8 @@ Able to render 1Lakh+ input boxes in react, A quick solution for web based sprea
 * __100% Unit Test Coverage: Ensures reliability and stability.__
 * __JSON based SpreadSheet__
 
-![React-spread-sheet-excel](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/sample.png)
+![React-spread-sheet-excel](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/react-spread-sheet-excel.png)
 
-![React-spread-sheet-excel-gif](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/react-spread-sheet-excel-ezgif.com-video-to-gif-converter.gif)
 
 ## Getting Started
 
@@ -55,6 +54,12 @@ Input data format
 npm install react-spread-sheet-excel
 
 ```
+
+![React-spread-sheet-excel](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/react-spread-sheet-excel-formatted.png)
+
+![React-spread-sheet-excel-gif](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/react-spread-sheet-excel-ezgif.com-video-to-gif-converter.gif)
+
+
 ## Example
 
 ```js
