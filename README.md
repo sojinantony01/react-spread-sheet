@@ -38,9 +38,8 @@ Able to render 1Lakh+ input boxes in react, A quick solution for web based sprea
 * __100% Unit Test Coverage: Ensures reliability and stability.__
 * __JSON based SpreadSheet__
 
-![React-spread-sheet-excel](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/sample.png)
+![React-spread-sheet-excel](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/react-spread-sheet-excel.png)
 
-![React-spread-sheet-excel-gif](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/react-spread-sheet-excel-ezgif.com-video-to-gif-converter.gif)
 
 ## Getting Started
 
@@ -55,6 +54,12 @@ Input data format
 npm install react-spread-sheet-excel
 
 ```
+
+![React-spread-sheet-excel](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/react-spread-sheet-excel-formatted.png)
+
+![React-spread-sheet-excel-gif](https://raw.githubusercontent.com/sojinantony01/react-spread-sheet/main/public/images/react-spread-sheet-excel-ezgif.com-video-to-gif-converter.gif)
+
+
 ## Example
 
 ```js
@@ -62,11 +67,11 @@ import React, { useRef, useState } from "react";
 import Sheet, { SheetRef } from "react-spread-sheet-excel";
 
 //Create dummy data.
-const createData = (count?: number) => {
+const createData = () => {
   const val: any[][] = [];
-  for (let i = 0; i < (count || 500) ; i++) {
+  for (let i = 0; i < 500 ; i++) {
     val.push(
-      Array.from({ length: count || 30 }, () => ({
+      Array.from({ length: 30 }, () => ({
         value: "",
       }))
     );
@@ -126,12 +131,13 @@ export default App;
 | Prop | Description | Default | Mandatory | type
 | --- | --- | -- | -- | -- |
 | data | Array of array with values (matrix)  | [[]]  |  No | any[][] |
-| onChange | Calls when a change is detected in input boxes, Do not set render component when value changes, the component should be uncontrolled |  | No | 
+| onChange | Calls when a change is detected in input boxes, Do not set render component when value changes, the component should be uncontrolled, All arguments will be undefined for bulk changes |  | No | 
 | resize | show column resize option | false | No | boolean |
 | hideXAxisHeader | Show serial numbers in X axis | false | No | boolean |
 | hideYAxisHeader | Show serial numbers in Y axis | false | No | boolean |
 | headerValues | array of header values, Number in header values could affect calculations | alphabets | No | string[] |
 | hideTools | Hide tools | false | No | boolean |
+| autoAddAdditionalRows | sheet adds additional rows automatically | true | No | boolean |
 
 
 ## Ref (API's)
@@ -211,8 +217,21 @@ const exportToXlsx = (
   XLSX.writeFile(workbook, fileName);
 };
 
+//Create dummy data.
+const createData = () => {
+  const val: any[][] = [];
+  for (let i = 0; i < 500 ; i++) {
+    val.push(
+      Array.from({ length: 30 }, () => ({
+        value: "",
+      }))
+    );
+  }
+  return val;
+};
+
 function App() {
-  const [state] = useState<any[][]>([[]]);
+  const [state] = useState<any[][]>(createData());
   const childRef = useRef<SheetRef>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   

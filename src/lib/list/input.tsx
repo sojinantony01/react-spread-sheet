@@ -11,7 +11,7 @@ import { getCalculatedVal } from "./utils";
 interface Prop {
   i: number;
   j: number;
-  onChange?(i: number, j: number, value: string): void;
+  onChange?(i?: number, j?: number, value?: string): void;
   headerValues?: string[];
 }
 

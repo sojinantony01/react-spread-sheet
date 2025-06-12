@@ -7,14 +7,14 @@ import SheetXaxis from "../sheet-x-axis";
 
 beforeEach(() => store.dispatch(addData, { payload: generateDummyContent(3, 3) }));
 test("header cell render", () => {
-  const { getByTestId } = render(
+  render(
     <table>
       <tbody>
         <SheetXaxis />
       </tbody>
     </table>,
   );
-  expect(getByTestId(`sheet-table-x-axis-header`)).toBeInTheDocument();
+  expect(screen.getByTestId(`sheet-table-x-axis-header`)).toBeInTheDocument();
 });
 
 test("header cell render headervalues", async () => {

@@ -1,15 +1,11 @@
 Math for columns, select other columns while editing
 Add more demos
+add minimum number of columns
 Calc in Read only mode 
-Minimum Number of cells, ex: if data is having 10x10 cells, make it 1000x50
-Fix new Unit test warnings *, increase coverage
+Increase test coverage
 js docs
 Top input box *, 
 Sandbox example height issue
-
-sheets
-export to xlsx - https://docs.sheetjs.com/docs/getting-started/examples/export, https://www.npmjs.com/package/@e965/xlsx
-import xlsx - https://docs.sheetjs.com/docs/getting-started/examples/import
 
 Show input/select/date boxes based on type, auto detect type
     - Add an icon in toolbox, add options to change selected input box type to text, date, select, checkbox ..., should update. if format empty auto detect the type
