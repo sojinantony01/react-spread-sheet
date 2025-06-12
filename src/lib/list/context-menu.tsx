@@ -35,19 +35,20 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   return (
     <div
       className="sheet-context-menu"
+      role="menu"
       style={{
         position: "fixed",
         left: x,
         top: y,
       }}
     >
-      <div className="sheet-context-menu-item" onClick={handleCut}>
+      <div className="sheet-context-menu-item" role="menuitem" onClick={handleCut}>
         Cut
       </div>
-      <div className="sheet-context-menu-item" onClick={handleCopy}>
+      <div className="sheet-context-menu-item" role="menuitem" onClick={handleCopy}>
         Copy
       </div>
-      <div className="sheet-context-menu-item" onClick={handlePaste}>
+      <div className="sheet-context-menu-item" role="menuitem" onClick={handlePaste}>
         Paste
       </div>
     </div>
