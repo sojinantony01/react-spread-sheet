@@ -203,12 +203,10 @@ describe("index tests", () => {
     await waitFor(() => {
       expect(screen.getByTestId(`3-0`)).toHaveValue("1");
     });
-
-  
   });
 
   test("select bottom to top and paste", async () => {
-     userEvent.setup();
+    userEvent.setup();
     render(<List data={generateDummyContent(10, 1)} />);
     mockAllIsIntersecting(true);
     act(() => {
@@ -249,7 +247,7 @@ describe("index tests", () => {
     });
     expect(screen.getByTestId(`4-0`)).toHaveValue("2");
     expect(screen.getByTestId(`5-0`)).toHaveValue("3");
-  })
+  });
 
   test("paste a normal value", async () => {
     userEvent.setup();
