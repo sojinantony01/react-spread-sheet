@@ -212,12 +212,7 @@ const List = (props: Props) => {
   };
 
   return (
-    <div
-      onKeyDown={handleKeyDown}
-      className="sheet-table"
-      data-testid="sheet-table"
-      onContextMenu={handleContextMenu}
-    >
+    <div onKeyDown={handleKeyDown} className="sheet-table" data-testid="sheet-table">
       {!hideTools && <Tools changeStyle={changeStyle} onChange={onChange} />}
       <div
         className="sheet-table-table-container"
@@ -225,18 +220,18 @@ const List = (props: Props) => {
         onScroll={onsCroll}
         data-testid="sheet-table-content"
       >
-        <div style={{ height: (itemLength + 1) * 32 }}>
+        <div data-testid="sheet-table-content-scroll" style={{ height: (itemLength + 1) * 32 }}>
           <div ref={divRef}>
             {items.length && (
               <table>
-                <tbody>
-                  {!hideXAxisHeader ? (
+                {!hideXAxisHeader ? (
+                  <thead>
                     <SheetXAxis resize={resize} headerValues={headerValues} />
-                  ) : (
-                    ""
-                  )}
-                  {items}
-                </tbody>
+                  </thead>
+                ) : (
+                  ""
+                )}
+                <tbody onContextMenu={handleContextMenu}>{items}</tbody>
               </table>
             )}
           </div>

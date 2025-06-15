@@ -95,7 +95,9 @@ const actions: DispatcherActions = {
           [action.payload.value.key]: action.payload.value.value,
         };
       } else {
-        delete data[p[0]][p[1]]?.styles?.[action.payload.value.key];
+        const styles = { ...data[p[0]][p[1]]?.styles };
+        delete styles[action.payload.value.key];
+        data[p[0]][p[1]].styles = styles;
       }
     });
     state.redo = [];

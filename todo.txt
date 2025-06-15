@@ -2,14 +2,11 @@ Math for columns, select other columns while editing
 Add more demos
 add minimum number of columns
 Calc in Read only mode 
-Increase test coverage
 js docs
-Top input box *, 
 Sandbox example height issue
 
 Show input/select/date boxes based on type, auto detect type
     - Add an icon in toolbox, add options to change selected input box type to text, date, select, checkbox ..., should update. if format empty auto detect the type
 
 Option to add rows or columns in between
-Right click for options
 multiple sheets

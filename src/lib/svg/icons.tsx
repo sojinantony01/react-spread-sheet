@@ -1,4 +1,5 @@
-const Icons = ({ type }: { type: string }) => {
+type AvailableIcons = "align-left" | "align-right" | "align-center" | "align-justify";
+const Icons = ({ type }: { type: AvailableIcons }) => {
   switch (type) {
     case "align-left":
       return (
@@ -85,6 +86,5 @@ const Icons = ({ type }: { type: string }) => {
         </svg>
       );
   }
-  return <></>;
 };
 export default Icons;

@@ -122,6 +122,7 @@ const Input = (props: Prop) => {
       }
     } else {
       e.preventDefault();
+      !selected && dispatch(selectOneCell, { payload: { i, j } });
     }
   };
   const onDrag = (e: any) => {
