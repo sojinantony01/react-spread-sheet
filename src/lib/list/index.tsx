@@ -211,17 +211,6 @@ const List = (props: Props) => {
     setContextMenu({ x: e.clientX, y: e.clientY });
   };
 
-  const handleClick = () => {
-    setContextMenu(null);
-  };
-
-  useEffect(() => {
-    document.addEventListener("click", handleClick);
-    return () => {
-      document.removeEventListener("click", handleClick);
-    };
-  }, []);
-
   return (
     <div
       onKeyDown={handleKeyDown}
@@ -229,7 +218,7 @@ const List = (props: Props) => {
       data-testid="sheet-table"
       onContextMenu={handleContextMenu}
     >
-      {!props.hideTools && <Tools changeStyle={changeStyle} onChange={onChange} />}
+      {!hideTools && <Tools changeStyle={changeStyle} onChange={onChange} />}
       <div
         className="sheet-table-table-container"
         ref={parentDivRef}

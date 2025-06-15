@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import ContextMenu from "../context-menu";
 
@@ -16,6 +16,7 @@ describe("ContextMenu", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+  afterEach(cleanup)
 
   test("renders context menu with correct position", () => {
     render(<ContextMenu {...mockProps} />);
@@ -72,6 +73,13 @@ describe("ContextMenu", () => {
     });
 
     expect(screen.getByRole("menu")).toHaveClass("sheet-context-menu");
+  });
+
+  test("Close on outside click", () => {
+    render(<div data-testid="parent"><ContextMenu {...mockProps} /></div>);
+
+    fireEvent.click(screen.getByTestId("parent"))
+    expect(mockProps.onClose).toHaveBeenCalled()
   });
 
   test("menu items are clickable", () => {

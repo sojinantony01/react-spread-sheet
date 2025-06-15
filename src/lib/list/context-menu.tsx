@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 
 interface ContextMenuProps {
   x: number;
@@ -31,6 +31,20 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     pasteFromClipBoard();
     onClose();
   };
+
+  const closeOnOutsideClick = useCallback((e: MouseEvent) => {
+    const inside = ((e.target as HTMLElement).closest('.sheet-context-menu'));
+    if(!inside) {
+      onClose()
+    }
+  }, [onClose])
+
+  useEffect(() => {
+    document.addEventListener("click", closeOnOutsideClick);
+    return () => {
+      document.removeEventListener("click", closeOnOutsideClick);
+    };
+  }, [closeOnOutsideClick]);
 
   return (
     <div

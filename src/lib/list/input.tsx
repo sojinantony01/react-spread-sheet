@@ -112,14 +112,16 @@ const Input = (props: Prop) => {
     if (row >= 0 && column >= 0 && row < rowLength && column < columnLength)
       dispatch(selectOneCell, { payload: { i: row, j: column } });
   };
-  const onClick = (e: { button: number; ctrlKey: any; metaKey: any; shiftKey: any }) => {
-    if (e.button !== 2) {
+  const onClick = (e: React.MouseEvent) => {
+    if (detectLeftButton(e)) {
       if (e.ctrlKey || e.metaKey || e.shiftKey) {
         dispatch(selectCells, { payload: { i, j } });
       } else {
         selected && setEdit(true);
         setSelected();
       }
+    } else {
+      e.preventDefault();
     }
   };
   const onDrag = (e: any) => {
