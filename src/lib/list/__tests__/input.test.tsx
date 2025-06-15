@@ -93,9 +93,6 @@ describe("input tests", () => {
     );
     await user.click(screen.getByTestId(`${i}-${j}`));
     await user.keyboard("{ArrowLeft}");
-    // fireEvent.keyDown(screen.getByTestId(`${i}-${j}`), {
-    //   code: "ArrowLeft",
-    // });
     expect(screen.getByTestId(`${i}-${j - 1}`)).toHaveClass("sheet-selected-td");
 
     await user.click(screen.getByTestId(`${i}-${j}`));
