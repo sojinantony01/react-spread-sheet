@@ -1,13 +1,17 @@
-import React, { Fragment } from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import React from "react";
+import { render, screen, fireEvent, waitFor, cleanup } from "@testing-library/react";
 import Input from "../input";
 import { store } from "../../store";
 import { addData, changeData } from "../../reducer";
 import { generateDummyContent } from "../utils";
-
+import userEvent from "@testing-library/user-event";
 let i = 1;
 let j = 1;
+
 describe("input tests", () => {
+  afterEach(() => {
+    cleanup();
+  });
   test("input render", () => {
     store.dispatch(addData, { payload: generateDummyContent(3, 3) });
     render(<Input i={i} j={j} />);
@@ -75,9 +79,10 @@ describe("input tests", () => {
       expect(screen.getByTestId(`${i}-${j}`)).toHaveValue("new value");
     });
   });
+
   test("input check keyboard arrow keys", async () => {
     store.dispatch(addData, { payload: generateDummyContent(3, 3) });
-
+    const user = userEvent.setup();
     render(
       <>
         <Input i={i - 1} j={j - 1} />
@@ -86,49 +91,64 @@ describe("input tests", () => {
         <Input i={i} j={j} />
       </>,
     );
+    await user.click(screen.getByTestId(`${i}-${j}`));
+    await user.keyboard("{ArrowLeft}");
+    expect(screen.getByTestId(`${i}-${j - 1}`)).toHaveClass("sheet-selected-td");
 
-    fireEvent.keyDown(screen.getByTestId(`${i}-${j}`), {
-      code: "ArrowLeft",
-    });
-    expect(screen.getByTestId(`${i}-${j - 1}`)).toHaveFocus();
+    await user.click(screen.getByTestId(`${i}-${j}`));
+    await user.keyboard("{ArrowUp}");
+    expect(screen.getByTestId(`${i - 1}-${j}`)).toHaveClass("sheet-selected-td");
 
-    fireEvent.keyDown(screen.getByTestId(`${i}-${j}`), {
-      code: "ArrowUp",
-    });
-    expect(screen.getByTestId(`${i - 1}-${j}`)).toHaveFocus();
+    await user.click(screen.getByTestId(`${i - 1}-${j - 1}`));
+    await user.keyboard("{ArrowDown}");
+    expect(screen.getByTestId(`${i}-${j - 1}`)).toHaveClass("sheet-selected-td");
 
-    fireEvent.keyDown(screen.getByTestId(`${i - 1}-${j - 1}`), {
-      code: "ArrowDown",
-    });
-    expect(screen.getByTestId(`${i}-${j - 1}`)).toHaveFocus();
+    await user.click(screen.getByTestId(`${i - 1}-${j - 1}`));
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByTestId(`${i - 1}-${j}`)).toHaveClass("sheet-selected-td");
 
-    fireEvent.keyDown(screen.getByTestId(`${i}-${j - 1}`), {
-      code: "ArrowRight",
-    });
-    expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus();
+    await user.click(screen.getByTestId(`${i - 1}-${j - 1}`));
+    expect(screen.getByTestId(`${i - 1}-${j - 1}`)).toHaveClass("sheet-selected-td");
 
-    fireEvent.click(screen.getByTestId(`${i}-${j}`), {});
-    expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus();
-    fireEvent.doubleClick(screen.getByTestId(`${i}-${j}`), {});
-    expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus();
+    await user.click(screen.getByTestId(`${i}-${j}`));
+    expect(screen.getByTestId(`${i}-${j}`)).toHaveClass("sheet-selected-td");
 
-    fireEvent.mouseDown(screen.getByTestId(`${i}-${j}`), {});
-    expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus();
+    await user.click(screen.getByTestId(`${i}-${j - 1}`));
+    expect(screen.getByTestId(`${i}-${j}`)).not.toHaveClass("sheet-selected-td");
 
-    fireEvent.mouseDown(screen.getByTestId(`${i}-${j}`), { ctrlKey: true });
-    expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus();
+    await user.dblClick(screen.getByTestId(`${i}-${j}`));
+    expect(screen.getByTestId(`${i}-${j}`)).toHaveClass("sheet-selected-td");
+
+    await user.dblClick(screen.getByTestId(`${i}-${j - 1}`));
+    expect(screen.getByTestId(`${i}-${j}`)).not.toHaveClass("sheet-selected-td");
+
+    await user.click(screen.getByTestId(`${i}-${j}`));
+    expect(screen.getByTestId(`${i}-${j}`)).toHaveClass("sheet-selected-td");
+
+    await user.click(screen.getByTestId(`${i}-${j - 1}`));
+    expect(screen.getByTestId(`${i}-${j}`)).not.toHaveClass("sheet-selected-td");
+
+    await user.click(screen.getByTestId(`${i - 1}-${j - 1}`));
+    expect(screen.getByTestId(`${i - 1}-${j - 1}`)).toHaveClass("sheet-selected-td");
+
+    await user.keyboard("{Meta>}");
+    await user.click(screen.getByTestId(`${i}-${j - 1}`));
+    await user.click(screen.getByTestId(`${i}-${j}`));
+    expect(screen.getByTestId(`${i}-${j}`)).toHaveClass("sheet-selected-td");
+    expect(screen.getByTestId(`${i}-${j - 1}`)).toHaveClass("sheet-selected-td");
+    await user.keyboard("{/Meta}");
 
     fireEvent.mouseMove(screen.getByTestId(`${i}-${j}`), { button: 1, buttons: 1 });
-    expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus();
+    expect(screen.getByTestId(`${i}-${j}`)).toHaveClass("sheet-selected-td");
 
-    fireEvent.mouseMove(screen.getByTestId(`${i - 1}-${j}`), { button: 1, buttons: 1 });
-    expect(screen.getByTestId(`${i}-${j}`)).toHaveFocus();
+    fireEvent.mouseMove(screen.getByTestId(`${i - 1}-${j}`), { button: 1 });
+    expect(screen.getByTestId(`${i}-${j}`)).toHaveClass("sheet-selected-td");
   });
 
-  test("input check keyboard arrow keys with shift key", async () => {
+  test("arrow + shift key", async () => {
     store.dispatch(addData, { payload: generateDummyContent(3, 3) });
-
-    const { container } = render(
+    const user = userEvent.setup();
+    render(
       <>
         <Input i={i - 1} j={j - 1} />
         <Input i={i - 1} j={j} />
@@ -136,13 +156,27 @@ describe("input tests", () => {
         <Input i={i} j={j} />
       </>,
     );
+    await user.click(screen.getByTestId(`${i - 1}-${j}`));
+    expect(screen.getByTestId(`${i - 1}-${j - 1}`)).not.toHaveClass("sheet-selected-td");
+    await user.keyboard("{Shift>}");
+    await user.keyboard("{ArrowLeft}");
+    expect(screen.getByTestId(`${i - 1}-${j - 1}`)).toHaveClass("sheet-selected-td");
+    expect(screen.getByTestId(`${i - 1}-${j}`)).toHaveClass("sheet-selected-td");
+    await user.keyboard("{/Shift}");
+  });
 
-    fireEvent.keyDown(screen.getByTestId(`${i}-${j}`), {
-      code: "ArrowLeft",
-      shiftKey: true,
-    });
-    expect(screen.getByTestId(`${i}-${j - 1}`)).toHaveFocus();
-    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-    expect(container.getElementsByClassName("sheet-selected-td")).toHaveLength(2);
+  test("context menu click", async () => {
+    store.dispatch(addData, { payload: generateDummyContent(3, 3) });
+    const user = userEvent.setup();
+    render(
+      <>
+        <Input i={i - 1} j={j - 1} />
+        <Input i={i - 1} j={j} />
+        <Input i={i} j={j - 1} />
+        <Input i={i} j={j} />
+      </>,
+    );
+    await user.pointer({ keys: "[MouseRight>]", target: screen.getByTestId(`${i}-${j}`) });
+    expect(screen.getByTestId(`${i}-${j}`)).not.toHaveClass("sheet-selected-td");
   });
 });
