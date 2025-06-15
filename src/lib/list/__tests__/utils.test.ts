@@ -72,8 +72,8 @@ describe("getItemsToCopy", () => {
 });
 
 describe("getCalculatedVal", () => {
-  expect(getCalculatedVal("nothing", [[{value: 1}]])).toBe(undefined)
-  expect(getCalculatedVal("=A1 + A2", [[{value: 1}, {value: 2}]])).toBe("A1 + A2") //value does not exist in data
-  expect(getCalculatedVal("=A1 + B1", [[{value: 1}, {value: 2}]])).toBe("3")
-  expect(getCalculatedVal("=AD + B1", [[{value: 1}, {value: 2}]])).toBe("2") // AS is undefined
-})
+  expect(getCalculatedVal("nothing", [[{ value: 1 }]])).toBe(undefined);
+  expect(getCalculatedVal("=A1 + A2", [[{ value: 1 }, { value: 2 }]])).toBe("A1 + A2"); //value does not exist in data
+  expect(getCalculatedVal("=A1 + B1", [[{ value: 1 }, { value: 2 }]])).toBe("3");
+  expect(getCalculatedVal("=AD + B1", [[{ value: 1 }, { value: 2 }]])).toBe("2"); // AS is undefined
+});

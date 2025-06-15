@@ -13,13 +13,18 @@ describe("index tests", () => {
   });
 
   test("Table render", async () => {
-    render(<div style={{height: "600px"}}>{`tr {height: 30}`}<List data={generateDummyContent(310, 1)} /></div>); //Style required to find scroll height and fire onScroll
+    render(
+      <div style={{ height: "600px" }}>
+        {`tr {height: 30}`}
+        <List data={generateDummyContent(310, 1)} />
+      </div>,
+    ); //Style required to find scroll height and fire onScroll
     expect(store.getState().data.length).toBe(310);
 
     const tr = await screen.findAllByTestId("sheet-table-tr");
     expect(tr).toHaveLength(300);
 
-    const scrollable = screen.getByTestId(`sheet-table-content`)
+    const scrollable = screen.getByTestId(`sheet-table-content`);
 
     fireEvent.scroll(scrollable, { target: { scrollTop: 4000 } });
 
@@ -117,7 +122,7 @@ describe("index tests", () => {
     expect(background).toBeInTheDocument();
     fireEvent.click(screen.getByTestId("background-color-button"));
     fireEvent.change(background, { target: { value: "#ffffff" } });
-        await waitFor(() => {
+    await waitFor(() => {
       expect(store.getState().data?.[0][0]?.styles?.["background"]).toBe("#ffffff");
     });
     expect(onChange).toHaveBeenCalledTimes(17);
@@ -181,7 +186,7 @@ describe("index tests", () => {
       expect(screen.getByTestId(`3-0`)).toHaveValue("1");
     });
     expect(screen.getByTestId(`4-0`)).toHaveValue("2");
-    
+
     act(() => {
       store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
       store.dispatch(selectCellsDrag, { payload: { i: 2, j: 0 } });
@@ -244,11 +249,11 @@ describe("index tests", () => {
   test("Context menu", () => {
     render(<List data={generateDummyContent(10, 1)} />);
     mockAllIsIntersecting(true);
-    fireEvent.contextMenu(screen.getByTestId(`0-0`))
+    fireEvent.contextMenu(screen.getByTestId(`0-0`));
     expect(screen.getByText("Cut")).toBeInTheDocument();
     expect(screen.getByText("Copy")).toBeInTheDocument();
     expect(screen.getByText("Paste")).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId(`sheet-table-content`))
+    fireEvent.click(screen.getByTestId(`sheet-table-content`));
     expect(screen.queryByText("Cut")).not.toBeInTheDocument();
-  })
+  });
 });
