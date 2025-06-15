@@ -204,6 +204,33 @@ describe("index tests", () => {
       expect(screen.getByTestId(`3-0`)).toHaveValue("1");
     });
 
+  
+  });
+
+  test("select bottom to top and paste", async () => {
+     userEvent.setup();
+    render(<List data={generateDummyContent(10, 1)} />);
+    mockAllIsIntersecting(true);
+    act(() => {
+      store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+    });
+    act(() => {
+      store.dispatch(changeData, {
+        payload: { value: "1", i: 0, j: 0 },
+      });
+    });
+    act(() => {
+      store.dispatch(changeData, {
+        payload: { value: "2", i: 1, j: 0 },
+      });
+    });
+    act(() => {
+      store.dispatch(changeData, {
+        payload: { value: "3", i: 2, j: 0 },
+      });
+    });
+    const table = screen.getByTestId(`sheet-table`);
+
     act(() => {
       store.dispatch(selectOneCell, { payload: { i: 2, j: 0 } });
       store.dispatch(selectCellsDrag, { payload: { i: 0, j: 0 } });
@@ -220,7 +247,9 @@ describe("index tests", () => {
     await waitFor(() => {
       expect(screen.getByTestId(`3-0`)).toHaveValue("1");
     });
-  });
+    expect(screen.getByTestId(`4-0`)).toHaveValue("2");
+    expect(screen.getByTestId(`5-0`)).toHaveValue("3");
+  })
 
   test("paste a normal value", async () => {
     userEvent.setup();
