@@ -59,11 +59,8 @@ const Tools = ({
             data-testid="fx-input"
             ref={calculationRef}
             value={selectedItemVal}
-            readOnly={i == undefined || j == undefined}
+            readOnly={i === undefined || j === undefined}
             onChange={onValChange}
-            onKeyDown={(e) => {
-              e.stopPropagation();
-            }}
           />
         </div>
         <div className="sheet-tools-text-style-container">

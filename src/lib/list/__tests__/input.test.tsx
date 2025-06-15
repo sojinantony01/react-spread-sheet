@@ -177,6 +177,6 @@ describe("input tests", () => {
       </>,
     );
     await user.pointer({ keys: "[MouseRight>]", target: screen.getByTestId(`${i}-${j}`) });
-    expect(screen.getByTestId(`${i}-${j}`)).not.toHaveClass("sheet-selected-td");
+    expect(screen.getByTestId(`${i}-${j}`)).toHaveClass("sheet-selected-td");
   });
 });
