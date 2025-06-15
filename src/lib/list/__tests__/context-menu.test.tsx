@@ -16,7 +16,7 @@ describe("ContextMenu", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  afterEach(cleanup)
+  afterEach(cleanup);
 
   test("renders context menu with correct position", () => {
     render(<ContextMenu {...mockProps} />);
@@ -76,10 +76,14 @@ describe("ContextMenu", () => {
   });
 
   test("Close on outside click", () => {
-    render(<div data-testid="parent"><ContextMenu {...mockProps} /></div>);
+    render(
+      <div data-testid="parent">
+        <ContextMenu {...mockProps} />
+      </div>,
+    );
 
-    fireEvent.click(screen.getByTestId("parent"))
-    expect(mockProps.onClose).toHaveBeenCalled()
+    fireEvent.click(screen.getByTestId("parent"));
+    expect(mockProps.onClose).toHaveBeenCalled();
   });
 
   test("menu items are clickable", () => {

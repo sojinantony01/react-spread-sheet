@@ -32,12 +32,15 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     onClose();
   };
 
-  const closeOnOutsideClick = useCallback((e: MouseEvent) => {
-    const inside = ((e.target as HTMLElement).closest('.sheet-context-menu'));
-    if(!inside) {
-      onClose()
-    }
-  }, [onClose])
+  const closeOnOutsideClick = useCallback(
+    (e: MouseEvent) => {
+      const inside = (e.target as HTMLElement).closest(".sheet-context-menu");
+      if (!inside) {
+        onClose();
+      }
+    },
+    [onClose],
+  );
 
   useEffect(() => {
     document.addEventListener("click", closeOnOutsideClick);
