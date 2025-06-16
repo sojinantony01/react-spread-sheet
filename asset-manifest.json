@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/react-spread-sheet/static/css/main.4b454a65.css",
-    "main.js": "/react-spread-sheet/static/js/main.2b49cea7.js",
-    "static/js/453.c58d7cf3.chunk.js": "/react-spread-sheet/static/js/453.c58d7cf3.chunk.js",
-    "index.html": "/react-spread-sheet/index.html",
-    "main.4b454a65.css.map": "/react-spread-sheet/static/css/main.4b454a65.css.map",
-    "main.2b49cea7.js.map": "/react-spread-sheet/static/js/main.2b49cea7.js.map",
-    "453.c58d7cf3.chunk.js.map": "/react-spread-sheet/static/js/453.c58d7cf3.chunk.js.map"
+    "main.css": "/package/react-spread-sheet-excel/static/css/main.4b454a65.css",
+    "main.js": "/package/react-spread-sheet-excel/static/js/main.97df3eba.js",
+    "static/js/453.c58d7cf3.chunk.js": "/package/react-spread-sheet-excel/static/js/453.c58d7cf3.chunk.js",
+    "index.html": "/package/react-spread-sheet-excel/index.html",
+    "main.4b454a65.css.map": "/package/react-spread-sheet-excel/static/css/main.4b454a65.css.map",
+    "main.97df3eba.js.map": "/package/react-spread-sheet-excel/static/js/main.97df3eba.js.map",
+    "453.c58d7cf3.chunk.js.map": "/package/react-spread-sheet-excel/static/js/453.c58d7cf3.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4b454a65.css",
-    "static/js/main.2b49cea7.js"
+    "static/js/main.97df3eba.js"
   ]
 }
