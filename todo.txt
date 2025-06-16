@@ -10,3 +10,11 @@ Show input/select/date boxes based on type, auto detect type
 
 Option to add rows or columns in between
 multiple sheets
+A row filter option from row column headers.
+Custom options in context menu. 
+
+Add row, add columns, delete row, delete column
+Real-time Updates (Multiple users can edit same time): how de we enable realtime in this one? 
+Merge cells
+FInd end of rows having actual values, onSave and export only use rows till end of actual values
+Support adding images
