@@ -65,10 +65,8 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     { key: "email", label: "Email" },
     { key: "url", label: "URL" },
     { key: "tel", label: "Phone" },
-    { key: "select", label: "Select Box" },
+    { key: "select", label: "Select options" },
     { key: "checkbox", label: "Checkbox" },
-    { key: "radio", label: "Radio Button" },
-    { key: "textarea", label: "Text Area" },
   ];
 
   return (
@@ -91,13 +89,13 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         Paste
       </div>
       <div className="sheet-context-menu-divider"></div>
-      <div 
-        className="sheet-context-menu-item sheet-context-menu-item-with-submenu" 
+      <div
+        className="sheet-context-menu-item sheet-context-menu-item-with-submenu"
         role="menuitem"
         onMouseEnter={() => setShowInputTypeSubmenu(true)}
         onMouseLeave={() => setShowInputTypeSubmenu(false)}
       >
-        Input Type
+        Change Type
         {showInputTypeSubmenu && (
           <div className="sheet-context-submenu">
             {inputTypes.map((type) => (
