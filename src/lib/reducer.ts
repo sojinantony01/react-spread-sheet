@@ -3,6 +3,7 @@ export type Selected = [number, number];
 export interface Data {
   value: string;
   styles?: { [key: string]: string };
+  inputType?: string;
 }
 
 interface Action {
@@ -233,6 +234,18 @@ const actions: DispatcherActions = {
     state.data.push(...action.payload);
     return state;
   },
+  updateInputTypes(state, action) {
+    const data = state.data;
+    const undo: Action[] = [];
+    state.selected.forEach((p) => {
+      undo.push({ i: p[0], j: p[1], data: { ...state.data[p[0]][p[1]] } });
+      data[p[0]][p[1]].inputType = action.payload.inputType;
+    });
+    state.redo = [];
+    state.undo.push(undo);
+    state.data = data;
+    return state;
+  },
 };
 
 export const {
@@ -251,4 +264,5 @@ export const {
   redo,
   bulkUpdate,
   addRows,
+  updateInputTypes,
 } = actions;

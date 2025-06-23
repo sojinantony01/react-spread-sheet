@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 interface ContextMenuProps {
   x: number;
@@ -7,6 +7,7 @@ interface ContextMenuProps {
   copyToClipBoard: () => void;
   cutItemsToClipBoard: () => void;
   pasteFromClipBoard: () => void;
+  changeInputType?: (inputType: string) => void;
 }
 
 const ContextMenu: React.FC<ContextMenuProps> = ({
@@ -16,7 +17,10 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   copyToClipBoard,
   cutItemsToClipBoard,
   pasteFromClipBoard,
+  changeInputType,
 }) => {
+  const [showInputTypeSubmenu, setShowInputTypeSubmenu] = useState(false);
+
   const handleCut = () => {
     cutItemsToClipBoard();
     onClose();
@@ -29,6 +33,11 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
 
   const handlePaste = () => {
     pasteFromClipBoard();
+    onClose();
+  };
+
+  const handleInputTypeChange = (inputType: string) => {
+    changeInputType?.(inputType);
     onClose();
   };
 
@@ -49,6 +58,19 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     };
   }, [closeOnOutsideClick]);
 
+  const inputTypes = [
+    { key: "text", label: "Text" },
+    { key: "number", label: "Number" },
+    { key: "date", label: "Date" },
+    { key: "email", label: "Email" },
+    { key: "url", label: "URL" },
+    { key: "tel", label: "Phone" },
+    { key: "select", label: "Select Box" },
+    { key: "checkbox", label: "Checkbox" },
+    { key: "radio", label: "Radio Button" },
+    { key: "textarea", label: "Text Area" },
+  ];
+
   return (
     <div
       className="sheet-context-menu"
@@ -67,6 +89,29 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
       </div>
       <div className="sheet-context-menu-item" role="menuitem" onClick={handlePaste}>
         Paste
+      </div>
+      <div className="sheet-context-menu-divider"></div>
+      <div 
+        className="sheet-context-menu-item sheet-context-menu-item-with-submenu" 
+        role="menuitem"
+        onMouseEnter={() => setShowInputTypeSubmenu(true)}
+        onMouseLeave={() => setShowInputTypeSubmenu(false)}
+      >
+        Input Type
+        {showInputTypeSubmenu && (
+          <div className="sheet-context-submenu">
+            {inputTypes.map((type) => (
+              <div
+                key={type.key}
+                className="sheet-context-menu-item"
+                role="menuitem"
+                onClick={() => handleInputTypeChange(type.key)}
+              >
+                {type.label}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ interface Prop {
   headerValues?: string[];
 }
 
-//Mouse clicked check
+
 const detectLeftButton = (evt: any) => {
   if ("buttons" in evt) {
     return evt.buttons == 1;
@@ -42,6 +42,9 @@ const Input = (props: Prop) => {
   const styles = useAppSelector(store, (state) => {
     return state.data[i][j].styles;
   });
+  const inputType = useAppSelector(store, (state) => {
+    return state.data[i][j].inputType || "text";
+  });
   const rowLength = useAppSelector(store, (state) => {
     return state.data.length;
   });
@@ -49,14 +52,15 @@ const Input = (props: Prop) => {
     return state.data[i].length;
   });
 
-  const change = (e: ChangeEvent<HTMLInputElement>) => {
+  const change = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     if (value !== e.target.value) {
       setEdit(true);
       dispatch(changeData, { payload: { value: e.target.value || "", i: i, j: j } });
       onChange && onChange(i, j, e.target.value);
     }
   };
-  const keyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+
+  const keyDown = (e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     if (
       (!editMode && ["ArrowLeft", "ArrowRight"].includes(e.code)) ||
       ["ArrowUp", "ArrowDown"].includes(e.code)
@@ -80,7 +84,8 @@ const Input = (props: Prop) => {
       e.stopPropagation();
     }
   };
-  const moveToNext = (e: KeyboardEvent<HTMLInputElement>) => {
+
+  const moveToNext = (e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     let newI, newJ;
     switch (e.code) {
       case "ArrowLeft":
@@ -130,25 +135,85 @@ const Input = (props: Prop) => {
       dispatch(selectCellsDrag, { payload: { i, j } });
     }
   };
-  return (
-    <input
-      id={`${i}-${j}`}
-      data-testid={`${i}-${j}`}
-      value={value}
-      style={styles}
-      onFocus={() => setFocus(true)}
-      onKeyDown={keyDown}
-      onMouseMoveCapture={onDrag}
-      onMouseDown={onClick}
-      className={`input ${editMode ? "" : "view_mode"} ${selected ? "sheet-selected-td" : ""}`}
-      onBlur={() => {
+
+  const renderInput = () => {
+    const baseProps = {
+      id: `${i}-${j}`,
+      "data-testid": `${i}-${j}`,
+      value: value,
+      style: styles,
+      onFocus: () => setFocus(true),
+      onMouseMoveCapture: onDrag,
+      onMouseDown: onClick,
+      className: `input ${editMode ? "" : "view_mode"} ${selected ? "sheet-selected-td" : ""}`,
+      onBlur: () => {
         setEdit(false);
         setFocus(false);
-      }}
-      onDoubleClick={() => setEdit(true)}
-      onChange={change}
-    />
-  );
+      },
+      onDoubleClick: () => setEdit(true),
+    };
+
+    switch (inputType) {
+      case "textarea":
+        return (
+          <textarea
+            {...baseProps}
+            rows={3}
+            cols={20}
+            onKeyDown={keyDown}
+            onChange={change}
+          />
+        );
+      case "select":
+        return (
+          <select {...baseProps} onKeyDown={keyDown} onChange={change}>
+            <option value="">Select...</option>
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+            <option value="option3">Option 3</option>
+          </select>
+        );
+      case "checkbox":
+        return (
+          <input
+            {...baseProps}
+            type="checkbox"
+            checked={value === "true" || value === "1"}
+            onChange={(e) => {
+              const newValue = e.target.checked ? "true" : "false";
+              dispatch(changeData, { payload: { value: newValue, i: i, j: j } });
+              onChange && onChange(i, j, newValue);
+            }}
+            onKeyDown={keyDown}
+          />
+        );
+      case "radio":
+        return (
+          <input
+            {...baseProps}
+            type="radio"
+            checked={value === "true" || value === "1"}
+            onChange={(e) => {
+              const newValue = e.target.checked ? "true" : "false";
+              dispatch(changeData, { payload: { value: newValue, i: i, j: j } });
+              onChange && onChange(i, j, newValue);
+            }}
+            onKeyDown={keyDown}
+          />
+        );
+      default:
+        return (
+          <input
+            {...baseProps}
+            type={inputType}
+            onKeyDown={keyDown}
+            onChange={change}
+          />
+        );
+    }
+  };
+
+  return renderInput();
 };
 
 export default Input;
