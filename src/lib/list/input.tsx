@@ -157,6 +157,7 @@ const Input = (props: Prop) => {
       case "textarea":
         return (
           <textarea
+            key={`${i}-${j}-${inputType}`}
             {...baseProps}
             rows={3}
             cols={20}
@@ -166,7 +167,7 @@ const Input = (props: Prop) => {
         );
       case "select":
         return (
-          <select {...baseProps} onKeyDown={keyDown} onChange={change}>
+          <select key={`${i}-${j}-${inputType}`} {...baseProps} onKeyDown={keyDown} onChange={change}>
             <option value="">Select...</option>
             <option value="option1">Option 1</option>
             <option value="option2">Option 2</option>
@@ -176,6 +177,7 @@ const Input = (props: Prop) => {
       case "checkbox":
         return (
           <input
+            key={`${i}-${j}-${inputType}`}
             {...baseProps}
             type="checkbox"
             checked={value === "true" || value === "1"}
@@ -190,6 +192,7 @@ const Input = (props: Prop) => {
       case "radio":
         return (
           <input
+            key={`${i}-${j}-${inputType}`}
             {...baseProps}
             type="radio"
             checked={value === "true" || value === "1"}
@@ -204,6 +207,7 @@ const Input = (props: Prop) => {
       default:
         return (
           <input
+            key={`${i}-${j}-${inputType}`}
             {...baseProps}
             type={inputType}
             onKeyDown={keyDown}

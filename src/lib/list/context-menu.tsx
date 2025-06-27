@@ -37,6 +37,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   };
 
   const handleInputTypeChange = (inputType: string) => {
+    console.log('Context menu: handleInputTypeChange called with:', inputType);
     changeInputType?.(inputType);
     onClose();
   };
@@ -65,10 +66,8 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     { key: "email", label: "Email" },
     { key: "url", label: "URL" },
     { key: "tel", label: "Phone" },
-    { key: "select", label: "Select Box" },
-    { key: "checkbox", label: "Checkbox" },
-    { key: "radio", label: "Radio Button" },
-    { key: "textarea", label: "Text Area" },
+    { key: "select", label: "Select options" },
+    { key: "checkbox", label: "Checkbox" }
   ];
 
   return (

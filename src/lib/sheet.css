@@ -83,8 +83,68 @@
   min-height: 32px;
   height: 100%;
   outline: none;
-  width: 100%;
   max-width: 100%;
+}
+
+/* Specific styles for different input types */
+.sheet-table .input[type="date"] {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.sheet-table .input[type="number"] {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.sheet-table .input[type="email"] {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.sheet-table .input[type="url"] {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.sheet-table .input[type="tel"] {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.sheet-table .input[type="checkbox"] {
+  width: auto;
+  min-height: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
+.sheet-table .input[type="radio"] {
+  width: auto;
+  min-height: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
+.sheet-table .input[type="select"] {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.sheet-table textarea.input {
+  resize: none;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.2;
+  padding: 2px 4px;
+}
+
+.sheet-table select.input {
+  font-family: inherit;
+  font-size: inherit;
+  background-color: white;
 }
 
 .sheet-table .input:focus {
@@ -287,6 +347,7 @@
   padding: 8px 12px;
   cursor: pointer;
   transition: background-color 0.2s;
+  user-select: none;
 }
 .sheet-table .sheet-context-menu-item:hover {
   background-color: #f5f5f5;
@@ -312,8 +373,21 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   min-width: 120px;
   z-index: 1000;
+  display: none;
 }
 
 .sheet-table .sheet-context-menu-item-with-submenu:hover .sheet-context-submenu {
   display: block;
+}
+
+.sheet-table .sheet-context-submenu .sheet-context-menu-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.sheet-table .sheet-context-submenu .sheet-context-menu-item:hover {
+  background-color: #f5f5f5;
 }
