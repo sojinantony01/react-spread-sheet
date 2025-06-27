@@ -37,7 +37,6 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   };
 
   const handleInputTypeChange = (inputType: string) => {
-    console.log('Context menu: handleInputTypeChange called with:', inputType);
     changeInputType?.(inputType);
     onClose();
   };
