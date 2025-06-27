@@ -15,13 +15,12 @@ interface Prop {
   headerValues?: string[];
 }
 
-
 const detectLeftButton = (evt: any) => {
   if ("buttons" in evt) {
-    return evt.buttons == 1;
+    return evt.buttons === 1;
   }
   var button = evt.which || evt.button;
-  return button == 1;
+  return button === 1;
 };
 
 const Input = (props: Prop) => {
@@ -60,7 +59,9 @@ const Input = (props: Prop) => {
     }
   };
 
-  const keyDown = (e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const keyDown = (
+    e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
     if (
       (!editMode && ["ArrowLeft", "ArrowRight"].includes(e.code)) ||
       ["ArrowUp", "ArrowDown"].includes(e.code)
@@ -85,7 +86,9 @@ const Input = (props: Prop) => {
     }
   };
 
-  const moveToNext = (e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const moveToNext = (
+    e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
     let newI, newJ;
     switch (e.code) {
       case "ArrowLeft":
