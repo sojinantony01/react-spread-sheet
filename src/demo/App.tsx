@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import Sheet, { SheetRef } from "../lib";
 import packageConf from "../../package.json";
 import { importFromXlsx, exportToXlsx } from "./xlsxUtils";
-import './demo.css'
+import "./demo.css";
 //Create dummy data.
 const createData = () => {
   const val: any[][] = [];
@@ -51,7 +51,9 @@ function App() {
   return (
     <div style={{ height: "100dvh", display: "flex", flexDirection: "column", padding: "10px" }}>
       <div style={{ paddingBottom: "10px" }}>
-        <a href="https://www.npmjs.com/package/react-spread-sheet-excel">React excel sheet: V{packageConf.version}</a>{" "}
+        <a href="https://www.npmjs.com/package/react-spread-sheet-excel">
+          React excel sheet: V{packageConf.version}
+        </a>{" "}
         <button data-testid="get-updated-data" onClick={getData}>
           Get Updated data
         </button>{" "}
@@ -66,7 +68,7 @@ function App() {
           <button onClick={handleImportClick}>Import XLSX</button>
         </label>
       </div>
-      <div style={{ height: "10px", flex: '1 1 10px' }}>
+      <div style={{ height: "10px", flex: "1 1 10px" }}>
         {/* Data is optional, if data is empty it will render empty input boxes */}
         <Sheet data={state} onChange={onChange} ref={childRef} resize={true} />
       </div>
