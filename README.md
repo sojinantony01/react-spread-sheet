@@ -2,7 +2,7 @@
 React spread sheet excel is a high-performance React component for building Excel-like spreadsheets with advanced features.
 
 A **simple very light weight(<200KB)** component to Render large lists of input boxes in the table using React JS, Render a table with a large number of rows and columns.
-Able to render 1Lakh+ input boxes in react, A quick solution for web based spreadsheet or excel.
+Able to render 100000+ input boxes in react, A quick solution for web based spreadsheet or excel.
 
 [![npm version](https://badge.fury.io/js/react-spread-sheet-excel.svg)](https://badge.fury.io/js/react-spread-sheet-excel) ![Downloads](https://img.shields.io/npm/dm/react-spread-sheet-excel.svg)
   <a href="https://codecov.io/gh/sojinantony01/react-spread-sheet" > 
@@ -20,13 +20,13 @@ Able to render 1Lakh+ input boxes in react, A quick solution for web based sprea
 
 ## Features
 
-* __Blazing Fast Rendering: Handles large datasets efficiently (1Lakh+ input boxes).__
+* __Blazing Fast Rendering: Handles large datasets efficiently (100000+ input boxes).__
 * __Comprehensive Calculation Engine: Supports complex formulas and calculations. (= 2 * A2 + (B2 * C4))__
 * __Rich Formatting Options: Customize cell appearance with bold, italic, underline, and more.__
 * __Undo, Redo actions.__
 * __Calculations Support, value should starts with "="__
 * __Select Multiple cells.__
-* __copy,cut and paste all selected cells.__
+* __copy, cut and paste all selected cells.__
 * __Intuitive Keyboard Navigation: Navigate and edit cells effortlessly.__
 * __Delete values in selected cells.__
 * __Customizable header values - (Do not pass numbers in header values, will affect calc)__
