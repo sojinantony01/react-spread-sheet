@@ -1,10 +1,6 @@
 .sheet-table .input-dummy {
   height: 100%;
 }
-.sheet-table .sheet-table-table-container {
-  height: calc(100% - 50px);
-  overflow: auto;
-}
 .sheet-table .pv-4 {
   padding: 0px 4px;
 }
@@ -334,4 +330,17 @@
 
 .sheet-table .sheet-context-submenu .sheet-context-menu-item:hover {
   background-color: #f5f5f5;
+}
+
+.sheet-table {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+.sheet-table .sheet-table-table-container {
+  flex: 1 1 10px;
+  height: 10px;
+  overflow: auto;
+  position: relative;
 }
