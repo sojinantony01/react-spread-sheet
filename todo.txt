@@ -7,7 +7,7 @@ Sandbox example height issue
 
 Show input/select/date boxes based on type, auto detect type
     - Add an icon in toolbox, add options to change selected input box type to text, date, select, checkbox ..., should update. if format empty auto detect the type
-
+        add checkbox
 Option to add rows or columns in between
 multiple sheets
 A row filter option from row column headers.
@@ -16,5 +16,8 @@ Custom options in context menu.
 Add row, add columns, delete row, delete column
 Real-time Updates (Multiple users can edit same time): how de we enable realtime in this one? 
 Merge cells
-FInd end of rows having actual values, onSave and export only use rows till end of actual values
+Find end of rows having actual values, onSave and export only use rows till end of actual values
 Support adding images
+More events - on select, on bulk change, onUndo, onRedo, onScroll(which should help to add more data)
+Custom tools - onClick should respond with all selected cell data
+add image
