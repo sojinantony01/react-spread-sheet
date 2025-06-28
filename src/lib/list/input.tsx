@@ -15,13 +15,12 @@ interface Prop {
   headerValues?: string[];
 }
 
-//Mouse clicked check
 const detectLeftButton = (evt: any) => {
   if ("buttons" in evt) {
-    return evt.buttons == 1;
+    return evt.buttons === 1;
   }
   var button = evt.which || evt.button;
-  return button == 1;
+  return button === 1;
 };
 
 const Input = (props: Prop) => {
@@ -42,6 +41,10 @@ const Input = (props: Prop) => {
   const styles = useAppSelector(store, (state) => {
     return state.data[i][j].styles;
   });
+  const type = useAppSelector(store, (state) => {
+    return state.data[i][j].type || "text";
+  });
+
   const rowLength = useAppSelector(store, (state) => {
     return state.data.length;
   });
@@ -56,6 +59,7 @@ const Input = (props: Prop) => {
       onChange && onChange(i, j, e.target.value);
     }
   };
+
   const keyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (
       (!editMode && ["ArrowLeft", "ArrowRight"].includes(e.code)) ||
@@ -80,6 +84,7 @@ const Input = (props: Prop) => {
       e.stopPropagation();
     }
   };
+
   const moveToNext = (e: KeyboardEvent<HTMLInputElement>) => {
     let newI, newJ;
     switch (e.code) {
@@ -130,25 +135,35 @@ const Input = (props: Prop) => {
       dispatch(selectCellsDrag, { payload: { i, j } });
     }
   };
-  return (
-    <input
-      id={`${i}-${j}`}
-      data-testid={`${i}-${j}`}
-      value={value}
-      style={styles}
-      onFocus={() => setFocus(true)}
-      onKeyDown={keyDown}
-      onMouseMoveCapture={onDrag}
-      onMouseDown={onClick}
-      className={`input ${editMode ? "" : "view_mode"} ${selected ? "sheet-selected-td" : ""}`}
-      onBlur={() => {
+
+  const renderInput = () => {
+    const baseProps = {
+      id: `${i}-${j}`,
+      "data-testid": `${i}-${j}`,
+      value: value,
+      style: styles,
+      onFocus: () => setFocus(true),
+      onMouseMoveCapture: onDrag,
+      onMouseDown: onClick,
+      className: `input ${editMode ? "" : "view_mode"} ${selected ? "sheet-selected-td" : ""}`,
+      onBlur: () => {
         setEdit(false);
         setFocus(false);
-      }}
-      onDoubleClick={() => setEdit(true)}
-      onChange={change}
-    />
-  );
+      },
+      onDoubleClick: () => setEdit(true),
+    };
+    return (
+      <input
+        key={`${i}-${j}-${type}`}
+        {...baseProps}
+        type={type}
+        onKeyDown={keyDown}
+        onChange={change}
+      />
+    );
+  };
+
+  return renderInput();
 };
 
 export default Input;

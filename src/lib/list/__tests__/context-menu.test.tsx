@@ -11,6 +11,7 @@ describe("ContextMenu", () => {
     copyToClipBoard: jest.fn(),
     cutItemsToClipBoard: jest.fn(),
     pasteFromClipBoard: jest.fn(),
+    changeInputType: jest.fn(),
   };
 
   beforeEach(() => {
@@ -35,6 +36,7 @@ describe("ContextMenu", () => {
     expect(screen.getByText("Cut")).toBeInTheDocument();
     expect(screen.getByText("Copy")).toBeInTheDocument();
     expect(screen.getByText("Paste")).toBeInTheDocument();
+    expect(screen.getByText("Input Type")).toBeInTheDocument();
   });
 
   test("handles cut action correctly", () => {
@@ -61,6 +63,29 @@ describe("ContextMenu", () => {
     fireEvent.click(screen.getByText("Paste"));
 
     expect(mockProps.pasteFromClipBoard).toHaveBeenCalledTimes(1);
+    expect(mockProps.onClose).toHaveBeenCalledTimes(1);
+  });
+
+  test("shows input type submenu on hover", () => {
+    render(<ContextMenu {...mockProps} />);
+
+    const inputTypeItem = screen.getByText("Input Type");
+    fireEvent.mouseEnter(inputTypeItem);
+
+    expect(screen.getByText("Text")).toBeInTheDocument();
+    expect(screen.getByText("Number")).toBeInTheDocument();
+    expect(screen.getByText("Date")).toBeInTheDocument();
+  });
+
+  test("handles input type selection correctly", () => {
+    render(<ContextMenu {...mockProps} />);
+
+    const inputTypeItem = screen.getByText("Input Type");
+    fireEvent.mouseEnter(inputTypeItem);
+
+    fireEvent.click(screen.getByText("Date"));
+
+    expect(mockProps.changeInputType).toHaveBeenCalledWith("date");
     expect(mockProps.onClose).toHaveBeenCalledTimes(1);
   });
 

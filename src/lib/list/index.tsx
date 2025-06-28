@@ -11,6 +11,7 @@ import {
   selectAllCells,
   undo,
   updateStyles,
+  updateInputTypes,
 } from "../reducer";
 import SheetXAxis from "./sheet-x-axis";
 import { generateDummyContent, getItemsToCopy } from "./utils";
@@ -206,6 +207,11 @@ const List = (props: Props) => {
     onChange && onChange();
   };
 
+  const changeInputType = (inputType: string) => {
+    dispatch(updateInputTypes, { payload: { type: inputType } });
+    onChange && onChange();
+  };
+
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     setContextMenu({ x: e.clientX, y: e.clientY });
@@ -244,6 +250,7 @@ const List = (props: Props) => {
           copyToClipBoard={copyToClipBoard}
           cutItemsToClipBoard={cutItemsToClipBoard}
           pasteFromClipBoard={pasteFromClipBoard}
+          changeInputType={changeInputType}
           onClose={() => setContextMenu(null)}
         />
       )}

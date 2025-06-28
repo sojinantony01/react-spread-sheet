@@ -25,6 +25,13 @@ const Tools = ({
     }
     return emptyObject;
   });
+  const type = useAppSelector(store, (state) => {
+    const index = state.selected[0];
+    if (index) {
+      return state.data[index[0]][index[1]].type || "text";
+    }
+    return "";
+  });
   const selectedItemVal = useAppSelector(
     store,
     (state) => state.data[state.selected?.[0]?.[0]]?.[state.selected?.[0]?.[1]]?.value || "",
@@ -59,7 +66,8 @@ const Tools = ({
             data-testid="fx-input"
             ref={calculationRef}
             value={selectedItemVal}
-            readOnly={i === undefined || j === undefined}
+            type={type === "number" ? "number" : "text"}
+            readOnly={i === undefined || j === undefined || !["text", "number"].includes(type)}
             onChange={onValChange}
           />
         </div>
