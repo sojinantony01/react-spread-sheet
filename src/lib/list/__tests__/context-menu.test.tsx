@@ -75,13 +75,6 @@ describe("ContextMenu", () => {
     expect(screen.getByText("Text")).toBeInTheDocument();
     expect(screen.getByText("Number")).toBeInTheDocument();
     expect(screen.getByText("Date")).toBeInTheDocument();
-    expect(screen.getByText("Email")).toBeInTheDocument();
-    expect(screen.getByText("URL")).toBeInTheDocument();
-    expect(screen.getByText("Phone")).toBeInTheDocument();
-    expect(screen.getByText("Select Box")).toBeInTheDocument();
-    expect(screen.getByText("Checkbox")).toBeInTheDocument();
-    expect(screen.getByText("Radio Button")).toBeInTheDocument();
-    expect(screen.getByText("Text Area")).toBeInTheDocument();
   });
 
   test("handles input type selection correctly", () => {

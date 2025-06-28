@@ -41,9 +41,10 @@ const Input = (props: Prop) => {
   const styles = useAppSelector(store, (state) => {
     return state.data[i][j].styles;
   });
-  const inputType = useAppSelector(store, (state) => {
-    return state.data[i][j].inputType || "text";
+  const type = useAppSelector(store, (state) => {
+    return state.data[i][j].type || "text";
   });
+
   const rowLength = useAppSelector(store, (state) => {
     return state.data.length;
   });
@@ -51,7 +52,7 @@ const Input = (props: Prop) => {
     return state.data[i].length;
   });
 
-  const change = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const change = (e: ChangeEvent<HTMLInputElement>) => {
     if (value !== e.target.value) {
       setEdit(true);
       dispatch(changeData, { payload: { value: e.target.value || "", i: i, j: j } });
@@ -59,9 +60,7 @@ const Input = (props: Prop) => {
     }
   };
 
-  const keyDown = (
-    e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
-  ) => {
+  const keyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (
       (!editMode && ["ArrowLeft", "ArrowRight"].includes(e.code)) ||
       ["ArrowUp", "ArrowDown"].includes(e.code)
@@ -86,9 +85,7 @@ const Input = (props: Prop) => {
     }
   };
 
-  const moveToNext = (
-    e: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
-  ) => {
+  const moveToNext = (e: KeyboardEvent<HTMLInputElement>) => {
     let newI, newJ;
     switch (e.code) {
       case "ArrowLeft":
@@ -155,69 +152,15 @@ const Input = (props: Prop) => {
       },
       onDoubleClick: () => setEdit(true),
     };
-
-    switch (inputType) {
-      case "textarea":
-        return (
-          <textarea
-            key={`${i}-${j}-${inputType}`}
-            {...baseProps}
-            rows={3}
-            cols={20}
-            onKeyDown={keyDown}
-            onChange={change}
-          />
-        );
-      case "select":
-        return (
-          <select key={`${i}-${j}-${inputType}`} {...baseProps} onKeyDown={keyDown} onChange={change}>
-            <option value="">Select...</option>
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
-          </select>
-        );
-      case "checkbox":
-        return (
-          <input
-            key={`${i}-${j}-${inputType}`}
-            {...baseProps}
-            type="checkbox"
-            checked={value === "true" || value === "1"}
-            onChange={(e) => {
-              const newValue = e.target.checked ? "true" : "false";
-              dispatch(changeData, { payload: { value: newValue, i: i, j: j } });
-              onChange && onChange(i, j, newValue);
-            }}
-            onKeyDown={keyDown}
-          />
-        );
-      case "radio":
-        return (
-          <input
-            key={`${i}-${j}-${inputType}`}
-            {...baseProps}
-            type="radio"
-            checked={value === "true" || value === "1"}
-            onChange={(e) => {
-              const newValue = e.target.checked ? "true" : "false";
-              dispatch(changeData, { payload: { value: newValue, i: i, j: j } });
-              onChange && onChange(i, j, newValue);
-            }}
-            onKeyDown={keyDown}
-          />
-        );
-      default:
-        return (
-          <input
-            key={`${i}-${j}-${inputType}`}
-            {...baseProps}
-            type={inputType}
-            onKeyDown={keyDown}
-            onChange={change}
-          />
-        );
-    }
+    return (
+      <input
+        key={`${i}-${j}-${type}`}
+        {...baseProps}
+        type={type}
+        onKeyDown={keyDown}
+        onChange={change}
+      />
+    );
   };
 
   return renderInput();

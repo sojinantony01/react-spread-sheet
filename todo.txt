@@ -18,3 +18,5 @@ Real-time Updates (Multiple users can edit same time): how de we enable realtime
 Merge cells
 FInd end of rows having actual values, onSave and export only use rows till end of actual values
 Support adding images
+Locale - translations.
+Improve tests

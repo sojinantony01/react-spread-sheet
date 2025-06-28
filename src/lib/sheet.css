@@ -86,67 +86,6 @@
   max-width: 100%;
 }
 
-/* Specific styles for different input types */
-.sheet-table .input[type="date"] {
-  font-family: inherit;
-  font-size: inherit;
-}
-
-.sheet-table .input[type="number"] {
-  font-family: inherit;
-  font-size: inherit;
-}
-
-.sheet-table .input[type="email"] {
-  font-family: inherit;
-  font-size: inherit;
-}
-
-.sheet-table .input[type="url"] {
-  font-family: inherit;
-  font-size: inherit;
-}
-
-.sheet-table .input[type="tel"] {
-  font-family: inherit;
-  font-size: inherit;
-}
-
-.sheet-table .input[type="checkbox"] {
-  width: auto;
-  min-height: auto;
-  height: auto;
-  margin: 0;
-  padding: 0;
-}
-
-.sheet-table .input[type="radio"] {
-  width: auto;
-  min-height: auto;
-  height: auto;
-  margin: 0;
-  padding: 0;
-}
-
-.sheet-table .input[type="select"] {
-  font-family: inherit;
-  font-size: inherit;
-}
-
-.sheet-table textarea.input {
-  resize: none;
-  font-family: inherit;
-  font-size: inherit;
-  line-height: 1.2;
-  padding: 2px 4px;
-}
-
-.sheet-table select.input {
-  font-family: inherit;
-  font-size: inherit;
-  background-color: white;
-}
-
 .sheet-table .input:focus {
   border: 1px solid #0a58d0;
   box-shadow: inset 0px 0px 0px 1px #0a58d0;
@@ -361,6 +300,11 @@
 
 .sheet-table .sheet-context-menu-item-with-submenu {
   position: relative;
+  display: flex;
+  justify-content: space-between;
+}
+.sheet-table .sheet-context-menu-item-with-submenu svg {
+  width: 5px;
 }
 
 .sheet-table .sheet-context-submenu {

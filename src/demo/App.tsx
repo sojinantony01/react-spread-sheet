@@ -50,7 +50,9 @@ function App() {
   return (
     <div style={{ height: "100%" }}>
       <div style={{ marginBottom: "10px" }}>
-        <a href="https://www.npmjs.com/package/react-spread-sheet-excel">React excel sheet: V{packageConf.version}</a>{" "}
+        <a href="https://www.npmjs.com/package/react-spread-sheet-excel">
+          React excel sheet: V{packageConf.version}
+        </a>{" "}
         <button data-testid="get-updated-data" onClick={getData}>
           Get Updated data
         </button>{" "}

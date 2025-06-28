@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import Icons from "../svg/icons";
 
 interface ContextMenuProps {
   x: number;
@@ -62,11 +63,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     { key: "text", label: "Text" },
     { key: "number", label: "Number" },
     { key: "date", label: "Date" },
-    { key: "email", label: "Email" },
-    { key: "url", label: "URL" },
-    { key: "tel", label: "Phone" },
-    { key: "select", label: "Select options" },
-    { key: "checkbox", label: "Checkbox" }
+    // { key: "select", label: "Select options" },
   ];
 
   return (
@@ -89,13 +86,13 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         Paste
       </div>
       <div className="sheet-context-menu-divider"></div>
-      <div 
-        className="sheet-context-menu-item sheet-context-menu-item-with-submenu" 
+      <div
+        className="sheet-context-menu-item sheet-context-menu-item-with-submenu"
         role="menuitem"
         onMouseEnter={() => setShowInputTypeSubmenu(true)}
         onMouseLeave={() => setShowInputTypeSubmenu(false)}
       >
-        Input Type
+        Input Type <Icons type="right-arrow" />
         {showInputTypeSubmenu && (
           <div className="sheet-context-submenu">
             {inputTypes.map((type) => (

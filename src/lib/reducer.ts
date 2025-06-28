@@ -3,7 +3,7 @@ export type Selected = [number, number];
 export interface Data {
   value: string;
   styles?: { [key: string]: string };
-  inputType?: string;
+  type?: string;
 }
 
 interface Action {
@@ -113,6 +113,7 @@ const actions: DispatcherActions = {
       undo.push({ i: p[0], j: p[1], data: { ...state.data[p[0]][p[1]] } });
       state.data[p[0]][p[1]].value = "";
     });
+    state.redo = [];
     state.undo.push(undo);
     return state;
   },
@@ -227,6 +228,7 @@ const actions: DispatcherActions = {
     });
     state.data = data;
     state.selected = newSelected;
+    state.redo = [];
     state.undo.push(undo);
     return state;
   },
@@ -239,7 +241,7 @@ const actions: DispatcherActions = {
     const undo: Action[] = [];
     state.selected.forEach((p) => {
       undo.push({ i: p[0], j: p[1], data: { ...state.data[p[0]][p[1]] } });
-      data[p[0]][p[1]].inputType = action.payload.inputType;
+      data[p[0]][p[1]].type = action.payload.type;
     });
     state.redo = [];
     state.undo.push(undo);

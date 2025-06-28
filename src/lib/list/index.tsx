@@ -208,7 +208,7 @@ const List = (props: Props) => {
   };
 
   const changeInputType = (inputType: string) => {
-    dispatch(updateInputTypes, { payload: { inputType } });
+    dispatch(updateInputTypes, { payload: { type: inputType } });
     onChange && onChange();
   };
 
