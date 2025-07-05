@@ -28,7 +28,7 @@ test("row  render", async () => {
     </table>,
   );
   expect(screen.getByTestId("1-sheet-y-axis")).toBeInTheDocument();
-  fireEvent.click(screen.getByTestId("1-sheet-y-axis"));
+  fireEvent.mouseDown(screen.getByTestId("1-sheet-y-axis"));
   await waitFor(() => {
     expect(store.getState().selected).toHaveLength(3);
   });
