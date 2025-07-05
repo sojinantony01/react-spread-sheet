@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import Icons from "../../svg/icons";
 import { store, useAppSelector } from "../../store";
-import { changeData, redo, undo } from "../../reducer";
+import { changeData, mergeCells, redo, undo } from "../../reducer";
 
 let timer: string | number | NodeJS.Timeout | undefined;
 const emptyObject = {};
@@ -34,8 +34,15 @@ const Tools = ({
   });
   const selectedItemVal = useAppSelector(
     store,
-    (state) => state.data[state.selected?.[0]?.[0]]?.[state.selected?.[0]?.[1]]?.value || "",
+    (state) => state.data[state.selected?.[0]?.[0]]?.[state.selected?.[0]?.[1]].value || "",
   );
+
+  const rowSpan = useAppSelector(
+    store,
+    (state) =>
+      state.data[state.selected?.[0]?.[0]]?.[state.selected?.[0]?.[1]].rowSpan || undefined,
+  );
+
   const selectedFontSize = selectedStyles?.["fontSize"]
     ? selectedStyles["fontSize"]?.split("px")?.[0]
     : "12";
@@ -227,6 +234,15 @@ const Tools = ({
             onClick={() => changeStyle("ALIGN-JUSTIFY")}
           >
             <Icons type="align-justify" />
+          </button>
+        </div>
+        <div className="sheet-tools-text-style-container">
+          <button
+            className={rowSpan ? "text-style-btn-active" : ""}
+            data-testid="merge"
+            onClick={() => dispatch(mergeCells)}
+          >
+            <Icons type="merge" />
           </button>
         </div>
       </div>

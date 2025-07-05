@@ -13,7 +13,6 @@ A row filter option from row column headers.
 Custom options in context menu. 
 
 Real-time Updates (Multiple users can edit same time): how de we enable realtime in this one? 
-Merge cells
 Find end of rows having actual values, onSave and export only use rows till end of actual values
 Support adding images
 Locale - translations.
@@ -22,4 +21,6 @@ More events - on select, on bulk change, onUndo, onRedo, onScroll(which should h
 Custom tools - onClick should respond with all selected cell data
 Resize rows 
 Multiple selection with cntrl key
-Readonly should disable all updates
+Readonly should disable all updates and support merged cells
+
+!!complete pending tests
