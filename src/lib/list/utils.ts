@@ -112,9 +112,13 @@ export const solveMathExpression = (expr: string) => {
 export const generateDummyContent = (row: number, col: number) => {
   const val: any[][] = [];
   for (let i = 0; i < row; i++) {
-    val.push(Array.from({ length: col }, () => ({ value: "" })));
+    val.push(generateColumns(col));
   }
   return val;
+};
+
+export const generateColumns = (col: number) => {
+  return Array.from({ length: col }, () => ({ value: "" }));
 };
 
 interface ItemsToCopy {

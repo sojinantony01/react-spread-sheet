@@ -277,6 +277,7 @@
   border-radius: 4px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   min-width: 150px;
+  z-index: 2;
 }
 .sheet-table .sheet-context-menu-item {
   padding: 8px 12px;

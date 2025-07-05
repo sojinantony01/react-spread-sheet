@@ -24,7 +24,7 @@ const SheetXAxis = ({ resize, headerValues }: Props) => {
         key={`${i}-x-axis`}
         data-testid={`${i}-x-axis`}
         tabIndex={0}
-        onClick={(e) => {
+        onMouseDown={(e) => {
           if (i === 0) {
             dispatch(selectAllCells);
           } else
