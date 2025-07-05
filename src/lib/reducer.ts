@@ -13,7 +13,7 @@ interface Action {
   j: number;
   data: Data;
   type?: "add-row" | "add-column" | "delete-row" | "delete-column";
-  actionData?: Data[]
+  actionData?: Data[];
 }
 export interface ListReducer {
   data: Data[][];
@@ -185,23 +185,23 @@ const actions: DispatcherActions = {
     if (lastAction && lastAction.length) {
       const redo: Action[] = [];
       lastAction.forEach((p) => {
-        if(p.type === "add-row") {
+        if (p.type === "add-row") {
           //delete the row
-          redo.push({ ...p});
+          redo.push({ ...p });
           data.splice(p.i, 1);
-        } else if(p.type === "delete-row") {
+        } else if (p.type === "delete-row") {
           //add the row with actionData
-          redo.push({ ...p});
+          redo.push({ ...p });
           p.actionData && state.data.splice(p.i, 0, p.actionData);
-        } else if(p.type === "add-column") {
+        } else if (p.type === "add-column") {
           redo.push({ ...p });
           state.data.forEach((d) => {
             d.splice(p.i, 1);
           });
-        } else if(p.type === "delete-column") {
+        } else if (p.type === "delete-column") {
           redo.push({ ...p });
           data.forEach((d, i) => {
-            d.splice(p.i, 0, { ...(p.actionData?.[i] || {value: ""}) });
+            d.splice(p.i, 0, { ...(p.actionData?.[i] || { value: "" }) });
           });
         } else {
           redo.push({ ...p, data: { ...state.data[p.i][p.j] } });
@@ -219,24 +219,23 @@ const actions: DispatcherActions = {
     if (lastAction && lastAction.length) {
       const undo: Action[] = [];
       lastAction.forEach((p) => {
-        if(p.type === "add-row") {
+        if (p.type === "add-row") {
           undo.push({ ...p });
-          data.splice(p.i, 0, generateColumns(state.data[0].length))
-        } else if(p.type === "delete-row") {
+          data.splice(p.i, 0, generateColumns(state.data[0].length));
+        } else if (p.type === "delete-row") {
           undo.push({ ...p });
           state.data.splice(p.i, 1);
-        } else if(p.type === "add-column") {
+        } else if (p.type === "add-column") {
           undo.push({ ...p });
           data.forEach((d) => {
             d.splice(p.i, 0, { value: "" });
           });
-        } else if(p.type === "delete-column") {
+        } else if (p.type === "delete-column") {
           undo.push({ ...p });
           state.data.forEach((d) => {
             d.splice(p.i, 1);
           });
-        }
-        else {
+        } else {
           undo.push({ ...p, data: { ...state.data[p.i][p.j] } });
           data[p.i][p.j] = p.data;
         }
@@ -294,7 +293,7 @@ const actions: DispatcherActions = {
   addRow(state, action) {
     state.redo = [];
     const index = action.payload.below ? state.selected[0][0] + 1 : state.selected[0][0];
-    state.undo.push([{i: index, j: 0, type: "add-row", data: { value: "" } }]);
+    state.undo.push([{ i: index, j: 0, type: "add-row", data: { value: "" } }]);
     state.data.splice(index, 0, generateColumns(state.data[0].length));
     return state;
   },
@@ -303,7 +302,7 @@ const actions: DispatcherActions = {
     // state.undo.push(undo);
     const index = action.payload.right ? state.selected[0][1] + 1 : state.selected[0][1];
     const data = state.data;
-    state.undo.push([{i: index, j: 0, type: "add-column", data: {value: ""} }]);
+    state.undo.push([{ i: index, j: 0, type: "add-column", data: { value: "" } }]);
     data.forEach((d) => {
       d.splice(index, 0, { value: "" });
     });
@@ -313,19 +312,23 @@ const actions: DispatcherActions = {
   deleteRow(state) {
     state.redo = [];
     const index = state.selected[0][0];
-    state.undo.push([{i: index, j: 0, type: "delete-row", actionData: state.data[index], data: {value: ""} }]);
+    state.undo.push([
+      { i: index, j: 0, type: "delete-row", actionData: state.data[index], data: { value: "" } },
+    ]);
     state.data.splice(index, 1);
     return state;
   },
   deleteColumn(state) {
     state.redo = [];
     const index = state.selected[0][1];
-    const actionData: Data[] = []
+    const actionData: Data[] = [];
     state.data.forEach((d) => {
-      actionData.push(d[index])
+      actionData.push(d[index]);
       d.splice(index, 1);
     });
-    state.undo.push([{i: index, j: 0, type: "delete-column", actionData: actionData, data: {value: ""} }]);
+    state.undo.push([
+      { i: index, j: 0, type: "delete-column", actionData: actionData, data: { value: "" } },
+    ]);
     return state;
   },
 };

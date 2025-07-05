@@ -245,9 +245,7 @@ const List = (props: Props) => {
           cutItemsToClipBoard={cutItemsToClipBoard}
           pasteFromClipBoard={pasteFromClipBoard}
           onChange={onChange}
-          onClose={() =>
-            setContextMenu(null)    
-          }
+          onClose={() => setContextMenu(null)}
         />
       )}
     </div>
