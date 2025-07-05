@@ -6,6 +6,9 @@ export interface Data {
   value: string;
   styles?: { [key: string]: string };
   type?: string;
+  colSpan?: number;
+  rowSpan?: number;
+  skip?: boolean; //merged
 }
 
 interface Action {
@@ -299,7 +302,6 @@ const actions: DispatcherActions = {
   },
   addColumn(state, action) {
     state.redo = [];
-    // state.undo.push(undo);
     const index = action.payload.right ? state.selected[0][1] + 1 : state.selected[0][1];
     const data = state.data;
     state.undo.push([{ i: index, j: 0, type: "add-column", data: { value: "" } }]);
@@ -331,6 +333,48 @@ const actions: DispatcherActions = {
     ]);
     return state;
   },
+  mergeCells(state) {
+    if (state.selected.length > 0) {
+      state.redo = [];
+      const undo: Action[] = [];
+      const cellForMerge = state.selected[0];
+      const data = state.data;
+      if (data[cellForMerge[0]][cellForMerge[1]].rowSpan) {
+        for (
+          let i = cellForMerge[0];
+          i <= cellForMerge[0] + (data[cellForMerge[0]][cellForMerge[1]].rowSpan || 0);
+          i++
+        ) {
+          for (
+            let j = cellForMerge[1];
+            j <= cellForMerge[1] + (data[cellForMerge[0]][cellForMerge[1]].colSpan || 0);
+            j++
+          ) {
+            undo.push({ i: i, j: j, data: { ...state.data[i][j] } });
+            data[i][j].skip = undefined;
+          }
+        }
+        data[cellForMerge[0]][cellForMerge[1]].rowSpan = undefined;
+        data[cellForMerge[0]][cellForMerge[1]].colSpan = undefined;
+      } else if (state.selected.length > 1) {
+        state.selected.forEach((p, i) => {
+          undo.push({ i: p[0], j: p[1], data: { ...state.data[p[0]][p[1]] } });
+          if (i !== 0) {
+            data[p[0]][p[1]].value = "";
+            data[p[0]][p[1]].skip = true;
+          }
+        });
+        data[cellForMerge[0]][cellForMerge[1]].rowSpan =
+          Math.abs(state.selected[0][0] - state.selected[state.selected.length - 1][0]) + 1;
+        data[cellForMerge[0]][cellForMerge[1]].colSpan =
+          Math.abs(state.selected[0][1] - state.selected[state.selected.length - 1][1]) + 1;
+      }
+      state.selected = [cellForMerge];
+      state.data = data;
+      state.undo.push(undo);
+    }
+    return state;
+  },
 };
 
 export const {
@@ -354,4 +398,5 @@ export const {
   addColumn,
   deleteRow,
   deleteColumn,
+  mergeCells,
 } = actions;

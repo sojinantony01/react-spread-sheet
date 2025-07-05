@@ -85,23 +85,45 @@ const Input = (props: Prop) => {
     }
   };
 
+  const findNext = (
+    i: number,
+    j: number,
+    dir: "up" | "down" | "left" | "right",
+  ): { i: number; j: number } => {
+    if (
+      document.getElementById(`${i}-${j}`) ||
+      (dir === "up" && i === 0) ||
+      (dir === "left" && j === 0) ||
+      (dir === "down" && i === rowLength - 1) ||
+      (dir === "right" && j === columnLength - 1)
+    ) {
+      return { i, j };
+    } else {
+      return findNext(
+        dir === "up" ? i - 1 : dir === "down" ? i + 1 : i,
+        dir === "left" ? j - 1 : dir === "right" ? j + 1 : j,
+        dir,
+      );
+    }
+  };
+
   const moveToNext = (e: KeyboardEvent<HTMLInputElement>) => {
     let newI, newJ;
     switch (e.code) {
       case "ArrowLeft":
         newI = i;
-        newJ = j - 1;
+        newJ = j > 0 ? findNext(i, j - 1, "left").j : j;
         break;
       case "ArrowUp":
-        newI = i - 1;
+        newI = i > 0 ? findNext(i - 1, j, "up").i : i;
         newJ = j;
         break;
       case "ArrowRight":
         newI = i;
-        newJ = j + 1;
+        newJ = j < columnLength - 1 ? findNext(i, j + 1, "right").j : j;
         break;
       case "ArrowDown":
-        newI = i + 1;
+        newI = i < rowLength - 1 ? findNext(i + 1, j, "down").i : i;
         newJ = j;
         break;
     }

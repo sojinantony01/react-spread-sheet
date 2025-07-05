@@ -92,7 +92,7 @@ const List = (props: Props) => {
     const parentEl = parentDivRef.current;
     if (el && parentEl && parentEl?.scrollTop > el?.scrollHeight - 3200) {
       const nextVal = 300 + Math.round(parentEl?.scrollTop / 32);
-      if (autoAddAdditionalRows && nextVal >= itemLength && itemLength < 2000) {
+      if (autoAddAdditionalRows && nextVal >= itemLength && itemLength < 1500) {
         //Add additional rows
         dispatch(addRows, { payload: generateDummyContent(300, store.getState().data[0].length) });
       } else {

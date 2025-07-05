@@ -1,6 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Icons from "../svg/icons";
-import { addColumn, addRow, deleteColumn, deleteRow, updateInputTypes } from "../reducer";
+import {
+  addColumn,
+  addRow,
+  deleteColumn,
+  deleteRow,
+  mergeCells,
+  updateInputTypes,
+} from "../reducer";
 import { store } from "../store";
 
 interface ContextMenuProps {
@@ -47,6 +54,12 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     onClose();
   };
 
+  const mergeCell = () => {
+    dispatch(mergeCells);
+    onChange && onChange();
+    onClose();
+  };
+
   const closeOnOutsideClick = useCallback(
     (e: MouseEvent) => {
       const inside = (e.target as HTMLElement).closest(".sheet-context-menu");
@@ -89,6 +102,10 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
       </div>
       <div className="sheet-context-menu-item" role="menuitem" onClick={handlePaste}>
         Paste
+      </div>
+      <div className="sheet-context-menu-divider"></div>
+      <div className="sheet-context-menu-item" role="menuitem" onClick={() => mergeCell()}>
+        Merge cells
       </div>
       <div className="sheet-context-menu-divider"></div>
       <div

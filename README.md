@@ -23,6 +23,7 @@ Able to render 100000+ input boxes in react, A quick solution for web based spre
 * __Blazing Fast Rendering: Handles large datasets efficiently (100000+ input boxes).__
 * __Comprehensive Calculation Engine: Supports complex formulas and calculations. (= 2 * A2 + (B2 * C4))__
 * __Rich Formatting Options: Customize cell appearance with bold, italic, underline, and more.__
+* __Merge cells.__
 * __Undo, Redo actions.__
 * __Calculations Support, value should starts with "="__
 * __Select Multiple cells.__
