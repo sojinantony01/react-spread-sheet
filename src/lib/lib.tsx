@@ -5,18 +5,18 @@ import "./sheet.css";
 import { addData, changeData, Data } from "./reducer";
 import { exportToCsv } from "./list/utils";
 export type SheetRef = {
-  getData: () => string[][];
-  setData: (data: any[][]) => void;
+  getData: () => Data[][];
+  setData: (data: Data[][]) => void;
   exportCsv: (fileName: string, includeHeaders?: boolean) => void;
   updateOneCell: (row: number, col: number, value: any) => void;
-  getOneCell: (row: number, col: number) => string;
+  getOneCell: (row: number, col: number) => Data;
 };
 
 const Sheet = forwardRef((props: Props, ref) => {
-  const getData = () => {
+  const getData = (): Data[][] => {
     return store.getState().data;
   };
-  const setData = (data: Data[][]) => {
+  const setData = (data: Data[][]): void => {
     store.dispatch(addData, { payload: data });
   };
 
@@ -24,7 +24,7 @@ const Sheet = forwardRef((props: Props, ref) => {
     store.dispatch(changeData, { payload: { row, col, value } });
   };
 
-  const getOneCell = (row: number, col: number) => {
+  const getOneCell = (row: number, col: number): Data => {
     return store.getState().data[row][col];
   };
 
