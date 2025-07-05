@@ -9,7 +9,7 @@ export type SheetRef = {
   setData: (data: any[][]) => void;
   exportCsv: (fileName: string, includeHeaders?: boolean) => void;
   updateOneCell: (row: number, col: number, value: any) => void;
-  getOnceCell: (row: number, col: number) => string;
+  getOneCell: (row: number, col: number) => string;
 };
 
 const Sheet = forwardRef((props: Props, ref) => {
@@ -24,8 +24,8 @@ const Sheet = forwardRef((props: Props, ref) => {
     store.dispatch(changeData, { payload: { row, col, value } });
   };
 
-  const getOnceCell = (row: number, col: number) => {
-    return store.getState().data[row][col].value;
+  const getOneCell = (row: number, col: number) => {
+    return store.getState().data[row][col];
   };
 
   const exportCsv = (fileName: string, includeHeaders: boolean = false) => {
@@ -37,7 +37,7 @@ const Sheet = forwardRef((props: Props, ref) => {
     getData,
     setData,
     updateOneCell,
-    getOnceCell,
+    getOneCell,
     exportCsv,
   }));
 

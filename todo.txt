@@ -22,3 +22,4 @@ More events - on select, on bulk change, onUndo, onRedo, onScroll(which should h
 Custom tools - onClick should respond with all selected cell data
 Resize rows 
 Multiple selection with cntrl key
+Readonly should disable all updates
