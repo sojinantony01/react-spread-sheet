@@ -23,18 +23,18 @@ test("header cell render headervalues", async () => {
   render(
     <table>
       <tbody>
-        <SheetXaxis headerValues={["Test header 1"]} />
+        <SheetXaxis headerValues={["Test header 1", "Test header 2", "Test header 3"]} />
       </tbody>
     </table>,
   );
   expect(screen.getByTestId(`sheet-table-x-axis-header`)).toBeInTheDocument();
   expect(consoleSpy).toHaveBeenCalled();
 
-  fireEvent.click(screen.getByText("Test header 1"));
+  fireEvent.mouseDown(screen.getByText("Test header 1"));
   await waitFor(() => {
     expect(store.getState().selected).toHaveLength(3);
   });
-  fireEvent.click(screen.getByTestId("0-x-axis"));
+  fireEvent.mouseDown(screen.getByTestId("0-x-axis"));
   await waitFor(() => {
     expect(store.getState().selected).toHaveLength(9);
   });

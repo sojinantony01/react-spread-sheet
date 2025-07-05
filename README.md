@@ -149,6 +149,8 @@ export default App;
 | getData | Get updated data from sheet |  |
 | setData | Set new data to sheet | [{ value: string; styles?: {[key: string]: string}}, ...] |
 | exportCsv | Export to CSV | filename: (Mandatory), IncludeHeaders (default false) |
+| updateOneCell | Update One cell Value | (row: number, col: number, value: string) |
+| getOneCell | Get once cell value | (row: number, col: number) | 
 
 
 ## XLSX Export/Import

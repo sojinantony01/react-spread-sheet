@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Icons from "../svg/icons";
+import { addColumn, addRow, deleteColumn, deleteRow, updateInputTypes } from "../reducer";
+import { store } from "../store";
 
 interface ContextMenuProps {
   x: number;
@@ -8,7 +10,7 @@ interface ContextMenuProps {
   copyToClipBoard: () => void;
   cutItemsToClipBoard: () => void;
   pasteFromClipBoard: () => void;
-  changeInputType?: (inputType: string) => void;
+  onChange?(i?: number, j?: number, value?: string): void;
 }
 
 const ContextMenu: React.FC<ContextMenuProps> = ({
@@ -18,10 +20,12 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   copyToClipBoard,
   cutItemsToClipBoard,
   pasteFromClipBoard,
-  changeInputType,
+  onChange,
 }) => {
-  const [showInputTypeSubmenu, setShowInputTypeSubmenu] = useState(false);
-
+  const [showSubmenu, setShowSubmenu] = useState<
+    "input-type" | "add-row" | "add-column" | undefined
+  >();
+  const { dispatch } = store;
   const handleCut = () => {
     cutItemsToClipBoard();
     onClose();
@@ -38,7 +42,8 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
   };
 
   const handleInputTypeChange = (inputType: string) => {
-    changeInputType?.(inputType);
+    dispatch(updateInputTypes, { payload: { type: inputType } });
+    onChange && onChange();
     onClose();
   };
 
@@ -89,11 +94,11 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
       <div
         className="sheet-context-menu-item sheet-context-menu-item-with-submenu"
         role="menuitem"
-        onMouseEnter={() => setShowInputTypeSubmenu(true)}
-        onMouseLeave={() => setShowInputTypeSubmenu(false)}
+        onMouseEnter={() => setShowSubmenu("input-type")}
+        onMouseLeave={() => setShowSubmenu(undefined)}
       >
         Input Type <Icons type="right-arrow" />
-        {showInputTypeSubmenu && (
+        {showSubmenu === "input-type" && (
           <div className="sheet-context-submenu">
             {inputTypes.map((type) => (
               <div
@@ -107,6 +112,91 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
             ))}
           </div>
         )}
+      </div>
+      <div className="sheet-context-menu-divider"></div>
+      <div
+        className="sheet-context-menu-item sheet-context-menu-item-with-submenu"
+        role="menuitem"
+        onMouseEnter={() => setShowSubmenu("add-row")}
+        onMouseLeave={() => setShowSubmenu(undefined)}
+      >
+        Add Row <Icons type="right-arrow" />
+        {showSubmenu === "add-row" && (
+          <div className="sheet-context-submenu">
+            <div
+              className="sheet-context-menu-item"
+              role="menuitem"
+              onClick={() => {
+                dispatch(addRow, { payload: { below: false } });
+                onClose();
+              }}
+            >
+              Above
+            </div>
+            <div
+              className="sheet-context-menu-item"
+              role="menuitem"
+              onClick={() => {
+                dispatch(addRow, { payload: { below: true } });
+                onClose();
+              }}
+            >
+              Below
+            </div>
+          </div>
+        )}
+      </div>
+      <div
+        className="sheet-context-menu-item sheet-context-menu-item-with-submenu"
+        role="menuitem"
+        onMouseEnter={() => setShowSubmenu("add-row")}
+        onMouseLeave={() => setShowSubmenu(undefined)}
+      >
+        Add Column <Icons type="right-arrow" />
+        {showSubmenu === "add-row" && (
+          <div className="sheet-context-submenu">
+            <div
+              className="sheet-context-menu-item"
+              role="menuitem"
+              onClick={() => {
+                dispatch(addColumn, { payload: { right: true } });
+                onClose();
+              }}
+            >
+              Right
+            </div>
+            <div
+              className="sheet-context-menu-item"
+              role="menuitem"
+              onClick={() => {
+                dispatch(addColumn, { payload: { right: false } });
+                onClose();
+              }}
+            >
+              Left
+            </div>
+          </div>
+        )}
+      </div>
+      <div
+        className="sheet-context-menu-item"
+        role="menuitem"
+        onClick={() => {
+          dispatch(deleteRow);
+          onClose();
+        }}
+      >
+        Delete Row
+      </div>
+      <div
+        className="sheet-context-menu-item"
+        role="menuitem"
+        onClick={() => {
+          dispatch(deleteColumn);
+          onClose();
+        }}
+      >
+        Delete Column
       </div>
     </div>
   );

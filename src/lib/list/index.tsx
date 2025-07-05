@@ -11,7 +11,6 @@ import {
   selectAllCells,
   undo,
   updateStyles,
-  updateInputTypes,
 } from "../reducer";
 import SheetXAxis from "./sheet-x-axis";
 import { generateDummyContent, getItemsToCopy } from "./utils";
@@ -207,18 +206,13 @@ const List = (props: Props) => {
     onChange && onChange();
   };
 
-  const changeInputType = (inputType: string) => {
-    dispatch(updateInputTypes, { payload: { type: inputType } });
-    onChange && onChange();
-  };
-
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     setContextMenu({ x: e.clientX, y: e.clientY });
   };
 
   return (
-    <div onKeyDown={handleKeyDown} className="sheet-table" data-testid="sheet-table">
+    <div onKeyDown={handleKeyDown} className="sheet-table" data-testid="sheet-table" tabIndex={0}>
       {!hideTools && <Tools changeStyle={changeStyle} onChange={onChange} />}
       <div
         className="sheet-table-table-container"
@@ -229,7 +223,7 @@ const List = (props: Props) => {
         <div data-testid="sheet-table-content-scroll" style={{ height: (itemLength + 1) * 32 }}>
           <div ref={divRef}>
             {items.length && (
-              <table>
+              <table onContextMenu={handleContextMenu}>
                 {!hideXAxisHeader ? (
                   <thead>
                     <SheetXAxis resize={resize} headerValues={headerValues} />
@@ -237,7 +231,7 @@ const List = (props: Props) => {
                 ) : (
                   ""
                 )}
-                <tbody onContextMenu={handleContextMenu}>{items}</tbody>
+                <tbody>{items}</tbody>
               </table>
             )}
           </div>
@@ -250,7 +244,7 @@ const List = (props: Props) => {
           copyToClipBoard={copyToClipBoard}
           cutItemsToClipBoard={cutItemsToClipBoard}
           pasteFromClipBoard={pasteFromClipBoard}
-          changeInputType={changeInputType}
+          onChange={onChange}
           onClose={() => setContextMenu(null)}
         />
       )}

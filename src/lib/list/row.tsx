@@ -36,7 +36,7 @@ const Row = (props: Prop) => {
           className="sheet-axis"
           data-testid={`${i}-sheet-y-axis`}
           tabIndex={1}
-          onClick={(e) => {
+          onMouseDown={(e) => {
             store.dispatch(selectHorizontalCells, {
               payload: { i: i, ctrlPressed: e.metaKey || e.ctrlKey },
             });

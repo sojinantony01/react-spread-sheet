@@ -11,7 +11,7 @@ describe("ContextMenu", () => {
     copyToClipBoard: jest.fn(),
     cutItemsToClipBoard: jest.fn(),
     pasteFromClipBoard: jest.fn(),
-    changeInputType: jest.fn(),
+    onChange: jest.fn(),
   };
 
   beforeEach(() => {
@@ -85,7 +85,7 @@ describe("ContextMenu", () => {
 
     fireEvent.click(screen.getByText("Date"));
 
-    expect(mockProps.changeInputType).toHaveBeenCalledWith("date");
+    expect(mockProps.onChange).toHaveBeenCalledWith();
     expect(mockProps.onClose).toHaveBeenCalledTimes(1);
   });
 
