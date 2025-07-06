@@ -241,7 +241,7 @@ const Tools = ({
             className={rowSpan ? "text-style-btn-active" : ""}
             data-testid="merge"
             onClick={() => {
-              dispatch(mergeCells)
+              dispatch(mergeCells);
               onChange && onChange();
             }}
           >
