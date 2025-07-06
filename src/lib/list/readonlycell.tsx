@@ -14,39 +14,44 @@ const ReadOnlyCell = (props: Prop) => {
       return getCalculatedVal(val, state.data, props.headerValues);
     }
     return val;
-  }); 
+  });
   const colSpan = useAppSelector(store, (state) => {
-      let val = state.data[props.i][props.j];
-      if (val.colSpan && val.rowSpan) {
-        return val.colSpan;
-      }
-      return 1;
-    });
-  
-  const rowSpan = useAppSelector(store, (state) => {
-      let val = state.data[props.i][props.j];
-      if (val.colSpan && val.rowSpan) {
-        return val.rowSpan;
-      }
-      return 1;
-    });
-  
-  const skip = useAppSelector(store, (state) => {
-      return state.data[props.i][props.j].skip;
+    let val = state.data[props.i][props.j];
+    if (val.colSpan && val.rowSpan) {
+      return val.colSpan;
+    }
+    return 1;
   });
 
-    const styles = useAppSelector(store, (state) => {
-      return state.data[props.i][props.j].styles;
-    });
-  
-  return  !skip ? (
-    <td colSpan={colSpan}
-      rowSpan={rowSpan}>
-      <div className="input input-dummy" data-testid={`read-only-${props.i}-${props.j}`}       style={styles}>
+  const rowSpan = useAppSelector(store, (state) => {
+    let val = state.data[props.i][props.j];
+    if (val.colSpan && val.rowSpan) {
+      return val.rowSpan;
+    }
+    return 1;
+  });
+
+  const skip = useAppSelector(store, (state) => {
+    return state.data[props.i][props.j].skip;
+  });
+
+  const styles = useAppSelector(store, (state) => {
+    return state.data[props.i][props.j].styles;
+  });
+
+  return !skip ? (
+    <td colSpan={colSpan} rowSpan={rowSpan}>
+      <div
+        className="input input-dummy"
+        data-testid={`read-only-${props.i}-${props.j}`}
+        style={styles}
+      >
         {value}
       </div>
     </td>
-  ) : <></>;
+  ) : (
+    <></>
+  );
 };
 
 export default ReadOnlyCell;

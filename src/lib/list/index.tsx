@@ -141,8 +141,8 @@ const List = (props: Props) => {
     ctrlKey: any;
     metaKey: any;
   }) => {
-    if(readonly) return;
-    
+    if (readonly) return;
+
     if (e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
       dispatch(selectAllCells);
     }
@@ -209,7 +209,7 @@ const List = (props: Props) => {
   };
 
   const handleContextMenu = (e: React.MouseEvent) => {
-    if(!readonly) {
+    if (!readonly) {
       e.preventDefault();
       setContextMenu({ x: e.clientX, y: e.clientY });
     }
@@ -230,7 +230,7 @@ const List = (props: Props) => {
               <table onContextMenu={handleContextMenu}>
                 {!hideXAxisHeader ? (
                   <thead>
-                    <SheetXAxis resize={resize} headerValues={headerValues} readOnly={readonly}/>
+                    <SheetXAxis resize={resize} headerValues={headerValues} readOnly={readonly} />
                   </thead>
                 ) : (
                   ""
