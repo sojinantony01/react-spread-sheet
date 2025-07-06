@@ -6,9 +6,10 @@ import { selectAllCells, selectVerticalCells } from "../reducer";
 interface Props {
   resize?: boolean;
   headerValues?: string[];
+  readOnly: boolean | undefined
 }
 
-const SheetXAxis = ({ resize, headerValues }: Props) => {
+const SheetXAxis = ({ resize, headerValues, readOnly }: Props) => {
   const { dispatch } = store;
   const itemLength = useAppSelector(store, (state) => state.data[0].length);
   const items: any = [];
@@ -25,12 +26,15 @@ const SheetXAxis = ({ resize, headerValues }: Props) => {
         data-testid={`${i}-x-axis`}
         tabIndex={0}
         onMouseDown={(e) => {
-          if (i === 0) {
-            dispatch(selectAllCells);
-          } else
-            dispatch(selectVerticalCells, {
-              payload: { j: i - 1, ctrlPressed: e.metaKey || e.ctrlKey },
-            });
+          if(!readOnly) { 
+            if (i === 0) {
+              dispatch(selectAllCells);
+            } else
+              dispatch(selectVerticalCells, {
+                payload: { j: i - 1, ctrlPressed: e.metaKey || e.ctrlKey },
+              });
+          }
+          
         }}
       >
         {resize && i > 0 ? (

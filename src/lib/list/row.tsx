@@ -17,7 +17,7 @@ const Row = (props: Prop) => {
   for (let j = 0; j < itemLength; j++) {
     items.push(
       props.readonly ? (
-        <ReadOnlyCell key={`${i}-${j}-ReadOnly`} i={i} j={j} />
+        <ReadOnlyCell key={`${i}-${j}-ReadOnly`} i={i} j={j}  headerValues={props.headerValues}/>
       ) : (
         <Cell
           key={`${i}-${j}`}
@@ -37,7 +37,7 @@ const Row = (props: Prop) => {
           data-testid={`${i}-sheet-y-axis`}
           tabIndex={1}
           onMouseDown={(e) => {
-            store.dispatch(selectHorizontalCells, {
+            !props.readonly && store.dispatch(selectHorizontalCells, {
               payload: { i: i, ctrlPressed: e.metaKey || e.ctrlKey },
             });
           }}
