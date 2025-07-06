@@ -1,7 +1,7 @@
 import React, { act } from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { store } from "../../../store";
-import { addData, selectOneCell } from "../../../reducer";
+import { addData, selectCellsDrag, selectOneCell } from "../../../reducer";
 import { generateDummyContent } from "../../utils";
 import Tools from "../tools";
 
@@ -146,4 +146,24 @@ test("Undo redo", async () => {
   });
   expect(onChange).toHaveBeenCalled();
   expect(onChange).toHaveBeenCalledTimes(3);
+});
+
+test("merge cells tools", async () => {
+  const changeStyle = jest.fn();
+  const onChange = jest.fn();
+  render(<Tools changeStyle={changeStyle} onChange={onChange} />);
+  act(() => {
+    store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
+  });
+  act(() => {
+    store.dispatch(selectCellsDrag, { payload: { i: 1, j: 1 } });
+  });
+
+  await waitFor(() => {
+    expect(store.getState().selected.length).toBe(4);
+  });
+  fireEvent.click(screen.getByTestId(`merge`));
+  expect(store.getState().selected.length).toBe(1);
+  expect(store.getState().data[0][0].rowSpan).toBe(2);
+  expect(store.getState().data[0][0].colSpan).toBe(2);
 });

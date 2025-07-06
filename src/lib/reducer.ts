@@ -342,12 +342,12 @@ const actions: DispatcherActions = {
       if (data[cellForMerge[0]][cellForMerge[1]].rowSpan) {
         for (
           let i = cellForMerge[0];
-          i <= cellForMerge[0] + (data[cellForMerge[0]][cellForMerge[1]].rowSpan || 0);
+          i < cellForMerge[0] + (data[cellForMerge[0]][cellForMerge[1]].rowSpan || 0);
           i++
         ) {
           for (
             let j = cellForMerge[1];
-            j <= cellForMerge[1] + (data[cellForMerge[0]][cellForMerge[1]].colSpan || 0);
+            j < cellForMerge[1] + (data[cellForMerge[0]][cellForMerge[1]].colSpan || 0);
             j++
           ) {
             undo.push({ i: i, j: j, data: { ...state.data[i][j] } });
