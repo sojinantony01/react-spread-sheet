@@ -53,7 +53,7 @@ const Tools = ({
     }, 200);
   };
   const onValChange = (e: { target: { value: string } }) => {
-    dispatch(changeData, { payload: { value: e.target.value || "", i: i, j: j } });
+    dispatch(changeData, { payload: { value: e.target.value, i: i, j: j } });
     onChange && onChange(i, j, e.target.value);
   };
   return (
@@ -240,7 +240,10 @@ const Tools = ({
           <button
             className={rowSpan ? "text-style-btn-active" : ""}
             data-testid="merge"
-            onClick={() => dispatch(mergeCells)}
+            onClick={() => {
+              dispatch(mergeCells)
+              onChange && onChange();
+            }}
           >
             <Icons type="merge" />
           </button>

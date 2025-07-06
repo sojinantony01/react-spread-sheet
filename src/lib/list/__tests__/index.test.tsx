@@ -283,4 +283,110 @@ describe("index tests", () => {
     fireEvent.click(screen.getByTestId(`sheet-table-content`));
     expect(screen.queryByText("Cut")).not.toBeInTheDocument();
   });
+
+  test("Add row and undo, redo", () => {
+    render(<List data={generateDummyContent(10, 2)} autoAddAdditionalRows={false}/>);
+    expect(store.getState().data.length).toBe(10);
+    mockAllIsIntersecting(true);
+    fireEvent.contextMenu(screen.getByTestId(`0-0`));
+    const addRow = screen.getByText("Add Row")
+    expect(addRow).toBeInTheDocument();
+    fireEvent.mouseEnter(addRow);
+    expect(screen.getByText("Above")).toBeInTheDocument();
+    expect(screen.getByText("Below")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("Above"));
+    expect(store.getState().data.length).toBe(11);
+    fireEvent.contextMenu(screen.getByTestId(`0-0`));
+    fireEvent.mouseEnter(screen.getByText("Add Row"));
+    fireEvent.click(screen.getByText("Below"));
+
+    expect(store.getState().data.length).toBe(12);
+
+    fireEvent.keyDown(screen.getByRole("table"), { code: "KeyZ", ctrlKey: true });
+    expect(store.getState().data.length).toBe(11);
+    fireEvent.keyDown(screen.getByRole("table"), { code: "KeyZ", ctrlKey: true, shiftKey:true });
+    expect(store.getState().data.length).toBe(12);
+    fireEvent.keyDown(screen.getByRole("table"), { code: "KeyZ", ctrlKey: true });
+    fireEvent.keyDown(screen.getByRole("table"), { code: "KeyZ", ctrlKey: true });
+    expect(store.getState().data.length).toBe(10);
+  });
+
+  test("delete row and undo, redo", () => {
+    render(<List data={generateDummyContent(10, 2)} autoAddAdditionalRows={false}/>);
+    expect(store.getState().data.length).toBe(10);
+    mockAllIsIntersecting(true);
+    fireEvent.contextMenu(screen.getByTestId(`0-0`));
+    const deleteRow = screen.getByText("Delete Row")
+    expect(deleteRow).toBeInTheDocument();
+    fireEvent.click(deleteRow);
+    expect(store.getState().data.length).toBe(9);
+    fireEvent.keyDown(screen.getByRole("table"), { code: "KeyZ", ctrlKey: true });
+    expect(store.getState().data.length).toBe(10);
+    fireEvent.keyDown(screen.getByRole("table"), { code: "KeyZ", ctrlKey: true, shiftKey:true });
+    expect(store.getState().data.length).toBe(9);
+  });
+  test("Add column and undo, redo", () => {
+    render(<List data={generateDummyContent(10, 2)} autoAddAdditionalRows={false}/>);
+    expect(store.getState().data[0].length).toBe(2);
+    mockAllIsIntersecting(true);
+    fireEvent.contextMenu(screen.getByTestId(`0-0`));
+    const addColumn = screen.getByText("Add Column")
+    expect(addColumn).toBeInTheDocument();
+    fireEvent.mouseEnter(addColumn);
+    expect(screen.getByText("Right")).toBeInTheDocument();
+    expect(screen.getByText("Left")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("Right"));
+    expect(store.getState().data[0].length).toBe(3);
+
+    fireEvent.contextMenu(screen.getByTestId(`0-0`));
+    fireEvent.mouseEnter(screen.getByText("Add Column"));
+    fireEvent.click(screen.getByText("Left"));
+    expect(store.getState().data[0].length).toBe(4);
+
+    fireEvent.keyDown(screen.getByRole("table"), { code: "KeyZ", ctrlKey: true });
+    expect(store.getState().data[0].length).toBe(3);
+    fireEvent.keyDown(screen.getByRole("table"), { code: "KeyZ", ctrlKey: true, shiftKey:true });
+    expect(store.getState().data[0].length).toBe(4);
+    fireEvent.keyDown(screen.getByRole("table"), { code: "KeyZ", ctrlKey: true });
+    fireEvent.keyDown(screen.getByRole("table"), { code: "KeyZ", ctrlKey: true });
+    expect(store.getState().data[0].length).toBe(2);
+  });
+  test("delete column and undo, redo", () => {
+    render(<List data={generateDummyContent(10, 2)} autoAddAdditionalRows={false}/>);
+    expect(store.getState().data[0].length).toBe(2);
+    mockAllIsIntersecting(true);
+    fireEvent.contextMenu(screen.getByTestId(`0-0`));
+    const deleteColumn = screen.getByText("Delete Column")
+    expect(deleteColumn).toBeInTheDocument();
+    fireEvent.click(deleteColumn);
+    expect(store.getState().data[0].length).toBe(1);
+
+
+    fireEvent.keyDown(screen.getByRole("table"), { code: "KeyZ", ctrlKey: true });
+    expect(store.getState().data[0].length).toBe(2);
+    fireEvent.keyDown(screen.getByRole("table"), { code: "KeyZ", ctrlKey: true, shiftKey:true });
+    expect(store.getState().data[0].length).toBe(1);
+  });
+  test("merge cells", async () => {
+    const user = userEvent.setup();
+    render(<List data={generateDummyContent(10, 2)} autoAddAdditionalRows={false}/>);
+    mockAllIsIntersecting(true);
+    expect(screen.getAllByRole("textbox").length).toBe(21); //one common input from tools
+    await user.click(screen.getByTestId(`${0}-${0}`));
+    await user.keyboard("{Meta>}");
+    await user.click(screen.getByTestId(`${0}-${1}`));
+    await user.click(screen.getByTestId(`${1}-${0}`));
+    await user.click(screen.getByTestId(`${1}-${1}`));
+    await user.keyboard("{/Meta}");
+    await waitFor(() => {
+    expect(store.getState().selected.length).toBe(4);
+    })
+    fireEvent.contextMenu(screen.getByTestId(`0-0`));
+    fireEvent.click(screen.getByText("Merge cells"));
+    expect(store.getState().selected.length).toBe(1);
+    expect(screen.getAllByRole("textbox").length).toBe(18); //one common input from tools
+    fireEvent.contextMenu(screen.getByTestId(`0-0`));
+    fireEvent.click(screen.getByText("Merge cells"));
+    expect(screen.getAllByRole("textbox").length).toBe(18); //one common input from tools
+  });
 });

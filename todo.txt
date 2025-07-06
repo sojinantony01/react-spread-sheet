@@ -19,8 +19,9 @@ Locale - translations.
 Improve tests
 More events - on select, on bulk change, onUndo, onRedo, onScroll(which should help to add more data)
 Custom tools - onClick should respond with all selected cell data
-Resize rows 
+custom options in menu
+!!Resize rows 
 Multiple selection with cntrl key
 Readonly should disable all updates and support merged cells
 
-!!complete pending tests
+Tool tip for tools
