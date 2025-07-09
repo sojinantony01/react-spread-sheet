@@ -31,11 +31,7 @@ const Cell = (props: Prop) => {
     return 1;
   });
 
-  const skip = useAppSelector(store, (state) => {
-    return state.data[props.i][props.j].skip;
-  });
-
-  return !skip ? (
+  return (
     <td
       ref={ref}
       className={`${!inView ? "pv-4 sheet-not-in-view-table" : ""}`}
@@ -44,8 +40,6 @@ const Cell = (props: Prop) => {
     >
       {inView ? <Input key={`${props.i}-${props.j}`} {...props} /> : " "}
     </td>
-  ) : (
-    <></>
   );
 };
 

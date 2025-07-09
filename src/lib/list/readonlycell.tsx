@@ -31,15 +31,12 @@ const ReadOnlyCell = (props: Prop) => {
     return 1;
   });
 
-  const skip = useAppSelector(store, (state) => {
-    return state.data[props.i][props.j].skip;
-  });
 
   const styles = useAppSelector(store, (state) => {
     return state.data[props.i][props.j].styles;
   });
 
-  return !skip ? (
+  return (
     <td colSpan={colSpan} rowSpan={rowSpan}>
       <div
         className="input input-dummy"
@@ -48,10 +45,8 @@ const ReadOnlyCell = (props: Prop) => {
       >
         {value}
       </div>
-    </td>
-  ) : (
-    <></>
-  );
+    </td>)
+  
 };
 
 export default ReadOnlyCell;
