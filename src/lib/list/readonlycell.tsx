@@ -31,7 +31,6 @@ const ReadOnlyCell = (props: Prop) => {
     return 1;
   });
 
-
   const styles = useAppSelector(store, (state) => {
     return state.data[props.i][props.j].styles;
   });
@@ -45,8 +44,8 @@ const ReadOnlyCell = (props: Prop) => {
       >
         {value}
       </div>
-    </td>)
-  
+    </td>
+  );
 };
 
 export default ReadOnlyCell;
