@@ -6,6 +6,7 @@ import { store } from "../../store";
 import { generateDummyContent } from "../utils";
 import { changeData, selectCellsDrag, selectOneCell } from "../../reducer";
 import { mockAllIsIntersecting } from "react-intersection-observer/test-utils";
+import { wait } from "@testing-library/user-event/dist/cjs/utils/index.js";
 
 describe("index tests", () => {
   afterEach(() => {
@@ -368,7 +369,9 @@ describe("index tests", () => {
   });
   test("merge cells", async () => {
     const user = userEvent.setup();
-    render(<List data={generateDummyContent(10, 2)} autoAddAdditionalRows={false} />);
+    const { container } = render(
+      <List data={generateDummyContent(10, 2)} autoAddAdditionalRows={false} />,
+    );
     mockAllIsIntersecting(true);
     expect(screen.getAllByRole("textbox").length).toBe(21); //one common input from tools
     await user.click(screen.getByTestId(`${0}-${0}`));
@@ -386,6 +389,6 @@ describe("index tests", () => {
     expect(screen.getAllByRole("textbox").length).toBe(18); //one common input from tools
     fireEvent.contextMenu(screen.getByTestId(`0-0`));
     fireEvent.click(screen.getByText("Merge cells"));
-    expect(screen.getAllByRole("textbox").length).toBe(18); //one common input from tools
+    expect(screen.getAllByRole("textbox").length).toBe(18); //why this is 21 !!!!
   });
 });

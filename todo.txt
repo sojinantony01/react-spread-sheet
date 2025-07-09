@@ -25,3 +25,8 @@ Multiple selection with cntrl key
 Readonly should disable all updates and support merged cells
 
 Tool tip for tools
+
+
+merge cells - skip 
+
+event delegation in javascript table
