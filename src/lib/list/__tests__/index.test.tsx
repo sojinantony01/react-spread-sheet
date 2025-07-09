@@ -369,7 +369,9 @@ describe("index tests", () => {
   });
   test("merge cells", async () => {
     const user = userEvent.setup();
-    const {container} = render(<List data={generateDummyContent(10, 2)} autoAddAdditionalRows={false} />);
+    const { container } = render(
+      <List data={generateDummyContent(10, 2)} autoAddAdditionalRows={false} />,
+    );
     mockAllIsIntersecting(true);
     expect(screen.getAllByRole("textbox").length).toBe(21); //one common input from tools
     await user.click(screen.getByTestId(`${0}-${0}`));
