@@ -17,7 +17,7 @@ const Cell = (props: Prop) => {
 
   const colSpan = useAppSelector(store, (state) => {
     let val = state.data[props.i][props.j];
-    if (inView && val.colSpan && val.rowSpan) {
+    if (val.colSpan && val.rowSpan) {
       return val.colSpan;
     }
     return 1;
@@ -25,7 +25,7 @@ const Cell = (props: Prop) => {
 
   const rowSpan = useAppSelector(store, (state) => {
     let val = state.data[props.i][props.j];
-    if (inView && val.colSpan && val.rowSpan) {
+    if (val.colSpan && val.rowSpan) {
       return val.rowSpan;
     }
     return 1;
@@ -35,15 +35,17 @@ const Cell = (props: Prop) => {
     return state.data[props.i][props.j].skip;
   });
 
-  return (
+  return !skip ? (
     <td
       ref={ref}
       className={`${!inView ? "pv-4 sheet-not-in-view-table" : ""}`}
       colSpan={colSpan}
       rowSpan={rowSpan}
     >
-      {inView && !skip ? <Input key={`${props.i}-${props.j}`} {...props} /> : " "}
+      {inView ? <Input key={`${props.i}-${props.j}`} {...props} /> : " "}
     </td>
+  ) : (
+    <></>
   );
 };
 

@@ -39,16 +39,18 @@ const ReadOnlyCell = (props: Prop) => {
     return state.data[props.i][props.j].styles;
   });
 
-  return (
+  return !skip ? (
     <td colSpan={colSpan} rowSpan={rowSpan}>
       <div
         className="input input-dummy"
         data-testid={`read-only-${props.i}-${props.j}`}
         style={styles}
       >
-        {!skip && value}
+        {value}
       </div>
     </td>
+  ) : (
+    <></>
   );
 };
 

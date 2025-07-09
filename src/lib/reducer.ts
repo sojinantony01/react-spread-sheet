@@ -351,11 +351,11 @@ const actions: DispatcherActions = {
             j++
           ) {
             undo.push({ i: i, j: j, data: { ...state.data[i][j] } });
-            data[i][j].skip = undefined;
+            delete data[i][j].skip;
           }
         }
-        data[cellForMerge[0]][cellForMerge[1]].rowSpan = undefined;
-        data[cellForMerge[0]][cellForMerge[1]].colSpan = undefined;
+        delete data[cellForMerge[0]][cellForMerge[1]].rowSpan;
+        delete data[cellForMerge[0]][cellForMerge[1]].colSpan;
       } else if (state.selected.length > 1) {
         state.selected.forEach((p, i) => {
           undo.push({ i: p[0], j: p[1], data: { ...state.data[p[0]][p[1]] } });
