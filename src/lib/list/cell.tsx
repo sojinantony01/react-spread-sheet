@@ -31,6 +31,10 @@ const Cell = (props: Prop) => {
     return 1;
   });
 
+  const skip = useAppSelector(store, (state) => {
+    return state.data[props.i][props.j].skip;
+  });
+
   return (
     <td
       ref={ref}
@@ -38,7 +42,7 @@ const Cell = (props: Prop) => {
       colSpan={colSpan}
       rowSpan={rowSpan}
     >
-      {inView ? <Input key={`${props.i}-${props.j}`} {...props} /> : " "}
+      {inView && !skip ? <Input key={`${props.i}-${props.j}`} {...props} /> : " "}
     </td>
   );
 };

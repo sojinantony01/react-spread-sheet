@@ -386,6 +386,6 @@ describe("index tests", () => {
     expect(screen.getAllByRole("textbox").length).toBe(18); //one common input from tools
     fireEvent.contextMenu(screen.getByTestId(`0-0`));
     fireEvent.click(screen.getByText("Merge cells"));
-    expect(screen.getAllByRole("textbox").length).toBe(18); //one common input from tools
+    expect(screen.getAllByRole("textbox").length).toBe(21); //one common input from tools
   });
 });

@@ -31,6 +31,10 @@ const ReadOnlyCell = (props: Prop) => {
     return 1;
   });
 
+  const skip = useAppSelector(store, (state) => {
+    return state.data[props.i][props.j].skip;
+  });
+
   const styles = useAppSelector(store, (state) => {
     return state.data[props.i][props.j].styles;
   });
@@ -42,7 +46,7 @@ const ReadOnlyCell = (props: Prop) => {
         data-testid={`read-only-${props.i}-${props.j}`}
         style={styles}
       >
-        {value}
+        {!skip && value}
       </div>
     </td>
   );
