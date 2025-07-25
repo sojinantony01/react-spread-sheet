@@ -278,6 +278,11 @@ export default App;
 
 ```
 
+## Docs
+https://medium.com/@sojin.antony01/no-more-redux-or-context-to-manage-complex-data-in-your-react-application-try-2fa6dc23c715
+https://medium.com/@sojin.antony01/what-if-you-need-to-render-a-lot-of-input-boxes-in-screen-a966c41c62dd
+
+
 ## Try here
 [Sandbox](https://codesandbox.io/p/sandbox/dry-water-gy2g6k)
 
