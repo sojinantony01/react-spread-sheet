@@ -1,0 +1,19 @@
+# Cypress artifacts
+screenshots/
+videos/
+downloads/
+
+# Performance results (except baseline)
+performance-results/metrics.json
+performance-results/comparison-report.md
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db

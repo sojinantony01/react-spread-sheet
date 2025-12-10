@@ -24,10 +24,119 @@ jobs:
 
     - name: Install dependencies
       run: npm install
+    
     - name: Lint checks
       run: npm run format-check
+    
     - name: Unit test
       run: npm run test:ci
+    
+    - name: Install Cypress dependencies
+      run: |
+        cd cypress
+        npm install
+    
+    - name: E2E tests
+      run: |
+        cd cypress
+        npm run test:e2e
+    
+    - name: Check if cypress exists in main
+      id: check_cypress
+      run: |
+        git fetch origin main
+        if git ls-tree -r origin/main --name-only | grep -q "^cypress/"; then
+          echo "cypress_exists=true" >> $GITHUB_OUTPUT
+          echo "✅ Cypress folder exists in main branch"
+        else
+          echo "cypress_exists=false" >> $GITHUB_OUTPUT
+          echo "⚠️  Cypress folder does not exist in main branch - skipping baseline"
+        fi
+    
+    - name: Get main branch performance (baseline)
+      if: steps.check_cypress.outputs.cypress_exists == 'true'
+      run: |
+        # Save current branch
+        CURRENT_BRANCH=$(git branch --show-current)
+        echo "current_branch=$CURRENT_BRANCH" >> $GITHUB_ENV
+        
+        # Checkout main and test
+        git checkout origin/main
+        cd cypress
+        npm install
+        npm run test:performance || true
+        
+        # Save main branch metrics as baseline
+        if [ -f performance-results/metrics.json ]; then
+          cp performance-results/metrics.json performance-results/baseline-metrics.json
+          echo "✅ Main branch baseline captured"
+        fi
+        
+        # Return to PR branch
+        git checkout $CURRENT_BRANCH
+    
+    - name: Get PR branch performance
+      run: |
+        cd cypress
+        npm run test:performance
+    
+    - name: Compare performance (main vs PR)
+      if: steps.check_cypress.outputs.cypress_exists == 'true'
+      id: perf_compare
+      run: |
+        cd cypress
+        npm run compare:performance || echo "comparison_failed=true" >> $GITHUB_OUTPUT
+      continue-on-error: true
+    
+    - name: Skip comparison message
+      if: steps.check_cypress.outputs.cypress_exists == 'false'
+      run: |
+        echo "⚠️  Skipping performance comparison - cypress folder not in main branch yet"
+        echo "This is expected for the first PR that adds performance testing"
+        echo "Future PRs will compare against this baseline"
+    
+    - name: Upload performance report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: performance-report
+        path: cypress/performance-results/comparison-report.md
+        if-no-files-found: ignore
+    
+    - name: Comment PR with performance results
+      uses: actions/github-script@v6
+      if: github.event_name == 'pull_request' && always()
+      with:
+        script: |
+          const fs = require('fs');
+          const reportPath = 'cypress/performance-results/comparison-report.md';
+          
+          if (fs.existsSync(reportPath)) {
+            const report = fs.readFileSync(reportPath, 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: report
+            });
+          }
+    
+    - name: Upload Cypress screenshots on failure
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: cypress-screenshots
+        path: cypress/screenshots
+        if-no-files-found: ignore
+    
+    - name: Upload Cypress videos
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: cypress-videos
+        path: cypress/videos
+        if-no-files-found: ignore
 
     - name: Build
       run: npm run react-build

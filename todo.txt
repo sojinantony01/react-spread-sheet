@@ -30,3 +30,10 @@ Tool tip for tools
 merge cells - skip 
 
 event delegation in javascript table
+
+
+Support MAX, MIN, SUM etc in calc
+
+e2e run with github pipelines
+
+compare performance with existing version - either by demo or package directly
