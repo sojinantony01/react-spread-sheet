@@ -1,0 +1,21 @@
+{
+  "name": "react-spread-sheet-excel-e2e-tests",
+  "version": "1.0.0",
+  "description": "E2E tests for react-spread-sheet-excel",
+  "private": true,
+  "scripts": {
+    "test:e2e": "start-server-and-test 'cd .. && npm start' http://localhost:3000 'cypress run --e2e --config-file cypress.config.ts'",
+    "test:e2e:open": "start-server-and-test 'cd .. && npm start' http://localhost:3000 'cypress open --e2e --config-file cypress.config.ts'",
+    "test:performance": "start-server-and-test 'cd .. && npm start' http://localhost:3000 'cypress run --e2e --spec \"e2e/sheet.performance.cy.ts\" --config-file cypress.config.ts'",
+    "test:performance:baseline": "start-server-and-test 'cd .. && npm start' http://localhost:3000 'node scripts/fetch-baseline.js && cypress run --e2e --spec \"e2e/sheet.performance.cy.ts\" --config-file cypress.config.ts'",
+    "fetch:production:baseline": "node scripts/fetch-production-baseline.js",
+    "compare:performance": "node scripts/compare-performance.js",
+    "cypress:run": "cypress run --e2e --config-file cypress.config.ts",
+    "cypress:open": "cypress open --e2e --config-file cypress.config.ts",
+    "install": "cypress install"
+  },
+  "devDependencies": {
+    "cypress": "^13.13.0",
+    "start-server-and-test": "^2.0.3"
+  }
+}
