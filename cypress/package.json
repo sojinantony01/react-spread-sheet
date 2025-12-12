@@ -7,6 +7,7 @@
     "test:e2e": "start-server-and-test 'cd .. && npm start' http://localhost:3000 'cypress run --e2e --config-file cypress.config.ts'",
     "test:e2e:open": "start-server-and-test 'cd .. && npm start' http://localhost:3000 'cypress open --e2e --config-file cypress.config.ts'",
     "test:performance": "start-server-and-test 'cd .. && npm start' http://localhost:3000 'cypress run --e2e --spec \"e2e/sheet.performance.cy.ts\" --config-file cypress.config.ts'",
+    "test:stress": "start-server-and-test 'cd .. && npm start' http://localhost:3000 'cypress run --e2e --spec \"e2e/sheet.stress.cy.ts\" --config-file cypress.config.ts'",
     "test:performance:baseline": "start-server-and-test 'cd .. && npm start' http://localhost:3000 'node scripts/fetch-baseline.js && cypress run --e2e --spec \"e2e/sheet.performance.cy.ts\" --config-file cypress.config.ts'",
     "fetch:production:baseline": "node scripts/fetch-production-baseline.js",
     "compare:performance": "node scripts/compare-performance.js",
