@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { useInView } from "react-intersection-observer";
 import Input from "./input";
 import { store, useAppSelector } from "../store";
@@ -49,4 +49,4 @@ const Cell = (props: Prop) => {
   );
 };
 
-export default Cell;
+export default memo(Cell);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { store, useAppSelector } from "../store";
 import { getCalculatedVal } from "./utils";
 
@@ -54,4 +54,4 @@ const ReadOnlyCell = (props: Prop) => {
   );
 };
 
-export default ReadOnlyCell;
+export default memo(ReadOnlyCell);

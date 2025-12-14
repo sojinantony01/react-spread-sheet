@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, useState } from "react";
+import React, { ChangeEvent, KeyboardEvent, useState, useCallback, useMemo, memo } from "react";
 import { store, useAppSelector } from "../store";
 import {
   changeData,
@@ -52,38 +52,44 @@ const Input = (props: Prop) => {
     return state.data[i].length;
   });
 
-  const change = (e: ChangeEvent<HTMLInputElement>) => {
-    if (value !== e.target.value) {
-      setEdit(true);
-      dispatch(changeData, { payload: { value: e.target.value || "", i: i, j: j } });
-      onChange && onChange(i, j, e.target.value);
-    }
-  };
+  const change = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      if (value !== e.target.value) {
+        setEdit(true);
+        dispatch(changeData, { payload: { value: e.target.value || "", i: i, j: j } });
+        onChange && onChange(i, j, e.target.value);
+      }
+    },
+    [value, i, j, onChange, dispatch],
+  );
 
-  const keyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (
-      (!editMode && ["ArrowLeft", "ArrowRight"].includes(e.code)) ||
-      ["ArrowUp", "ArrowDown"].includes(e.code)
-    ) {
-      dispatch(clearSelection);
-      moveToNext(e);
-    } else if (editMode && (e.code === "Backspace" || e.code === "Delete")) {
-      e.stopPropagation();
-    } else if (editMode && e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
-      e.stopPropagation();
-    } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey)) {
-      e.preventDefault();
-    } else if (e.code === "KeyZ" && e.shiftKey && (e.ctrlKey || e.metaKey)) {
-      e.preventDefault();
-    } else if (
-      editMode &&
-      window.getSelection()?.toString() &&
-      e.code === "KeyC" &&
-      (e.ctrlKey || e.metaKey)
-    ) {
-      e.stopPropagation();
-    }
-  };
+  const keyDown = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (
+        (!editMode && ["ArrowLeft", "ArrowRight"].includes(e.code)) ||
+        ["ArrowUp", "ArrowDown"].includes(e.code)
+      ) {
+        dispatch(clearSelection);
+        moveToNext(e);
+      } else if (editMode && (e.code === "Backspace" || e.code === "Delete")) {
+        e.stopPropagation();
+      } else if (editMode && e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
+        e.stopPropagation();
+      } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+      } else if (e.code === "KeyZ" && e.shiftKey && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+      } else if (
+        editMode &&
+        window.getSelection()?.toString() &&
+        e.code === "KeyC" &&
+        (e.ctrlKey || e.metaKey)
+      ) {
+        e.stopPropagation();
+      }
+    },
+    [editMode, dispatch, i, j, rowLength, columnLength],
+  );
 
   const findNext = (
     i: number,
@@ -135,30 +141,41 @@ const Input = (props: Prop) => {
     document.getElementById(`${newI}-${newJ}`)?.focus();
   };
 
-  const setSelected = (row = i, column = j) => {
-    if (row >= 0 && column >= 0 && row < rowLength && column < columnLength)
-      dispatch(selectOneCell, { payload: { i: row, j: column } });
-  };
-  const onClick = (e: React.MouseEvent) => {
-    if (detectLeftButton(e)) {
-      if (e.ctrlKey || e.metaKey || e.shiftKey) {
-        dispatch(selectCells, { payload: { i, j } });
-      } else {
-        selected && setEdit(true);
-        setSelected();
-      }
-    } else {
-      e.preventDefault();
-      !selected && dispatch(selectOneCell, { payload: { i, j } });
-    }
-  };
-  const onDrag = (e: any) => {
-    if (detectLeftButton(e)) {
-      dispatch(selectCellsDrag, { payload: { i, j } });
-    }
-  };
+  const setSelected = useCallback(
+    (row = i, column = j) => {
+      if (row >= 0 && column >= 0 && row < rowLength && column < columnLength)
+        dispatch(selectOneCell, { payload: { i: row, j: column } });
+    },
+    [i, j, rowLength, columnLength, dispatch],
+  );
 
-  const renderInput = () => {
+  const onClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (detectLeftButton(e)) {
+        if (e.ctrlKey || e.metaKey || e.shiftKey) {
+          dispatch(selectCells, { payload: { i, j } });
+        } else {
+          selected && setEdit(true);
+          setSelected();
+        }
+      } else {
+        e.preventDefault();
+        !selected && dispatch(selectOneCell, { payload: { i, j } });
+      }
+    },
+    [selected, setSelected, i, j, dispatch],
+  );
+
+  const onDrag = useCallback(
+    (e: any) => {
+      if (detectLeftButton(e)) {
+        dispatch(selectCellsDrag, { payload: { i, j } });
+      }
+    },
+    [i, j, dispatch],
+  );
+
+  const renderInput = useMemo(() => {
     const baseProps = {
       id: `${i}-${j}`,
       "data-testid": `${i}-${j}`,
@@ -183,9 +200,9 @@ const Input = (props: Prop) => {
         onChange={change}
       />
     );
-  };
+  }, [i, j, value, styles, type, editMode, selected, focus, keyDown, change, onDrag, onClick]);
 
-  return renderInput();
+  return renderInput;
 };
 
 export default Input;
