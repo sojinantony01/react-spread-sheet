@@ -20,16 +20,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          registry-url: https://registry.npmjs.org/
+          registry-url: 'https://registry.npmjs.org'
       - run: npm install
       - run: npm run build
-      - name: Publish to npm (dry-run on PR)
-        run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            npm publish --provenance --access public --dry-run
-          else
-            npm publish --provenance --access public
-          fi
+      - name: Publish to npm
+        if: github.event_name == 'release'
+        run: npm publish --provenance --access public
+      - name: Dry-run publish (PR only)
+        if: github.event_name == 'pull_request'
+        run: npm publish --provenance --access public --dry-run
 
   publish-gpr:
     if: github.event_name == 'release'
