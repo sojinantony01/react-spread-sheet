@@ -1,6 +1,6 @@
-# This workflow publishes packages to npm and GitHub Packages
-# NPM publishing uses Granular Access Tokens (new standard as of Dec 2024)
-# For more info: https://docs.npmjs.com/creating-and-viewing-access-tokens
+# This workflow publishes packages using NPM Trusted Publishing (OIDC)
+# No tokens needed - authentication happens automatically via GitHub OIDC
+# For more info: https://docs.npmjs.com/generating-provenance-statements
 
 name: Publish Package
 
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write  # Required for provenance
+      id-token: write  # Required for OIDC authentication
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -36,14 +36,10 @@ jobs:
       - name: Publish to npm (Release)
         if: github.event_name == 'release'
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           
       - name: Test publish (PR - Dry Run)
         if: github.event_name == 'pull_request'
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-gpr:
     name: Publish to GitHub Packages
