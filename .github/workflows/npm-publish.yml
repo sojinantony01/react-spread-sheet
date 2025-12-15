@@ -1,49 +1,42 @@
 # This workflow publishes packages using NPM Trusted Publishing (OIDC)
-# No tokens needed - authentication happens automatically via GitHub OIDC
-# For more info: https://docs.npmjs.com/generating-provenance-statements
+# Documentation: https://docs.npmjs.com/trusted-publishers
 
 name: Publish Package
 
 on:
-  pull_request:
-    branches: [main, master]
   release:
     types: [created]
+  workflow_dispatch:  # Allow manual trigger for testing
+
+permissions:
+  contents: read
+  id-token: write  # Required for OIDC
 
 jobs:
   publish-npm:
     name: Publish to NPM
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write  # Required for OIDC authentication
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
         
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
           
       - name: Install dependencies
-        run: npm install
+        run: npm ci || npm install
         
-      - name: Build package
+      - name: Build
         run: npm run build
         
-      - name: Publish to npm (Release)
-        if: github.event_name == 'release'
-        run: npm publish --provenance --access public
-          
-      - name: Test publish (PR - Dry Run)
-        if: github.event_name == 'pull_request'
+      - name: Publish
         run: npm publish --provenance --access public
 
   publish-gpr:
     name: Publish to GitHub Packages
-    if: github.event_name == 'release'
     runs-on: ubuntu-latest
     permissions:
       contents: read
