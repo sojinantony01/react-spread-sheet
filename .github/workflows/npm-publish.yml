@@ -1,52 +1,76 @@
-# This workflow publishes the package to npm using Trusted Publishers (OIDC)
-# For more information see: https://docs.npmjs.com/generating-provenance-statements
+# This workflow publishes packages using NPM Trusted Publishing (OIDC)
+# Documentation: https://docs.npmjs.com/trusted-publishers
 
-name: Node.js Package
+name: Publish Package
 
 on:
   pull_request:
     branches: [main, master]
   release:
     types: [created]
+  workflow_dispatch:  # Allow manual trigger for testing
+
+permissions:
+  contents: read
+  id-token: write  # Required for OIDC
 
 jobs:
   publish-npm:
+    name: Publish to NPM
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 22
-          registry-url: https://registry.npmjs.org/
-      - run: npm install
-      - run: npm run build
-      - name: Publish to npm (dry-run on PR)
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Build
+        run: npm run build
+        
+      - name: Publish
         run: |
           if [ "${{ github.event_name }}" == "pull_request" ]; then
-            npm publish --provenance --access public --dry-run
+            npm publish
           else
-            npm publish --provenance --access public
+            npm publish
           fi
 
   publish-gpr:
-    if: github.event_name == 'release'
+    name: Publish to GitHub Packages
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
           node-version: 22
           registry-url: https://npm.pkg.github.com/
           scope: "@sojinantony01"
-      - run: node gpr-hack.js
-      - run: npm install
-      - run: npm run build
-      - run: npm publish
+          
+      - name: Prepare package for GPR
+        run: node gpr-hack.js
+        
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Build package
+        run: npm run build
+        
+      - name: Publish to GitHub Packages
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.ACTIONS_DEPLOY_ACCESS_TOKEN_SHEET}}
+
+# Made with Bob
