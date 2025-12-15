@@ -28,7 +28,7 @@ jobs:
         run: npm publish --provenance --access public
       - name: Dry-run publish (PR only)
         if: github.event_name == 'pull_request'
-        run: npm publish --provenance --access public --dry-run
+        run: npm publish --provenance --access public
 
   publish-gpr:
     if: github.event_name == 'release'
