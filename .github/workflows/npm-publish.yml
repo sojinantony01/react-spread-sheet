@@ -41,7 +41,7 @@ jobs:
           
       - name: Test publish (PR - Dry Run)
         if: github.event_name == 'pull_request'
-        run: npm publish --provenance --access public --dry-run
+        run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
