@@ -4,6 +4,8 @@
 name: Node.js Package
 
 on:
+  pull_request:
+    branches: [main, master]
   release:
     types: [created]
 
@@ -19,9 +21,15 @@ jobs:
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
+      - run: npm install
       - run: npm run build
-      - run: npm publish --provenance --access public
+      - name: Publish to npm (dry-run on PR)
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            npm publish --provenance --access public --dry-run
+          else
+            npm publish --provenance --access public
+          fi
 
   publish-gpr:
     runs-on: ubuntu-latest
