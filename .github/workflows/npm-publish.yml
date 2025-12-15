@@ -4,6 +4,8 @@
 name: Publish Package
 
 on:
+  pull_request:
+    branches: [main, master]
   release:
     types: [created]
   workflow_dispatch:  # Allow manual trigger for testing
@@ -33,7 +35,12 @@ jobs:
         run: npm run build
         
       - name: Publish
-        run: npm publish --provenance --access public
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            npm publish
+          else
+            npm publish
+          fi
 
   publish-gpr:
     name: Publish to GitHub Packages
