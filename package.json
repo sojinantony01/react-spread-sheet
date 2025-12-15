@@ -1,6 +1,6 @@
 {
   "name": "react-spread-sheet-excel",
-  "version": "3.1.7",
+  "version": "3.2.0",
   "description": "Lightning-fast React spreadsheet component with Excel-like features. Render 100,000+ cells with formulas, formatting, copy/paste, undo/redo. Perfect for data grids and Excel-like apps.",
   "keywords": [
     "react-spread-sheet-excel",
