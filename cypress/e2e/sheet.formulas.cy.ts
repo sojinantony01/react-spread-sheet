@@ -117,5 +117,6 @@ describe('Spreadsheet - Formula Calculations', () => {
     cy.getCell(1, 0).click();
     cy.getCellValue(0, 2).should('equal', '13');
   });
-
 });
+
+// Made with Bob

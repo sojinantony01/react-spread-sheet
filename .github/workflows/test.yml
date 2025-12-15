@@ -103,24 +103,18 @@ jobs:
         path: cypress/performance-results/comparison-report.md
         if-no-files-found: ignore
     
-    - name: Comment PR with performance results
-      uses: actions/github-script@v6
-      if: github.event_name == 'pull_request' && always()
-      with:
-        script: |
-          const fs = require('fs');
-          const reportPath = 'cypress/performance-results/comparison-report.md';
-          
-          if (fs.existsSync(reportPath)) {
-            const report = fs.readFileSync(reportPath, 'utf8');
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: report
-            });
-          }
+    - name: Display performance results in logs
+      if: steps.check_cypress.outputs.cypress_exists == 'true'
+      run: |
+        echo "=================================================="
+        echo "📊 PERFORMANCE COMPARISON REPORT"
+        echo "=================================================="
+        if [ -f cypress/performance-results/comparison-report.md ]; then
+          cat cypress/performance-results/comparison-report.md
+        else
+          echo "⚠️  No comparison report found"
+        fi
+        echo "=================================================="
     
     - name: Upload Cypress screenshots on failure
       uses: actions/upload-artifact@v4

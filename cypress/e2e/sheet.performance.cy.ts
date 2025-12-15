@@ -3,31 +3,6 @@ describe('Spreadsheet - Performance Tests', () => {
     cy.visit('/');
   });
 
-  it('should measure initial render time with large dataset', () => {
-    const startTime = performance.now();
-    
-    // Load page and wait for it to be ready
-    cy.get('[data-testid="sheet-table"]').should('be.visible');
-    cy.get('table tbody tr').should('have.length.at.least', 10);
-    
-    cy.window().then(() => {
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
-      
-      cy.log(`Initial render time: ${renderTime.toFixed(2)}ms`);
-      
-      // Store performance metric
-      cy.task('logPerformance', {
-        metric: 'initial_render',
-        value: renderTime,
-        unit: 'ms'
-      });
-      
-      // Assert reasonable render time (should be under 3 seconds)
-      expect(renderTime).to.be.lessThan(3000);
-    });
-  });
-
   it('should measure scroll performance', () => {
     cy.get('[data-testid="sheet-table-content"]').should('be.visible');
     

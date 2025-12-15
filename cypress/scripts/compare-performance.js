@@ -15,12 +15,17 @@ const REPORT_FILE = path.join(PERFORMANCE_DIR, 'comparison-report.md');
 
 // Performance thresholds (percentage change that triggers warning/error)
 const THRESHOLDS = {
-  initial_render: { warning: 10, error: 25 }, // % slower is bad
+  initial_render: { warning: 10, error: 25 },
   scroll_performance: { warning: 15, error: 30 },
   cell_interaction: { warning: 10, error: 25 },
   memory_usage: { warning: 20, error: 40 },
   formula_calculation: { warning: 10, error: 25 },
-  virtual_scroll_efficiency: { warning: 20, error: 50 } // More rows is bad
+  virtual_scroll_efficiency: { warning: 20, error: 50 },
+  // Stress test metrics (1 LAKH cells)
+  stress_100k_render: { warning: 15, error: 30 },
+  stress_100k_scroll: { warning: 15, error: 30 },
+  large_dataset_memory: { warning: 20, error: 40 },
+  stress_virtual_scroll_rows: { warning: 20, error: 50 }
 };
 
 function readMetrics(filePath) {

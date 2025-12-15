@@ -95,6 +95,13 @@ All tests are in the `e2e/` subdirectory:
   - Formula calculation performance
   - Virtual scrolling efficiency
 
+- **`sheet.stress.cy.ts`** - Stress tests with large datasets (1 test)
+  - **1 LAKH cells test** (2,500 rows × 40 columns / 100,000 cells)
+    - Initial render time measurement
+    - Scroll performance at 5 positions (0%, 25%, 50%, 75%, 100%)
+    - Memory usage monitoring
+    - Virtual scrolling efficiency validation
+
 See [PERFORMANCE_TESTING.md](../PERFORMANCE_TESTING.md) for detailed performance testing documentation.
 
 ## Custom Commands
@@ -162,6 +169,7 @@ Available scripts in `cypress/package.json`:
 
 ### Performance Testing
 - `npm run test:performance` - Runs performance tests and collects metrics
+- `npm run test:stress` - Runs stress tests with large datasets (100k, 200k cells)
 - `npm run test:performance:baseline` - Fetches baseline and runs performance tests
 - `npm run compare:performance` - Compares current metrics with baseline
 

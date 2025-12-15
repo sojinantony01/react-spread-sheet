@@ -87,7 +87,8 @@ const List = (props: Props) => {
     );
   }
 
-  const onsCroll = () => {
+  // Throttle scroll handler for better performance
+  const onsCroll = React.useCallback(() => {
     const el = divRef.current;
     const parentEl = parentDivRef.current;
     if (el && parentEl && parentEl?.scrollTop > el?.scrollHeight - 3200) {
@@ -99,21 +100,21 @@ const List = (props: Props) => {
         setJ(nextVal > itemLength ? itemLength : nextVal);
       }
     }
-  };
+  }, [autoAddAdditionalRows, itemLength, dispatch]);
 
-  const copyToClipBoard = () => {
+  const copyToClipBoard = React.useCallback(() => {
     navigator.clipboard.writeText(
       JSON.stringify(getItemsToCopy(store.getState().selected, store.getState().data)),
     );
-  };
+  }, []);
 
-  const cutItemsToClipBoard = () => {
+  const cutItemsToClipBoard = React.useCallback(() => {
     copyToClipBoard();
     dispatch(deleteSelectItems);
     onChange && onChange();
-  };
+  }, [copyToClipBoard, dispatch, onChange]);
 
-  const pasteFromClipBoard = () => {
+  const pasteFromClipBoard = React.useCallback(() => {
     navigator.clipboard.readText().then((v) => {
       const selected = store.getState().selected;
       try {
@@ -133,50 +134,7 @@ const List = (props: Props) => {
         }
       }
     });
-  };
-  const handleKeyDown = (e: {
-    preventDefault(): unknown;
-    shiftKey: boolean;
-    code: string;
-    ctrlKey: any;
-    metaKey: any;
-  }) => {
-    if (readonly) return;
-
-    if (e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
-      dispatch(selectAllCells);
-    }
-    if (e.code === "Backspace" || e.code === "Delete") {
-      dispatch(deleteSelectItems);
-      onChange && onChange();
-    } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyC") {
-      e.preventDefault();
-      copyToClipBoard();
-    } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyX") {
-      e.preventDefault();
-      cutItemsToClipBoard();
-      onChange && onChange();
-    } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyV") {
-      e.preventDefault();
-      pasteFromClipBoard();
-      onChange && onChange();
-    } else if (e.code === "KeyB" && (e.ctrlKey || e.metaKey)) {
-      changeStyle("B");
-      onChange && onChange();
-    } else if (e.code === "KeyU" && (e.ctrlKey || e.metaKey)) {
-      changeStyle("U");
-      onChange && onChange();
-    } else if (e.code === "KeyI" && (e.ctrlKey || e.metaKey)) {
-      changeStyle("I");
-      onChange && onChange();
-    } else if (e.code === "KeyZ" && e.shiftKey && (e.ctrlKey || e.metaKey)) {
-      dispatch(redo);
-      onChange && onChange();
-    } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey) && !readonly) {
-      dispatch(undo);
-      onChange && onChange();
-    }
-  };
+  }, [dispatch, onChange]);
 
   const getStyle = (key: string, value?: string) => {
     switch (key) {
@@ -203,17 +161,78 @@ const List = (props: Props) => {
     }
   };
 
-  const changeStyle = (key: string, value?: string) => {
-    dispatch(updateStyles, { payload: getStyle(key, value) });
-    onChange && onChange();
-  };
+  const changeStyle = React.useCallback(
+    (key: string, value?: string) => {
+      dispatch(updateStyles, { payload: getStyle(key, value) });
+      onChange && onChange();
+    },
+    [dispatch, onChange],
+  );
 
-  const handleContextMenu = (e: React.MouseEvent) => {
-    if (!readonly) {
-      e.preventDefault();
-      setContextMenu({ x: e.clientX, y: e.clientY });
-    }
-  };
+  const handleKeyDown = React.useCallback(
+    (e: {
+      preventDefault(): unknown;
+      shiftKey: boolean;
+      code: string;
+      ctrlKey: any;
+      metaKey: any;
+    }) => {
+      if (readonly) return;
+
+      if (e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
+        dispatch(selectAllCells);
+      }
+      if (e.code === "Backspace" || e.code === "Delete") {
+        dispatch(deleteSelectItems);
+        onChange && onChange();
+      } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyC") {
+        e.preventDefault();
+        copyToClipBoard();
+      } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyX") {
+        e.preventDefault();
+        cutItemsToClipBoard();
+        onChange && onChange();
+      } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyV") {
+        e.preventDefault();
+        pasteFromClipBoard();
+        onChange && onChange();
+      } else if (e.code === "KeyB" && (e.ctrlKey || e.metaKey)) {
+        changeStyle("B");
+        onChange && onChange();
+      } else if (e.code === "KeyU" && (e.ctrlKey || e.metaKey)) {
+        changeStyle("U");
+        onChange && onChange();
+      } else if (e.code === "KeyI" && (e.ctrlKey || e.metaKey)) {
+        changeStyle("I");
+        onChange && onChange();
+      } else if (e.code === "KeyZ" && e.shiftKey && (e.ctrlKey || e.metaKey)) {
+        dispatch(redo);
+        onChange && onChange();
+      } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey) && !readonly) {
+        dispatch(undo);
+        onChange && onChange();
+      }
+    },
+    [
+      readonly,
+      dispatch,
+      onChange,
+      copyToClipBoard,
+      cutItemsToClipBoard,
+      pasteFromClipBoard,
+      changeStyle,
+    ],
+  );
+
+  const handleContextMenu = React.useCallback(
+    (e: React.MouseEvent) => {
+      if (!readonly) {
+        e.preventDefault();
+        setContextMenu({ x: e.clientX, y: e.clientY });
+      }
+    },
+    [readonly],
+  );
 
   return (
     <div onKeyDown={handleKeyDown} className="sheet-table" data-testid="sheet-table" tabIndex={0}>
