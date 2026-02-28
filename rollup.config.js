@@ -3,7 +3,6 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "rollup-plugin-typescript2";
 import postcss from "rollup-plugin-postcss";
-import json from '@rollup/plugin-json';
 import { readFileSync, copyFileSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 
@@ -40,7 +39,6 @@ export default {
     commonjs(),
     typescript({ useTsconfigDeclarationDir: true }),
     postcss(),
-    json(),
     copyCssPlugin()
   ],
   external: ["react", "react-dom"]

@@ -1,45 +1,14 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
+# This workflow publishes the package to npm using Trusted Publishers (OIDC)
+# For more information see: https://docs.npmjs.com/generating-provenance-statements
 
 name: Node.js Package
 
 on:
-  pull_request:
-    branches: [main, master]
   release:
     types: [created]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run tests
-        run: npm test
-
-      - name: Run linter
-        run: npm run format-check
-
-      - name: Build package
-        run: npm run build
-
-      - name: Build demo app
-        run: npm run demo:build
-
   publish-npm:
-    if: github.event_name == 'release'
-    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -67,8 +36,6 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
 
   publish-gpr:
-    if: github.event_name == 'release'
-    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: read

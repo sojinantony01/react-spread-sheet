@@ -15,26 +15,30 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'npm'
 
     - name: Install dependencies
-      run: npm install
-    - name: install gh pages separately  
+      run: npm ci
+
+    - name: Install gh-pages
       run: npm install gh-pages
+
     - name: Unit test
       run: npm run test:ci
+
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-    - name: Build
-      run: npm run react-build
+    - name: Build demo
+      run: npm run demo:build
 
     - name: Deploy
       run: |
@@ -47,3 +51,5 @@ jobs:
         user_email: 'github-actions[bot]@users.noreply.github.com'
         github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN_SHEET }}
         repository: ${{ github.repository }}
+
+# Made with Bob

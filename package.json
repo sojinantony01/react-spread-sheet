@@ -1,6 +1,6 @@
 {
   "name": "react-spread-sheet-excel",
-  "version": "3.2.4",
+  "version": "3.3.0",
   "description": "Lightning-fast React spreadsheet component with Excel-like features. Render 100,000+ cells with formulas, formatting, copy/paste, undo/redo. Perfect for data grids and Excel-like apps.",
   "keywords": [
     "react-spread-sheet-excel",
@@ -52,7 +52,6 @@
   "devDependencies": {
     "@e965/xlsx": "^0.20.3",
     "@rollup/plugin-commonjs": "^29.0.0",
-    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
@@ -86,17 +85,5 @@
     "format-check": "npx prettier --check './**/*.{ts,tsx,css,json,scss}' --config ./.prettierrc.json"
   },
   "homepage": "https://sojinantony01.github.io/react-spread-sheet",
-  "license": "ISC",
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "license": "ISC"
 }

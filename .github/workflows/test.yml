@@ -15,15 +15,16 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'npm'
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
     
     - name: Lint checks
       run: npm run format-check
@@ -132,5 +133,5 @@ jobs:
         path: cypress/videos
         if-no-files-found: ignore
 
-    - name: Build
-      run: npm run react-build
+    - name: Build demo
+      run: npm run demo:build
