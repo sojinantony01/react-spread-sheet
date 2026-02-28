@@ -20,15 +20,8 @@
     "sourceMap": true,
     "noEmit": false,
     "emitDeclarationOnly": false,
-    "types": ["node"]
+    "types": ["vitest/globals", "node"]
   },
-  "exclude": [
-    "node_modules",
-    "build",
-    "dist",
-    "src/**/__tests__/**/*",
-    "src/setupTests.ts",
-    "src/demo/**/*"
-  ],
-  "include": ["src/lib/**/*", "src/index.tsx", "src/react-app-env.d.ts"]
+  "exclude": ["node_modules", "build", "dist"],
+  "include": ["src/**/*"]
 }
