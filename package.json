@@ -60,6 +60,7 @@
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^5.1.2",
+    "@vitest/coverage-v8": "^4.0.18",
     "jsdom": "^27.4.0",
     "postcss": "^8.4.16",
     "prettier": "^3.4.2",
