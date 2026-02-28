@@ -2,13 +2,13 @@
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom';
-import { vi } from 'vitest';
-import { defaultFallbackInView } from 'react-intersection-observer';
+import "@testing-library/jest-dom";
+import { vi } from "vitest";
+import { defaultFallbackInView } from "react-intersection-observer";
 import {
   setupIntersectionMocking,
   resetIntersectionMocking,
-} from 'react-intersection-observer/test-utils';
+} from "react-intersection-observer/test-utils";
 
 // Wrap vi.fn so that implementations are wrapped in a regular function
 // (not arrow function), making them usable as constructors with `new`.

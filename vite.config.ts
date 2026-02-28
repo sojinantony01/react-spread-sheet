@@ -1,14 +1,14 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { resolve } from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/react-spread-sheet/',
-  publicDir: 'public',
+  base: "/react-spread-sheet/",
+  publicDir: "public",
   build: {
-    outDir: 'dist',
+    outDir: "dist",
     sourcemap: true,
   },
   server: {
@@ -17,7 +17,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      "@": resolve(__dirname, "./src"),
     },
   },
 });

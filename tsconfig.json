@@ -22,6 +22,13 @@
     "emitDeclarationOnly": false,
     "types": ["node"]
   },
-  "exclude": ["node_modules", "build", "dist", "src/**/__tests__/**/*", "src/setupTests.ts", "src/demo/**/*"],
+  "exclude": [
+    "node_modules",
+    "build",
+    "dist",
+    "src/**/__tests__/**/*",
+    "src/setupTests.ts",
+    "src/demo/**/*"
+  ],
   "include": ["src/lib/**/*", "src/index.tsx", "src/react-app-env.d.ts"]
 }
