@@ -11,7 +11,7 @@ beforeEach(() => {
   });
 });
 test("Tools render", async () => {
-  const changeStyle = jest.fn();
+  const changeStyle = vi.fn();
   render(<Tools changeStyle={changeStyle} onChange={() => {}} />);
   const bold = screen.getByRole("button", {
     name: /B/i,
@@ -87,7 +87,7 @@ test("Tools render", async () => {
 });
 
 it("should focus calculation input on container click", async () => {
-  const changeStyle = jest.fn();
+  const changeStyle = vi.fn();
   render(<Tools changeStyle={changeStyle} onChange={() => {}} />);
   expect(screen.getByTestId("fx-input")).toHaveAttribute("readOnly");
   act(() => {
@@ -103,8 +103,8 @@ it("should focus calculation input on container click", async () => {
 });
 
 it("should call onChange when calculation value changes", async () => {
-  const changeStyle = jest.fn();
-  const onChange = jest.fn();
+  const changeStyle = vi.fn();
+  const onChange = vi.fn();
   render(<Tools changeStyle={changeStyle} onChange={onChange} />);
   act(() => {
     store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
@@ -119,8 +119,8 @@ it("should call onChange when calculation value changes", async () => {
 });
 
 test("Undo redo", async () => {
-  const changeStyle = jest.fn();
-  const onChange = jest.fn();
+  const changeStyle = vi.fn();
+  const onChange = vi.fn();
   render(<Tools changeStyle={changeStyle} onChange={onChange} />);
   act(() => {
     store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });
@@ -149,8 +149,8 @@ test("Undo redo", async () => {
 });
 
 test("merge cells tools", async () => {
-  const changeStyle = jest.fn();
-  const onChange = jest.fn();
+  const changeStyle = vi.fn();
+  const onChange = vi.fn();
   render(<Tools changeStyle={changeStyle} onChange={onChange} />);
   act(() => {
     store.dispatch(selectOneCell, { payload: { i: 0, j: 0 } });

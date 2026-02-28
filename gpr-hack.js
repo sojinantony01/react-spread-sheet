@@ -10,3 +10,5 @@ const json = JSON.parse(file);
 json.name = "@sojinantony01/react-spread-sheet-excel";
 
 writeFileSync("./package.json", JSON.stringify(json, undefined, 2));
+
+// Made with Bob

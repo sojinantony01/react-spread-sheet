@@ -7,15 +7,15 @@ describe("ContextMenu", () => {
   const mockProps = {
     x: 100,
     y: 200,
-    onClose: jest.fn(),
-    copyToClipBoard: jest.fn(),
-    cutItemsToClipBoard: jest.fn(),
-    pasteFromClipBoard: jest.fn(),
-    onChange: jest.fn(),
+    onClose: vi.fn(),
+    copyToClipBoard: vi.fn(),
+    cutItemsToClipBoard: vi.fn(),
+    pasteFromClipBoard: vi.fn(),
+    onChange: vi.fn(),
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   afterEach(cleanup);
 

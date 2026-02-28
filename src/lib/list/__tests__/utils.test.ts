@@ -57,23 +57,27 @@ describe("solveMathExpression", () => {
 });
 
 describe("getItemsToCopy", () => {
-  expect(
-    getItemsToCopy(
-      [
-        [0, 1],
-        [0, 0],
-      ],
-      [[{ value: "test" }, { value: "test1" }, { value: "sdf" }]],
-    ),
-  ).toStrictEqual([
-    { data: { value: "test1" }, index: [0, 1] },
-    { data: { value: "test" }, index: [0, 0] },
-  ]);
+  it("should return items to copy in correct order", () => {
+    expect(
+      getItemsToCopy(
+        [
+          [0, 1],
+          [0, 0],
+        ],
+        [[{ value: "test" }, { value: "test1" }, { value: "sdf" }]],
+      ),
+    ).toStrictEqual([
+      { data: { value: "test1" }, index: [0, 1] },
+      { data: { value: "test" }, index: [0, 0] },
+    ]);
+  });
 });
 
 describe("getCalculatedVal", () => {
-  expect(getCalculatedVal("nothing", [[{ value: 1 }]])).toBe(undefined);
-  expect(getCalculatedVal("=A1 + A2", [[{ value: 1 }, { value: 2 }]])).toBe("A1 + A2"); //value does not exist in data
-  expect(getCalculatedVal("=A1 + B1", [[{ value: 1 }, { value: 2 }]])).toBe("3");
-  expect(getCalculatedVal("=AD + B1", [[{ value: 1 }, { value: 2 }]])).toBe("2"); // AS is undefined
+  it("should calculate values correctly", () => {
+    expect(getCalculatedVal("nothing", [[{ value: 1 }]])).toBe(undefined);
+    expect(getCalculatedVal("=A1 + A2", [[{ value: 1 }, { value: 2 }]])).toBe("A1 + A2"); //value does not exist in data
+    expect(getCalculatedVal("=A1 + B1", [[{ value: 1 }, { value: 2 }]])).toBe("3");
+    expect(getCalculatedVal("=AD + B1", [[{ value: 1 }, { value: 2 }]])).toBe("2"); // AS is undefined
+  });
 });

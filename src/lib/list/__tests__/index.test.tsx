@@ -34,7 +34,7 @@ describe("index tests", () => {
   });
 
   test("Table KeyboardActions", async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(<List data={generateDummyContent(10, 1)} onChange={onChange} />);
     const table = screen.getByTestId(`sheet-table`);
     fireEvent.keyDown(table, { code: "KeyA", ctrlKey: true });
@@ -130,7 +130,7 @@ describe("index tests", () => {
   });
 
   test("Undo-Redo", async () => {
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     render(<List data={generateDummyContent(10, 1)} onChange={onChange} />);
     const table = screen.getByTestId(`sheet-table`);
 

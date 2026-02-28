@@ -16,9 +16,12 @@
     "jsx": "react-jsx",
     "declaration": true,
     "declarationDir": "build",
+    "declarationMap": true,
     "sourceMap": true,
-    "noEmit": true
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "types": ["vitest/globals", "node"]
   },
-  "exclude": ["node_modules", "build", "dist"],
-  "include": ["src/lib/*"]
+  "exclude": ["node_modules", "build", "dist", "src/reportWebVitals.ts", "src/demo/**/*", "src/**/__tests__/**/*"],
+  "include": ["src/**/*"]
 }
