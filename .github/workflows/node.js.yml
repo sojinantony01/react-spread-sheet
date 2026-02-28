@@ -37,15 +37,12 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-    - name: Build demo
-      run: npm run demo:build
-
     - name: Deploy
       run: |
         git config --global user.name $user_name
         git config --global user.email $user_email
-        git remote set-url origin https://${github_token}@github.com/${repository}
-        npm run deploy
+        npm run demo:build
+        npx gh-pages -d dist --repo https://x-access-token:${github_token}@github.com/${repository}.git
       env:
         user_name: 'github-actions[bot]'
         user_email: 'github-actions[bot]@users.noreply.github.com'
