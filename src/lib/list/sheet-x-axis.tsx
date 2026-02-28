@@ -6,10 +6,10 @@ import { selectAllCells, selectVerticalCells } from "../reducer";
 interface Props {
   resize?: boolean;
   headerValues?: string[];
-  readOnly: boolean | undefined;
+  readOnly?: boolean;
 }
 
-const SheetXAxis = ({ resize, headerValues, readOnly }: Props) => {
+const SheetXAxis = ({ resize, headerValues, readOnly = false }: Props) => {
   const { dispatch } = store;
   const itemLength = useAppSelector(store, (state) => state.data[0].length);
   const items: any = [];

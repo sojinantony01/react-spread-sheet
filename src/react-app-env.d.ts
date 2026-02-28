@@ -1,1 +1,3 @@
-/// <reference types="react-scripts" />
+/// <reference types="vite/client" />
+
+// Made with Bob

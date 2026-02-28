@@ -15,15 +15,16 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'npm'
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
     
     - name: Lint checks
       run: npm run format-check
@@ -45,12 +46,24 @@ jobs:
       id: check_cypress
       run: |
         git fetch origin main
+        HAS_CYPRESS=false
+        HAS_VITE=false
         if git ls-tree -r origin/main --name-only | grep -q "^cypress/"; then
-          echo "cypress_exists=true" >> $GITHUB_OUTPUT
+          HAS_CYPRESS=true
           echo "✅ Cypress folder exists in main branch"
         else
-          echo "cypress_exists=false" >> $GITHUB_OUTPUT
           echo "⚠️  Cypress folder does not exist in main branch - skipping baseline"
+        fi
+        if git ls-tree -r origin/main --name-only | grep -q "^vite.config"; then
+          HAS_VITE=true
+          echo "✅ Vite config exists in main branch"
+        else
+          echo "⚠️  Vite config does not exist in main branch - skipping baseline (react-scripts era)"
+        fi
+        if [ "$HAS_CYPRESS" = "true" ] && [ "$HAS_VITE" = "true" ]; then
+          echo "cypress_exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "cypress_exists=false" >> $GITHUB_OUTPUT
         fi
     
     - name: Get main branch performance (baseline)
@@ -62,6 +75,7 @@ jobs:
         
         # Checkout main and test
         git checkout origin/main
+        npm ci
         cd cypress
         npm install
         npm run test:performance || true
@@ -132,5 +146,5 @@ jobs:
         path: cypress/videos
         if-no-files-found: ignore
 
-    - name: Build
-      run: npm run react-build
+    - name: Build demo
+      run: npm run demo:build

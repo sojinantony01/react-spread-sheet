@@ -1,6 +1,6 @@
 {
   "name": "react-spread-sheet-excel",
-  "version": "3.2.4",
+  "version": "3.3.0",
   "description": "Lightning-fast React spreadsheet component with Excel-like features. Render 100,000+ cells with formulas, formatting, copy/paste, undo/redo. Perfect for data grids and Excel-like apps.",
   "keywords": [
     "react-spread-sheet-excel",
@@ -51,67 +51,40 @@
   },
   "devDependencies": {
     "@e965/xlsx": "^0.20.3",
-    "@rollup/plugin-commonjs": "22.0.2",
-    "@rollup/plugin-json": "4.1.0",
-    "@rollup/plugin-node-resolve": "14.1.0",
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^14.3.1",
+    "@testing-library/react": "^16.3.1",
     "@testing-library/user-event": "^14.6.1",
-    "@types/jest": "29.5.12",
+    "@types/node": "^22.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^5.1.2",
+    "@vitest/coverage-v8": "^4.0.18",
+    "jsdom": "^27.4.0",
     "postcss": "^8.4.16",
     "prettier": "^3.4.2",
-    "react-scripts": "5.0.1",
-    "rollup": "2.79.0",
-    "rollup-plugin-peer-deps-external": "2.2.4",
-    "rollup-plugin-postcss": "4.0.2",
-    "rollup-plugin-typescript2": "^0.35.0",
-    "sass": "^1.54.9",
+    "rollup": "^4.54.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-typescript2": "^0.36.0",
     "typescript": "^4.8.3",
-    "web-vitals": "^2.1.4"
+    "vite": "^7.3.0",
+    "vitest": "^4.0.16"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "dev": "vite",
     "build": "rm -rf build && rollup -c",
-    "test": "react-scripts test --watchAll --coverage --no-cache",
-    "test:ci": "CI=true react-scripts test --coverage --no-cache",
-    "eject": "react-scripts eject",
-    "deploy": "gh-pages -d build",
-    "react-build": "CI=false && react-scripts build",
+    "demo:build": "vite build",
+    "demo:preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ci": "vitest run --coverage",
+    "deploy": "npm run demo:build && gh-pages -d dist",
     "prepublishOnly": "npm run build",
     "format": "npx prettier --write './**/*.{ts,tsx,css,json,scss}' --config ./.prettierrc.json",
     "format-check": "npx prettier --check './**/*.{ts,tsx,css,json,scss}' --config ./.prettierrc.json"
   },
   "homepage": "https://sojinantony01.github.io/react-spread-sheet",
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{ts,tsx}",
-      "!src/index.tsx",
-      "!src/reportWebVitals.ts"
-    ],
-    "coveragePathIgnorePatterns": [
-      "./node_modules/",
-      "./src/demo/*"
-    ]
-  },
-  "license": "ISC",
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "license": "ISC"
 }

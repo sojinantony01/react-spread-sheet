@@ -3,7 +3,7 @@ import { render } from "@testing-library/react";
 import Sheet from "../lib";
 
 beforeAll(() => {
-  HTMLAnchorElement.prototype.click = jest.fn();
+  HTMLAnchorElement.prototype.click = vi.fn() as any;
 });
 
 describe("Sheet imperative API", () => {

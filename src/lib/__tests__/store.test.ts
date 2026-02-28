@@ -7,7 +7,7 @@ describe("store", () => {
   });
 
   it("should update state and notify subscribers", () => {
-    const callback = jest.fn();
+    const callback = vi.fn();
     const unsubscribe = store.subscribe(callback);
 
     store.dispatch(addData, { payload: [[{ value: 1 }]] });

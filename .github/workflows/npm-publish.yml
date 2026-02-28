@@ -4,8 +4,6 @@
 name: Node.js Package
 
 on:
-  pull_request:
-    branches: [main, master]
   release:
     types: [created]
 
@@ -16,37 +14,56 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org/
-      - run: npm install
-      - run: npm run build
-      - name: Publish to npm (dry-run on PR)
-        run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            npm publish --provenance --access public --dry-run
-          else
-            npm publish --provenance --access public
-          fi
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
 
   publish-gpr:
-    if: github.event_name == 'release'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: https://npm.pkg.github.com/
           scope: "@sojinantony01"
-      - run: node gpr-hack.js
-      - run: npm install
-      - run: npm run build
-      - run: npm publish
+          cache: 'npm'
+
+      - name: Configure package for GitHub Packages
+        run: node gpr-hack.js
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - name: Publish to GitHub Packages
+        run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.ACTIONS_DEPLOY_ACCESS_TOKEN_SHEET}}
+          NODE_AUTH_TOKEN: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN_SHEET }}
+
+# Made with Bob

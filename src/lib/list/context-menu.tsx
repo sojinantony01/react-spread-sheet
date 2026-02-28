@@ -166,11 +166,11 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
       <div
         className="sheet-context-menu-item sheet-context-menu-item-with-submenu"
         role="menuitem"
-        onMouseEnter={() => setShowSubmenu("add-row")}
+        onMouseEnter={() => setShowSubmenu("add-column")}
         onMouseLeave={() => setShowSubmenu(undefined)}
       >
         Add Column <Icons type="right-arrow" />
-        {showSubmenu === "add-row" && (
+        {showSubmenu === "add-column" && (
           <div className="sheet-context-submenu">
             <div
               className="sheet-context-menu-item"
