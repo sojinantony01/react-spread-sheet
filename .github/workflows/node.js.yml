@@ -35,8 +35,8 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-    - name: Build
-      run: npm run react-build
+    - name: Build demo
+      run: npm run demo:build
 
     - name: Deploy
       run: |
