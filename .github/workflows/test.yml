@@ -46,12 +46,24 @@ jobs:
       id: check_cypress
       run: |
         git fetch origin main
+        HAS_CYPRESS=false
+        HAS_VITE=false
         if git ls-tree -r origin/main --name-only | grep -q "^cypress/"; then
-          echo "cypress_exists=true" >> $GITHUB_OUTPUT
+          HAS_CYPRESS=true
           echo "✅ Cypress folder exists in main branch"
         else
-          echo "cypress_exists=false" >> $GITHUB_OUTPUT
           echo "⚠️  Cypress folder does not exist in main branch - skipping baseline"
+        fi
+        if git ls-tree -r origin/main --name-only | grep -q "^vite.config"; then
+          HAS_VITE=true
+          echo "✅ Vite config exists in main branch"
+        else
+          echo "⚠️  Vite config does not exist in main branch - skipping baseline (react-scripts era)"
+        fi
+        if [ "$HAS_CYPRESS" = "true" ] && [ "$HAS_VITE" = "true" ]; then
+          echo "cypress_exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "cypress_exists=false" >> $GITHUB_OUTPUT
         fi
     
     - name: Get main branch performance (baseline)
@@ -63,6 +75,7 @@ jobs:
         
         # Checkout main and test
         git checkout origin/main
+        npm ci
         cd cypress
         npm install
         npm run test:performance || true
