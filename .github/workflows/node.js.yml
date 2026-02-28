@@ -41,12 +41,13 @@ jobs:
       run: |
         git config --global user.name $user_name
         git config --global user.email $user_email
+        git remote set-url origin https://x-access-token:${ACTIONS_DEPLOY_ACCESS_TOKEN_SHEET}@github.com/${repository}.git
         npm run demo:build
-        npx gh-pages -d dist --repo https://x-access-token:${github_token}@github.com/${repository}.git
+        npx gh-pages -d dist
       env:
         user_name: 'github-actions[bot]'
         user_email: 'github-actions[bot]@users.noreply.github.com'
-        github_token: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN_SHEET }}
+        ACTIONS_DEPLOY_ACCESS_TOKEN_SHEET: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN_SHEET }}
         repository: ${{ github.repository }}
 
 # Made with Bob
