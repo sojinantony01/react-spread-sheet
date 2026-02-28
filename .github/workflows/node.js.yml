@@ -40,7 +40,6 @@ jobs:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Deploy
-      if: github.event_name == 'push'
       run: |
         git config --global user.name $user_name
         git config --global user.email $user_email
