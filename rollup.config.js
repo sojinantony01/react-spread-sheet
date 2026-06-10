@@ -1,7 +1,7 @@
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
-import typescript from "rollup-plugin-typescript2";
+import typescript from "@rollup/plugin-typescript";
 import postcss from "rollup-plugin-postcss";
 import { readFileSync, copyFileSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
@@ -35,9 +35,19 @@ export default {
   ],
   plugins: [
     peerDepsExternal(),
-    resolve(),
+    typescript({
+      tsconfig: './tsconfig.json',
+      compilerOptions: {
+        declaration: true,
+        declarationDir: './build',
+        outDir: './build',
+        rootDir: './src/lib'
+      }
+    }),
+    resolve({
+      extensions: ['.ts', '.tsx', '.js', '.jsx']
+    }),
     commonjs(),
-    typescript({ useTsconfigDeclarationDir: true }),
     postcss(),
     copyCssPlugin()
   ],
