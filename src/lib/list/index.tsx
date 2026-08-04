@@ -17,6 +17,20 @@ import { generateDummyContent, getItemsToCopy } from "./utils";
 import Tools from "./tools/tools";
 import ContextMenu from "./context-menu";
 
+// Module-level constant — no reason to recompute inside the component on every render.
+const STYLE_MAP: Record<string, (value?: string) => object> = {
+  B:              () => ({ value: { key: "fontWeight", value: "bold" } }),
+  U:              () => ({ value: { key: "text-decoration", value: "underline" } }),
+  I:              () => ({ value: { key: "fontStyle", value: "italic" } }),
+  "ALIGN-LEFT":   () => ({ value: { key: "textAlign", value: "left" } }),
+  "ALIGN-CENTER": () => ({ value: { key: "textAlign", value: "center" } }),
+  "ALIGN-RIGHT":  () => ({ value: { key: "textAlign", value: "right" } }),
+  "ALIGN-JUSTIFY":() => ({ value: { key: "textAlign", value: "justify" } }),
+  FONT:           (v) => ({ value: { key: "fontSize", value: v ? v + "px" : "" }, replace: true }),
+  COLOR:          (v) => ({ value: { key: "color", value: v }, replace: true }),
+  BACKGROUND:     (v) => ({ value: { key: "background", value: v }, replace: true }),
+};
+
 export interface Props {
   data?: any[][];
   onChange?(i?: number, j?: number, value?: string): void;
@@ -136,34 +150,9 @@ const List = (props: Props) => {
     });
   }, [dispatch, onChange]);
 
-  const getStyle = (key: string, value?: string) => {
-    switch (key) {
-      case "B":
-        return { value: { key: "fontWeight", value: "bold" } };
-      case "U":
-        return { value: { key: "text-decoration", value: "underline" } };
-      case "I":
-        return { value: { key: "fontStyle", value: "italic" } };
-      case "ALIGN-LEFT":
-        return { value: { key: "textAlign", value: "left" } };
-      case "ALIGN-CENTER":
-        return { value: { key: "textAlign", value: "center" } };
-      case "ALIGN-RIGHT":
-        return { value: { key: "textAlign", value: "right" } };
-      case "ALIGN-JUSTIFY":
-        return { value: { key: "textAlign", value: "justify" } };
-      case "FONT":
-        return { value: { key: "fontSize", value: value ? value + "px" : "" }, replace: true };
-      case "COLOR":
-        return { value: { key: "color", value: value }, replace: true };
-      case "BACKGROUND":
-        return { value: { key: "background", value: value }, replace: true };
-    }
-  };
-
   const changeStyle = React.useCallback(
     (key: string, value?: string) => {
-      dispatch(updateStyles, { payload: getStyle(key, value) });
+      dispatch(updateStyles, { payload: STYLE_MAP[key]?.(value) });
       onChange && onChange();
     },
     [dispatch, onChange],
