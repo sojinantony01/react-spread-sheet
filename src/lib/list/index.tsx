@@ -19,16 +19,16 @@ import ContextMenu from "./context-menu";
 
 // Module-level constant — no reason to recompute inside the component on every render.
 const STYLE_MAP: Record<string, (value?: string) => object> = {
-  B:              () => ({ value: { key: "fontWeight", value: "bold" } }),
-  U:              () => ({ value: { key: "text-decoration", value: "underline" } }),
-  I:              () => ({ value: { key: "fontStyle", value: "italic" } }),
-  "ALIGN-LEFT":   () => ({ value: { key: "textAlign", value: "left" } }),
+  B: () => ({ value: { key: "fontWeight", value: "bold" } }),
+  U: () => ({ value: { key: "text-decoration", value: "underline" } }),
+  I: () => ({ value: { key: "fontStyle", value: "italic" } }),
+  "ALIGN-LEFT": () => ({ value: { key: "textAlign", value: "left" } }),
   "ALIGN-CENTER": () => ({ value: { key: "textAlign", value: "center" } }),
-  "ALIGN-RIGHT":  () => ({ value: { key: "textAlign", value: "right" } }),
-  "ALIGN-JUSTIFY":() => ({ value: { key: "textAlign", value: "justify" } }),
-  FONT:           (v) => ({ value: { key: "fontSize", value: v ? v + "px" : "" }, replace: true }),
-  COLOR:          (v) => ({ value: { key: "color", value: v }, replace: true }),
-  BACKGROUND:     (v) => ({ value: { key: "background", value: v }, replace: true }),
+  "ALIGN-RIGHT": () => ({ value: { key: "textAlign", value: "right" } }),
+  "ALIGN-JUSTIFY": () => ({ value: { key: "textAlign", value: "justify" } }),
+  FONT: (v) => ({ value: { key: "fontSize", value: v ? v + "px" : "" }, replace: true }),
+  COLOR: (v) => ({ value: { key: "color", value: v }, replace: true }),
+  BACKGROUND: (v) => ({ value: { key: "background", value: v }, replace: true }),
 };
 
 export interface Props {

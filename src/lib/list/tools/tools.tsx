@@ -206,7 +206,9 @@ const Tools = ({
             U
           </button>
           <button
-            className={parsedSelectedStyles["fontStyle"] === "italic" ? "text-style-btn-active" : ""}
+            className={
+              parsedSelectedStyles["fontStyle"] === "italic" ? "text-style-btn-active" : ""
+            }
             onClick={() => changeStyle("I")}
           >
             I
@@ -221,7 +223,9 @@ const Tools = ({
             <Icons type="align-left" />
           </button>
           <button
-            className={parsedSelectedStyles["textAlign"] === "center" ? "text-style-btn-active" : ""}
+            className={
+              parsedSelectedStyles["textAlign"] === "center" ? "text-style-btn-active" : ""
+            }
             data-testid="align-center"
             onClick={() => changeStyle("ALIGN-CENTER")}
           >
@@ -235,7 +239,9 @@ const Tools = ({
             <Icons type="align-right" />
           </button>
           <button
-            className={parsedSelectedStyles["textAlign"] === "justify" ? "text-style-btn-active" : ""}
+            className={
+              parsedSelectedStyles["textAlign"] === "justify" ? "text-style-btn-active" : ""
+            }
             data-testid="align-justify"
             onClick={() => changeStyle("ALIGN-JUSTIFY")}
           >

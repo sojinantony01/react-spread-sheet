@@ -198,8 +198,13 @@ const Input = (props: Prop) => {
       value={value}
       style={parsedStyles}
       type={type}
-      onFocus={() => { focusRef.current = true; }}
-      onBlur={() => { focusRef.current = false; setEdit(false); }}
+      onFocus={() => {
+        focusRef.current = true;
+      }}
+      onBlur={() => {
+        focusRef.current = false;
+        setEdit(false);
+      }}
       onMouseMoveCapture={onDrag}
       onMouseDown={onClick}
       className={`input${editMode ? "" : " view_mode"}${selected ? " sheet-selected-td" : ""}`}

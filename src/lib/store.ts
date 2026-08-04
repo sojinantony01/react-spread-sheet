@@ -40,7 +40,4 @@ const createStore = (): Store => {
 export const store: Store = createStore();
 
 export const useAppSelector = (store: Store, selector: (state: ListReducer) => any) =>
-  useSyncExternalStore(
-    store.subscribe,
-    () => selector(store.getState()),
-  );
+  useSyncExternalStore(store.subscribe, () => selector(store.getState()));

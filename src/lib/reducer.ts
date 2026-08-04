@@ -84,9 +84,7 @@ const actions: DispatcherActions = {
   changeData(state, action) {
     const { i, j, value, styles } = action.payload;
     const prevCell = state.data[i][j];
-    const newCell: Data = styles
-      ? { ...prevCell, value, styles }
-      : { ...prevCell, value };
+    const newCell: Data = styles ? { ...prevCell, value, styles } : { ...prevCell, value };
     return {
       ...state,
       data: replaceCell(state.data, i, j, newCell),
@@ -392,7 +390,15 @@ const actions: DispatcherActions = {
       data: newData,
       undo: [
         ...state.undo,
-        [{ i: index, j: 0, type: "delete-row", actionData: state.data[index], data: { value: "" } }],
+        [
+          {
+            i: index,
+            j: 0,
+            type: "delete-row",
+            actionData: state.data[index],
+            data: { value: "" },
+          },
+        ],
       ],
       redo: [],
     };
