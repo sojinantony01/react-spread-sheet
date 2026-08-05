@@ -30,8 +30,9 @@ describe('Spreadsheet - Stress Tests', () => {
         unit: 'ms'
       });
 
-      // Validate render time (should render in < 6 seconds for 1 LAKH cells)
-      expect(renderTime).to.be.lessThan(6000);
+      // Observed: 584–1677ms across stable runs (outliers: 2780ms, 3335ms on slow CI).
+      // 3000ms allows for CI variance while catching real regressions.
+      expect(renderTime).to.be.lessThan(3000);
     });
     
     // Now verify we can access cells throughout the dataset
@@ -92,8 +93,8 @@ describe('Spreadsheet - Stress Tests', () => {
         unit: 'ms'
       });
 
-      // Should scroll in < 800ms average
-      expect(avgScrollTime).to.be.lessThan(800);
+      // Observed: 161–620ms. 500ms is a tighter bound with CI headroom.
+      expect(avgScrollTime).to.be.lessThan(500);
     });
 
     // Check memory usage (Chrome only)
