@@ -335,7 +335,10 @@ const actions: DispatcherActions = {
   },
 
   addRows(state, action) {
-    return { ...state, data: [...state.data, ...action.payload] };
+    // Avoid spreading the entire existing array — concat allocates only the
+    // new portion, not a full copy of both arrays at the same time.
+    const newData = state.data.concat(action.payload);
+    return { ...state, data: newData };
   },
 
   updateInputTypes(state, action) {

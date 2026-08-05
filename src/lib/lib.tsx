@@ -4,6 +4,7 @@ import { store } from "./store";
 import "./sheet.css";
 import { addData, changeData, Data } from "./reducer";
 import { exportToCsv } from "./list/utils";
+
 export type SheetRef = {
   getData: () => Data[][];
   setData: (data: Data[][]) => void;
@@ -13,9 +14,8 @@ export type SheetRef = {
 };
 
 const Sheet = forwardRef((props: Props, ref) => {
-  const getData = (): Data[][] => {
-    return store.getState().data;
-  };
+  const getData = (): Data[][] => store.getState().data;
+
   const setData = (data: Data[][]): void => {
     store.dispatch(addData, { payload: data });
   };
@@ -29,8 +29,7 @@ const Sheet = forwardRef((props: Props, ref) => {
   };
 
   const exportCsv = (fileName: string, includeHeaders: boolean = false) => {
-    let results = store.getState().data;
-    exportToCsv(results, fileName, props.headerValues, includeHeaders);
+    exportToCsv(store.getState().data, fileName, props.headerValues, includeHeaders);
   };
 
   useImperativeHandle(ref, () => ({
