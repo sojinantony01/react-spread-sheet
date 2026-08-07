@@ -41,6 +41,16 @@ export interface DispatcherActions {
   [key: string]: (state: ListReducer, action: StoreAction) => ListReducer;
 }
 
+// Replace a single cell in the data grid, returning new row and data array references
+// for only the affected row. All other rows keep the same reference (structural sharing).
+const replaceCell = (data: Data[][], i: number, j: number, cell: Data): Data[][] => {
+  const newRow = data[i].slice();
+  newRow[j] = cell;
+  const newData = data.slice();
+  newData[i] = newRow;
+  return newData;
+};
+
 const findSelection = (
   startRow: number,
   startCol: number,
@@ -49,13 +59,16 @@ const findSelection = (
   data: Data[][],
 ): Selected[] => {
   const result: Selected[] = [];
-  // Determine iteration directions
-  const rowIncrement = startRow <= endRow ? 1 : -1;
-  const colIncrement = startCol <= endCol ? 1 : -1;
-  const matrix = data;
-  for (let row = startRow; row !== endRow + rowIncrement; row += rowIncrement) {
-    for (let col = startCol; col !== endCol + colIncrement; col += colIncrement) {
-      if (row >= 0 && row < matrix.length && col >= 0 && col < matrix[row].length) {
+  const rowInc = startRow <= endRow ? 1 : -1;
+  const colInc = startCol <= endCol ? 1 : -1;
+  const rowEnd = endRow + rowInc;
+  const colEnd = endCol + colInc;
+  const maxRow = data.length;
+  for (let row = startRow; row !== rowEnd; row += rowInc) {
+    if (row < 0 || row >= maxRow) continue;
+    const maxCol = data[row].length;
+    for (let col = startCol; col !== colEnd; col += colInc) {
+      if (col >= 0 && col < maxCol) {
         result.push([row, col]);
       }
     }
@@ -65,315 +78,398 @@ const findSelection = (
 
 const actions: DispatcherActions = {
   addData(state, action) {
-    state.data = action.payload;
-    return state;
+    return { ...state, data: action.payload, undo: [], redo: [] };
   },
+
   changeData(state, action) {
-    state.undo.push([
-      {
-        i: action.payload.i,
-        j: action.payload.j,
-        data: { ...state.data[action.payload.i][action.payload.j] },
-      },
-    ]);
-    state.redo = [];
-    state.data[action.payload.i][action.payload.j].value = action.payload.value;
-    if (action.payload.styles) {
-      state.data[action.payload.i][action.payload.j].styles = action.payload.styles;
-    }
-    return state;
+    const { i, j, value, styles } = action.payload;
+    const prevCell = state.data[i][j];
+    const newCell: Data = styles ? { ...prevCell, value, styles } : { ...prevCell, value };
+    return {
+      ...state,
+      data: replaceCell(state.data, i, j, newCell),
+      undo: [...state.undo, [{ i, j, data: { ...prevCell } }]],
+      redo: [],
+    };
   },
+
   updateStyles(state, action) {
-    let add = true;
-    if (
+    const firstSelected = state.selected[0];
+    const shouldRemove =
       !action.payload.replace &&
-      state.selected[0] &&
-      state.data[state.selected[0][0]][state.selected[0][1]]?.styles?.[action.payload.value.key] ===
-        action.payload.value.value
-    ) {
-      add = false;
-    }
-    const data: Data[][] = state.data;
+      firstSelected &&
+      state.data[firstSelected[0]][firstSelected[1]]?.styles?.[action.payload.value.key] ===
+        action.payload.value.value;
+
     const undo: Action[] = [];
+    let data = state.data;
     state.selected.forEach((p) => {
-      undo.push({ i: p[0], j: p[1], data: { ...state.data[p[0]][p[1]] } });
-      if (add) {
-        data[p[0]][p[1]].styles = {
-          ...data[p[0]][p[1]].styles,
-          [action.payload.value.key]: action.payload.value.value,
-        };
+      const prevCell = data[p[0]][p[1]];
+      undo.push({ i: p[0], j: p[1], data: { ...prevCell } });
+      let newStyles: Data["styles"];
+      if (shouldRemove) {
+        const s = { ...prevCell.styles };
+        delete s[action.payload.value.key];
+        newStyles = s;
       } else {
-        const styles = { ...data[p[0]][p[1]]?.styles };
-        delete styles[action.payload.value.key];
-        data[p[0]][p[1]].styles = styles;
+        newStyles = { ...prevCell.styles, [action.payload.value.key]: action.payload.value.value };
       }
+      data = replaceCell(data, p[0], p[1], { ...prevCell, styles: newStyles });
     });
-    state.redo = [];
-    state.undo.push(undo);
-    state.data = data;
-    return state;
+
+    return {
+      ...state,
+      data,
+      undo: [...state.undo, undo],
+      redo: [],
+    };
   },
 
   deleteSelectItems(state) {
     const undo: Action[] = [];
+    let data = state.data;
     state.selected.forEach((p) => {
-      undo.push({ i: p[0], j: p[1], data: { ...state.data[p[0]][p[1]] } });
-      state.data[p[0]][p[1]].value = "";
+      const prevCell = data[p[0]][p[1]];
+      undo.push({ i: p[0], j: p[1], data: { ...prevCell } });
+      data = replaceCell(data, p[0], p[1], { ...prevCell, value: "" });
     });
-    state.redo = [];
-    state.undo.push(undo);
-    return state;
+    return {
+      ...state,
+      data,
+      undo: [...state.undo, undo],
+      redo: [],
+    };
   },
 
   selectOneCell(state, action) {
-    state.selected = [[action.payload.i, action.payload.j]];
-    state.lastSelected = [action.payload.i, action.payload.j];
-    return state;
+    return {
+      ...state,
+      selected: [[action.payload.i, action.payload.j]],
+      lastSelected: [action.payload.i, action.payload.j],
+    };
   },
+
   selectCells(state, action) {
     const index = state.selected.findIndex(
       (p) => p[0] === action.payload.i && p[1] === action.payload.j,
     );
+    const newSelected = state.selected.slice();
     if (index > -1) {
-      state.selected.splice(index, 1);
+      newSelected.splice(index, 1);
     } else {
-      state.selected.push([action.payload.i, action.payload.j]);
+      newSelected.push([action.payload.i, action.payload.j]);
     }
-    state.lastSelected = [action.payload.i, action.payload.j];
-    return state;
+    return {
+      ...state,
+      selected: newSelected,
+      lastSelected: [action.payload.i, action.payload.j],
+    };
   },
+
   selectAllCells(state) {
-    const selected: Selected[] = [];
-    state.data.forEach((d, i) => {
-      d.forEach((dd, j) => {
-        selected.push([i, j]);
-      });
-    });
-    state.selected = selected;
-    return state;
+    const data = state.data;
+    const rows = data.length;
+    // Pre-allocate exact size — avoids repeated array growth.
+    const cols = rows > 0 ? data[0].length : 0;
+    const selected: Selected[] = new Array(rows * cols);
+    let k = 0;
+    for (let i = 0; i < rows; i++) {
+      const rowLen = data[i].length;
+      for (let j = 0; j < rowLen; j++) {
+        selected[k++] = [i, j];
+      }
+    }
+    selected.length = k;
+    return { ...state, selected };
   },
+
   selectVerticalCells(state, action) {
-    const selected: Selected[] = action.payload.ctrlPressed ? state.selected : [];
+    const selected: Selected[] = action.payload.ctrlPressed ? state.selected.slice() : [];
     for (let i = 0; i < state.data.length; i++) {
       selected.push([i, action.payload.j]);
     }
-    state.selected = selected;
-    return state;
+    return { ...state, selected };
   },
+
   selectHorizontalCells(state, action) {
-    const selected: Selected[] = action.payload.ctrlPressed ? state.selected : [];
-    state.data[action.payload.i].forEach((dd, j) => {
+    const selected: Selected[] = action.payload.ctrlPressed ? state.selected.slice() : [];
+    state.data[action.payload.i].forEach((_, j) => {
       selected.push([action.payload.i, j]);
     });
-    state.selected = selected;
-    return state;
+    return { ...state, selected };
   },
+
   clearSelection(state) {
-    state.selected = [];
-    return state;
+    return { ...state, selected: [] };
   },
+
   selectCellsDrag(state, action) {
     const [startRow, startCol] = state.lastSelected || [0, 0];
     const [endRow, endCol] = [action.payload.i, action.payload.j];
     if (startRow === endRow && startCol === endCol) {
       return state;
     }
+    return {
+      ...state,
+      selected: findSelection(startRow, startCol, endRow, endCol, state.data),
+    };
+  },
 
-    state.selected = findSelection(startRow, startCol, endRow, endCol, state.data);
-    return state;
-  },
   undo(state) {
-    const lastAction = state.undo.pop();
-    const data = state.data;
-    if (lastAction && lastAction.length) {
-      const redo: Action[] = [];
-      lastAction.forEach((p) => {
-        if (p.type === "add-row") {
-          //delete the row
-          redo.push({ ...p });
-          data.splice(p.i, 1);
-        } else if (p.type === "delete-row") {
-          //add the row with actionData
-          redo.push({ ...p });
-          p.actionData && state.data.splice(p.i, 0, p.actionData);
-        } else if (p.type === "add-column") {
-          redo.push({ ...p });
-          state.data.forEach((d) => {
-            d.splice(p.i, 1);
-          });
-        } else if (p.type === "delete-column") {
-          redo.push({ ...p });
-          data.forEach((d, i) => {
-            d.splice(p.i, 0, { ...(p.actionData?.[i] || { value: "" }) });
-          });
-        } else {
-          redo.push({ ...p, data: { ...state.data[p.i][p.j] } });
-          data[p.i][p.j] = p.data;
-        }
-      });
-      state.redo.push(redo);
-      state.data = data;
+    const newUndo = state.undo.slice();
+    const lastAction = newUndo.pop();
+    if (!lastAction || !lastAction.length) {
+      return state;
     }
-    return state;
+    const redo: Action[] = [];
+    let data = state.data;
+    lastAction.forEach((p) => {
+      if (p.type === "add-row") {
+        redo.push({ ...p });
+        data = data.slice();
+        data.splice(p.i, 1);
+      } else if (p.type === "delete-row") {
+        redo.push({ ...p });
+        data = data.slice();
+        p.actionData && data.splice(p.i, 0, p.actionData);
+      } else if (p.type === "add-column") {
+        redo.push({ ...p });
+        data = data.map((row) => {
+          const r = row.slice();
+          r.splice(p.i, 1);
+          return r;
+        });
+      } else if (p.type === "delete-column") {
+        redo.push({ ...p });
+        data = data.map((row, i) => {
+          const r = row.slice();
+          r.splice(p.i, 0, { ...(p.actionData?.[i] || { value: "" }) });
+          return r;
+        });
+      } else {
+        redo.push({ ...p, data: { ...data[p.i][p.j] } });
+        data = replaceCell(data, p.i, p.j, p.data);
+      }
+    });
+    return {
+      ...state,
+      data,
+      undo: newUndo,
+      redo: [...state.redo, redo],
+    };
   },
+
   redo(state) {
-    const lastAction = state.redo.pop();
-    const data = state.data;
-    if (lastAction && lastAction.length) {
-      const undo: Action[] = [];
-      lastAction.forEach((p) => {
-        if (p.type === "add-row") {
-          undo.push({ ...p });
-          data.splice(p.i, 0, generateColumns(state.data[0].length));
-        } else if (p.type === "delete-row") {
-          undo.push({ ...p });
-          state.data.splice(p.i, 1);
-        } else if (p.type === "add-column") {
-          undo.push({ ...p });
-          data.forEach((d) => {
-            d.splice(p.i, 0, { value: "" });
-          });
-        } else if (p.type === "delete-column") {
-          undo.push({ ...p });
-          state.data.forEach((d) => {
-            d.splice(p.i, 1);
-          });
-        } else {
-          undo.push({ ...p, data: { ...state.data[p.i][p.j] } });
-          data[p.i][p.j] = p.data;
-        }
-      });
-      state.undo.push(undo);
-      state.data = data;
+    const newRedo = state.redo.slice();
+    const lastAction = newRedo.pop();
+    if (!lastAction || !lastAction.length) {
+      return state;
     }
-    return state;
+    const undo: Action[] = [];
+    let data = state.data;
+    lastAction.forEach((p) => {
+      if (p.type === "add-row") {
+        undo.push({ ...p });
+        data = data.slice();
+        data.splice(p.i, 0, generateColumns(data[0].length));
+      } else if (p.type === "delete-row") {
+        undo.push({ ...p });
+        data = data.slice();
+        data.splice(p.i, 1);
+      } else if (p.type === "add-column") {
+        undo.push({ ...p });
+        data = data.map((row) => {
+          const r = row.slice();
+          r.splice(p.i, 0, { value: "" });
+          return r;
+        });
+      } else if (p.type === "delete-column") {
+        undo.push({ ...p });
+        data = data.map((row) => {
+          const r = row.slice();
+          r.splice(p.i, 1);
+          return r;
+        });
+      } else {
+        undo.push({ ...p, data: { ...data[p.i][p.j] } });
+        data = replaceCell(data, p.i, p.j, p.data);
+      }
+    });
+    return {
+      ...state,
+      data,
+      redo: newRedo,
+      undo: [...state.undo, undo],
+    };
   },
+
   bulkUpdate(state, action) {
-    const data = state.data;
     const selected = state.selected[0];
     const colDif = action.payload[action.payload.length - 1].index[1] - action.payload[0].index[1];
     const rowDif = action.payload[action.payload.length - 1].index[0] - action.payload[0].index[0];
     if (colDif < 0 || rowDif < 0) {
       action.payload.reverse();
     }
-    let endCol = selected[1] + Math.abs(colDif);
-    let endRow = selected[0] + Math.abs(rowDif);
-    let startCol = selected[1];
-    let startRow = selected[0];
+    const endCol = selected[1] + Math.abs(colDif);
+    const endRow = selected[0] + Math.abs(rowDif);
+    const startCol = selected[1];
+    const startRow = selected[0];
 
-    const newSelected = findSelection(startRow, startCol, endRow, endCol, data);
+    const newSelected = findSelection(startRow, startCol, endRow, endCol, state.data);
     const undo: Action[] = [];
+    let data = state.data;
     newSelected.forEach((p, i) => {
-      undo.push({
-        i: p[0],
-        j: p[1],
-        data: { ...state.data[p[0]][p[1]] },
-      });
-      data[p[0]][p[1]] = action.payload[i]?.data || data[p[0]][p[1]];
-    });
-    state.data = data;
-    state.selected = newSelected;
-    state.redo = [];
-    state.undo.push(undo);
-    return state;
-  },
-  addRows(state, action) {
-    state.data.push(...action.payload);
-    return state;
-  },
-  updateInputTypes(state, action) {
-    const data = state.data;
-    const undo: Action[] = [];
-    state.selected.forEach((p) => {
-      undo.push({ i: p[0], j: p[1], data: { ...state.data[p[0]][p[1]] } });
-      data[p[0]][p[1]].type = action.payload.type;
-    });
-    state.redo = [];
-    state.undo.push(undo);
-    state.data = data;
-    return state;
-  },
-  addRow(state, action) {
-    state.redo = [];
-    const index = action.payload.below ? state.selected[0][0] + 1 : state.selected[0][0];
-    state.undo.push([{ i: index, j: 0, type: "add-row", data: { value: "" } }]);
-    state.data.splice(index, 0, generateColumns(state.data[0].length));
-    return state;
-  },
-  addColumn(state, action) {
-    state.redo = [];
-    const index = action.payload.right ? state.selected[0][1] + 1 : state.selected[0][1];
-    const data = state.data;
-    state.undo.push([{ i: index, j: 0, type: "add-column", data: { value: "" } }]);
-    data.forEach((d) => {
-      d.splice(index, 0, { value: "" });
-    });
-    state.data = data;
-    return state;
-  },
-  deleteRow(state) {
-    state.redo = [];
-    const index = state.selected[0][0];
-    state.undo.push([
-      { i: index, j: 0, type: "delete-row", actionData: state.data[index], data: { value: "" } },
-    ]);
-    state.data.splice(index, 1);
-    return state;
-  },
-  deleteColumn(state) {
-    state.redo = [];
-    const index = state.selected[0][1];
-    const actionData: Data[] = [];
-    state.data.forEach((d) => {
-      actionData.push(d[index]);
-      d.splice(index, 1);
-    });
-    state.undo.push([
-      { i: index, j: 0, type: "delete-column", actionData: actionData, data: { value: "" } },
-    ]);
-    return state;
-  },
-  mergeCells(state) {
-    if (state.selected.length > 0) {
-      state.redo = [];
-      const undo: Action[] = [];
-      const cellForMerge = state.selected[0];
-      const data = state.data;
-      if (data[cellForMerge[0]][cellForMerge[1]].rowSpan) {
-        for (
-          let i = cellForMerge[0];
-          i < cellForMerge[0] + (data[cellForMerge[0]][cellForMerge[1]].rowSpan || 0);
-          i++
-        ) {
-          for (
-            let j = cellForMerge[1];
-            j < cellForMerge[1] + (data[cellForMerge[0]][cellForMerge[1]].colSpan || 0);
-            j++
-          ) {
-            undo.push({ i: i, j: j, data: { ...state.data[i][j] } });
-            delete data[i][j].skip;
-          }
-        }
-        delete data[cellForMerge[0]][cellForMerge[1]].rowSpan;
-        delete data[cellForMerge[0]][cellForMerge[1]].colSpan;
-      } else if (state.selected.length > 1) {
-        state.selected.forEach((p, i) => {
-          undo.push({ i: p[0], j: p[1], data: { ...state.data[p[0]][p[1]] } });
-          if (i !== 0) {
-            data[p[0]][p[1]].value = "";
-            data[p[0]][p[1]].skip = true;
-          }
-        });
-        data[cellForMerge[0]][cellForMerge[1]].rowSpan =
-          Math.abs(state.selected[0][0] - state.selected[state.selected.length - 1][0]) + 1;
-        data[cellForMerge[0]][cellForMerge[1]].colSpan =
-          Math.abs(state.selected[0][1] - state.selected[state.selected.length - 1][1]) + 1;
+      undo.push({ i: p[0], j: p[1], data: { ...data[p[0]][p[1]] } });
+      const incoming = action.payload[i]?.data;
+      if (incoming) {
+        data = replaceCell(data, p[0], p[1], incoming);
       }
-      state.selected = [cellForMerge];
-      state.data = data;
-      state.undo.push(undo);
+    });
+    return {
+      ...state,
+      data,
+      selected: newSelected,
+      undo: [...state.undo, undo],
+      redo: [],
+    };
+  },
+
+  addRows(state, action) {
+    // Avoid spreading the entire existing array — concat allocates only the
+    // new portion, not a full copy of both arrays at the same time.
+    const newData = state.data.concat(action.payload);
+    return { ...state, data: newData };
+  },
+
+  updateInputTypes(state, action) {
+    const undo: Action[] = [];
+    let data = state.data;
+    state.selected.forEach((p) => {
+      const prevCell = data[p[0]][p[1]];
+      undo.push({ i: p[0], j: p[1], data: { ...prevCell } });
+      data = replaceCell(data, p[0], p[1], { ...prevCell, type: action.payload.type });
+    });
+    return {
+      ...state,
+      data,
+      undo: [...state.undo, undo],
+      redo: [],
+    };
+  },
+
+  addRow(state, action) {
+    const index = action.payload.below ? state.selected[0][0] + 1 : state.selected[0][0];
+    const newData = state.data.slice();
+    newData.splice(index, 0, generateColumns(state.data[0].length));
+    return {
+      ...state,
+      data: newData,
+      undo: [...state.undo, [{ i: index, j: 0, type: "add-row", data: { value: "" } }]],
+      redo: [],
+    };
+  },
+
+  addColumn(state, action) {
+    const index = action.payload.right ? state.selected[0][1] + 1 : state.selected[0][1];
+    const newData = state.data.map((row) => {
+      const r = row.slice();
+      r.splice(index, 0, { value: "" });
+      return r;
+    });
+    return {
+      ...state,
+      data: newData,
+      undo: [...state.undo, [{ i: index, j: 0, type: "add-column", data: { value: "" } }]],
+      redo: [],
+    };
+  },
+
+  deleteRow(state) {
+    const index = state.selected[0][0];
+    const newData = state.data.slice();
+    newData.splice(index, 1);
+    return {
+      ...state,
+      data: newData,
+      undo: [
+        ...state.undo,
+        [
+          {
+            i: index,
+            j: 0,
+            type: "delete-row",
+            actionData: state.data[index],
+            data: { value: "" },
+          },
+        ],
+      ],
+      redo: [],
+    };
+  },
+
+  deleteColumn(state) {
+    const index = state.selected[0][1];
+    const actionData: Data[] = state.data.map((d) => d[index]);
+    const newData = state.data.map((row) => {
+      const r = row.slice();
+      r.splice(index, 1);
+      return r;
+    });
+    return {
+      ...state,
+      data: newData,
+      undo: [
+        ...state.undo,
+        [{ i: index, j: 0, type: "delete-column", actionData, data: { value: "" } }],
+      ],
+      redo: [],
+    };
+  },
+
+  mergeCells(state) {
+    if (state.selected.length === 0) return state;
+
+    const undo: Action[] = [];
+    const cellForMerge = state.selected[0];
+    let data = state.data;
+    const cell = data[cellForMerge[0]][cellForMerge[1]];
+
+    if (cell.rowSpan) {
+      // Unmerge
+      for (let i = cellForMerge[0]; i < cellForMerge[0] + (cell.rowSpan || 0); i++) {
+        for (let j = cellForMerge[1]; j < cellForMerge[1] + (cell.colSpan || 0); j++) {
+          undo.push({ i, j, data: { ...data[i][j] } });
+          const { skip: _skip, ...rest } = data[i][j];
+          data = replaceCell(data, i, j, rest);
+        }
+      }
+      const { rowSpan: _rs, colSpan: _cs, ...mergeRest } = data[cellForMerge[0]][cellForMerge[1]];
+      data = replaceCell(data, cellForMerge[0], cellForMerge[1], mergeRest);
+    } else if (state.selected.length > 1) {
+      state.selected.forEach((p, idx) => {
+        undo.push({ i: p[0], j: p[1], data: { ...data[p[0]][p[1]] } });
+        if (idx !== 0) {
+          data = replaceCell(data, p[0], p[1], { ...data[p[0]][p[1]], value: "", skip: true });
+        }
+      });
+      const rowSpan =
+        Math.abs(state.selected[0][0] - state.selected[state.selected.length - 1][0]) + 1;
+      const colSpan =
+        Math.abs(state.selected[0][1] - state.selected[state.selected.length - 1][1]) + 1;
+      data = replaceCell(data, cellForMerge[0], cellForMerge[1], {
+        ...data[cellForMerge[0]][cellForMerge[1]],
+        rowSpan,
+        colSpan,
+      });
     }
-    return state;
+
+    return {
+      ...state,
+      data,
+      selected: [cellForMerge],
+      undo: [...state.undo, undo],
+      redo: [],
+    };
   },
 };
 

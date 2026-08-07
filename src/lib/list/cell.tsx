@@ -15,25 +15,15 @@ const Cell = (props: Prop) => {
     rootMargin: "100px",
   });
 
-  const colSpan = useAppSelector(store, (state) => {
-    let val = state.data[props.i][props.j];
-    if (val.colSpan && val.rowSpan) {
-      return val.colSpan;
-    }
-    return 1;
+  // Single selector reads the cell once and returns a serialized key so Object.is works.
+  // Avoids two separate reads of state.data[i][j] for colSpan/rowSpan.
+  const spanKey = useAppSelector(store, (state) => {
+    const val = state.data[props.i][props.j];
+    return val.colSpan && val.rowSpan ? `${val.colSpan},${val.rowSpan}` : "1,1";
   });
+  const [colSpan, rowSpan] = spanKey.split(",").map(Number);
 
-  const rowSpan = useAppSelector(store, (state) => {
-    let val = state.data[props.i][props.j];
-    if (val.colSpan && val.rowSpan) {
-      return val.rowSpan;
-    }
-    return 1;
-  });
-
-  const skip = useAppSelector(store, (state) => {
-    return state.data[props.i][props.j].skip;
-  });
+  const skip = useAppSelector(store, (state) => state.data[props.i][props.j].skip);
 
   return !skip ? (
     <td

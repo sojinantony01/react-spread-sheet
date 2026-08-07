@@ -17,14 +17,20 @@ const Tools = ({
   const fontColorRef = useRef<HTMLInputElement>(null);
   const backgroundColorRef = useRef<HTMLInputElement>(null);
   const { dispatch } = store;
-  const [i, j] = useAppSelector(store, (state) => state.selected[0] || notSelectedIndex);
-  const selectedStyles = useAppSelector(store, (state) => {
+  const selectedI = useAppSelector(store, (state) => state.selected[0]?.[0]);
+  const selectedJ = useAppSelector(store, (state) => state.selected[0]?.[1]);
+  const i = selectedI ?? notSelectedIndex[0];
+  const j = selectedJ ?? notSelectedIndex[1];
+  const stylesJson = useAppSelector(store, (state) => {
     const index = state.selected[0];
     if (index) {
-      return state.data[index[0]][index[1]].styles || emptyObject;
+      // Serialize so Object.is works — same content = same string = no re-render
+      const s = state.data[index[0]][index[1]].styles;
+      return s ? JSON.stringify(s) : "";
     }
-    return emptyObject;
+    return "";
   });
+  const parsedSelectedStyles = stylesJson ? JSON.parse(stylesJson) : emptyObject;
   const type = useAppSelector(store, (state) => {
     const index = state.selected[0];
     if (index) {
@@ -43,8 +49,8 @@ const Tools = ({
       state.data[state.selected?.[0]?.[0]]?.[state.selected?.[0]?.[1]].rowSpan || undefined,
   );
 
-  const selectedFontSize = selectedStyles?.["fontSize"]
-    ? selectedStyles["fontSize"]?.split("px")?.[0]
+  const selectedFontSize = parsedSelectedStyles?.["fontSize"]
+    ? parsedSelectedStyles["fontSize"]?.split("px")?.[0]
     : "12";
   const changeStyleWithDebounce = (type: string, val: string) => {
     clearTimeout(timer);
@@ -129,7 +135,7 @@ const Tools = ({
               className="font-size-input"
               type="number"
               placeholder="size"
-              value={selectedStyles["fontSize"]?.split("px")?.[0] || ""}
+              value={parsedSelectedStyles["fontSize"]?.split("px")?.[0] || ""}
               onChange={(e) => changeStyle("FONT", e.target.value)}
               onKeyDown={(e) => e.stopPropagation()}
             />
@@ -148,14 +154,14 @@ const Tools = ({
             A{" "}
             <span
               className="sheet-color-strip"
-              style={{ backgroundColor: selectedStyles["color"] }}
+              style={{ backgroundColor: parsedSelectedStyles["color"] }}
             ></span>
           </button>
           <input
             ref={fontColorRef}
             type="color"
             data-testid="font-color"
-            value={selectedStyles?.["color"] || "#000000"}
+            value={parsedSelectedStyles?.["color"] || "#000000"}
             onChange={(e) => changeStyleWithDebounce("COLOR", e.target.value)}
           />
           <button
@@ -163,7 +169,7 @@ const Tools = ({
             onClick={() => backgroundColorRef.current?.click()}
           >
             <svg
-              fill={selectedStyles?.["background"]}
+              fill={parsedSelectedStyles?.["background"]}
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 576 512"
             >
@@ -171,27 +177,27 @@ const Tools = ({
             </svg>
             <span
               className="sheet-color-strip"
-              style={{ backgroundColor: selectedStyles["background"] }}
+              style={{ backgroundColor: parsedSelectedStyles["background"] }}
             ></span>
           </button>
           <input
             ref={backgroundColorRef}
             type="color"
             data-testid="background-color"
-            value={selectedStyles?.["background"] || "#000000"}
+            value={parsedSelectedStyles?.["background"] || "#000000"}
             onChange={(e) => changeStyleWithDebounce("BACKGROUND", e.target.value)}
           />
         </div>
         <div className="sheet-tools-text-style-container">
           <button
-            className={selectedStyles["fontWeight"] === "bold" ? "text-style-btn-active" : ""}
+            className={parsedSelectedStyles["fontWeight"] === "bold" ? "text-style-btn-active" : ""}
             onClick={() => changeStyle("B")}
           >
             B
           </button>
           <button
             className={
-              selectedStyles["text-decoration"] === "underline"
+              parsedSelectedStyles["text-decoration"] === "underline"
                 ? "text-style-btn-active text-style-btn-active-underline"
                 : ""
             }
@@ -200,7 +206,9 @@ const Tools = ({
             U
           </button>
           <button
-            className={selectedStyles["fontStyle"] === "italic" ? "text-style-btn-active" : ""}
+            className={
+              parsedSelectedStyles["fontStyle"] === "italic" ? "text-style-btn-active" : ""
+            }
             onClick={() => changeStyle("I")}
           >
             I
@@ -208,28 +216,32 @@ const Tools = ({
         </div>
         <div className="sheet-tools-text-align-container">
           <button
-            className={selectedStyles["textAlign"] === "left" ? "text-style-btn-active" : ""}
+            className={parsedSelectedStyles["textAlign"] === "left" ? "text-style-btn-active" : ""}
             data-testid="align-left"
             onClick={() => changeStyle("ALIGN-LEFT")}
           >
             <Icons type="align-left" />
           </button>
           <button
-            className={selectedStyles["textAlign"] === "center" ? "text-style-btn-active" : ""}
+            className={
+              parsedSelectedStyles["textAlign"] === "center" ? "text-style-btn-active" : ""
+            }
             data-testid="align-center"
             onClick={() => changeStyle("ALIGN-CENTER")}
           >
             <Icons type="align-center" />
           </button>
           <button
-            className={selectedStyles["textAlign"] === "right" ? "text-style-btn-active" : ""}
+            className={parsedSelectedStyles["textAlign"] === "right" ? "text-style-btn-active" : ""}
             data-testid="align-right"
             onClick={() => changeStyle("ALIGN-RIGHT")}
           >
             <Icons type="align-right" />
           </button>
           <button
-            className={selectedStyles["textAlign"] === "justify" ? "text-style-btn-active" : ""}
+            className={
+              parsedSelectedStyles["textAlign"] === "justify" ? "text-style-btn-active" : ""
+            }
             data-testid="align-justify"
             onClick={() => changeStyle("ALIGN-JUSTIFY")}
           >

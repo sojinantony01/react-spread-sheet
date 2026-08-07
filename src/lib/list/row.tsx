@@ -1,8 +1,9 @@
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 import { store, useAppSelector } from "../store";
 import Cell from "./cell";
 import ReadOnlyCell from "./readonlycell";
 import { selectHorizontalCells } from "../reducer";
+
 interface Prop {
   i: number;
   onChange?(i: number, j: number, value: string): void;
@@ -10,9 +11,22 @@ interface Prop {
   readonly?: boolean;
   headerValues?: string[];
 }
+
 const Row = (props: Prop) => {
   const { i } = props;
   const itemLength = useAppSelector(store, (state) => state.data[i]?.length || 0);
+
+  const onAxisMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      if (!props.readonly) {
+        store.dispatch(selectHorizontalCells, {
+          payload: { i, ctrlPressed: e.metaKey || e.ctrlKey },
+        });
+      }
+    },
+    [i, props.readonly],
+  );
+
   const items = [];
   for (let j = 0; j < itemLength; j++) {
     items.push(
@@ -29,6 +43,7 @@ const Row = (props: Prop) => {
       ),
     );
   }
+
   return (
     <tr data-testid="sheet-table-tr">
       {!props.hideYAxisHeader ? (
@@ -36,12 +51,7 @@ const Row = (props: Prop) => {
           className="sheet-axis"
           data-testid={`${i}-sheet-y-axis`}
           tabIndex={1}
-          onMouseDown={(e) => {
-            !props.readonly &&
-              store.dispatch(selectHorizontalCells, {
-                payload: { i: i, ctrlPressed: e.metaKey || e.ctrlKey },
-              });
-          }}
+          onMouseDown={onAxisMouseDown}
         >
           {i + 1}
         </td>

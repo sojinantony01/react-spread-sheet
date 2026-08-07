@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, useState, useCallback, useMemo, memo } from "react";
+import React, { ChangeEvent, KeyboardEvent, useState, useCallback, useRef, memo } from "react";
 import { store, useAppSelector } from "../store";
 import {
   changeData,
@@ -8,6 +8,7 @@ import {
   selectOneCell,
 } from "../reducer";
 import { getCalculatedVal } from "./utils";
+
 interface Prop {
   i: number;
   j: number;
@@ -19,48 +20,117 @@ const detectLeftButton = (evt: any) => {
   if ("buttons" in evt) {
     return evt.buttons === 1;
   }
-  var button = evt.which || evt.button;
+  const button = evt.which || evt.button;
   return button === 1;
 };
 
 const Input = (props: Prop) => {
   const { i, j, onChange, headerValues } = props;
   const [editMode, setEdit] = useState(false);
-  const [focus, setFocus] = useState(false);
+  // Track focus in a ref — it only affects the value selector, not JSX output,
+  // so it doesn't need to be state that triggers its own re-render cycle.
+  const focusRef = useRef(false);
   const { dispatch } = store;
-  const selected = useAppSelector(store, (state) => {
-    return state.selected.some((p) => p[0] === i && p[1] === j);
-  });
+
+  // O(1) selected check via the pre-computed Set in the store.
+  const selected = useAppSelector(store, () => store.getSelectedSet().has(`${i},${j}`));
+
   const value = useAppSelector(store, (state) => {
-    let val = state.data[i][j].value;
-    if (!focus && val && val.toString().trim().startsWith("=")) {
+    const val = state.data[i][j].value;
+    if (!focusRef.current && val && val.toString().trim().startsWith("=")) {
       return getCalculatedVal(val, state.data, headerValues);
     }
     return val;
   });
-  const styles = useAppSelector(store, (state) => {
-    return state.data[i][j].styles;
-  });
-  const type = useAppSelector(store, (state) => {
-    return state.data[i][j].type || "text";
-  });
 
-  const rowLength = useAppSelector(store, (state) => {
-    return state.data.length;
+  // Parse inside the selector so the component receives a stable object reference
+  // when styles content hasn't changed (JSON.stringify → same string → Object.is bails out).
+  const styles = useAppSelector(store, (state) => {
+    const s = state.data[i][j].styles;
+    return s ? JSON.stringify(s) : undefined;
   });
-  const columnLength = useAppSelector(store, (state) => {
-    return state.data[i].length;
-  });
+  const parsedStyles: React.CSSProperties | undefined = styles ? JSON.parse(styles) : undefined;
+
+  const type = useAppSelector(store, (state) => state.data[i][j].type || "text");
 
   const change = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       if (value !== e.target.value) {
         setEdit(true);
-        dispatch(changeData, { payload: { value: e.target.value || "", i: i, j: j } });
+        dispatch(changeData, { payload: { value: e.target.value || "", i, j } });
         onChange && onChange(i, j, e.target.value);
       }
     },
     [value, i, j, onChange, dispatch],
+  );
+
+  const findNext = (
+    ci: number,
+    cj: number,
+    dir: "up" | "down" | "left" | "right",
+    rowLen: number,
+    colLen: number,
+  ): { i: number; j: number } => {
+    if (
+      document.getElementById(`${ci}-${cj}`) ||
+      (dir === "up" && ci === 0) ||
+      (dir === "left" && cj === 0) ||
+      (dir === "down" && ci === rowLen - 1) ||
+      (dir === "right" && cj === colLen - 1)
+    ) {
+      return { i: ci, j: cj };
+    }
+    return findNext(
+      dir === "up" ? ci - 1 : dir === "down" ? ci + 1 : ci,
+      dir === "left" ? cj - 1 : dir === "right" ? cj + 1 : cj,
+      dir,
+      rowLen,
+      colLen,
+    );
+  };
+
+  const setSelected = useCallback(
+    (row = i, column = j) => {
+      const { data } = store.getState();
+      if (row >= 0 && column >= 0 && row < data.length && column < data[i].length)
+        dispatch(selectOneCell, { payload: { i: row, j: column } });
+    },
+    [i, j, dispatch],
+  );
+
+  const moveToNext = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      const { data } = store.getState();
+      const rowLen = data.length;
+      const colLen = data[i].length;
+      let newI: number | undefined;
+      let newJ: number | undefined;
+      switch (e.code) {
+        case "ArrowLeft":
+          newI = i;
+          newJ = j > 0 ? findNext(i, j - 1, "left", rowLen, colLen).j : j;
+          break;
+        case "ArrowUp":
+          newI = i > 0 ? findNext(i - 1, j, "up", rowLen, colLen).i : i;
+          newJ = j;
+          break;
+        case "ArrowRight":
+          newI = i;
+          newJ = j < colLen - 1 ? findNext(i, j + 1, "right", rowLen, colLen).j : j;
+          break;
+        case "ArrowDown":
+          newI = i < rowLen - 1 ? findNext(i + 1, j, "down", rowLen, colLen).i : i;
+          newJ = j;
+          break;
+      }
+      if (e.shiftKey) {
+        dispatch(selectCellsDrag, { payload: { i: newI, j: newJ } });
+      } else {
+        setSelected(newI, newJ);
+      }
+      document.getElementById(`${newI}-${newJ}`)?.focus();
+    },
+    [i, j, dispatch, setSelected],
   );
 
   const keyDown = useCallback(
@@ -88,65 +158,7 @@ const Input = (props: Prop) => {
         e.stopPropagation();
       }
     },
-    [editMode, dispatch, i, j, rowLength, columnLength],
-  );
-
-  const findNext = (
-    i: number,
-    j: number,
-    dir: "up" | "down" | "left" | "right",
-  ): { i: number; j: number } => {
-    if (
-      document.getElementById(`${i}-${j}`) ||
-      (dir === "up" && i === 0) ||
-      (dir === "left" && j === 0) ||
-      (dir === "down" && i === rowLength - 1) ||
-      (dir === "right" && j === columnLength - 1)
-    ) {
-      return { i, j };
-    } else {
-      return findNext(
-        dir === "up" ? i - 1 : dir === "down" ? i + 1 : i,
-        dir === "left" ? j - 1 : dir === "right" ? j + 1 : j,
-        dir,
-      );
-    }
-  };
-
-  const moveToNext = (e: KeyboardEvent<HTMLInputElement>) => {
-    let newI, newJ;
-    switch (e.code) {
-      case "ArrowLeft":
-        newI = i;
-        newJ = j > 0 ? findNext(i, j - 1, "left").j : j;
-        break;
-      case "ArrowUp":
-        newI = i > 0 ? findNext(i - 1, j, "up").i : i;
-        newJ = j;
-        break;
-      case "ArrowRight":
-        newI = i;
-        newJ = j < columnLength - 1 ? findNext(i, j + 1, "right").j : j;
-        break;
-      case "ArrowDown":
-        newI = i < rowLength - 1 ? findNext(i + 1, j, "down").i : i;
-        newJ = j;
-        break;
-    }
-    if (e.shiftKey) {
-      dispatch(selectCellsDrag, { payload: { i: newI, j: newJ } });
-    } else {
-      setSelected(newI, newJ);
-    }
-    document.getElementById(`${newI}-${newJ}`)?.focus();
-  };
-
-  const setSelected = useCallback(
-    (row = i, column = j) => {
-      if (row >= 0 && column >= 0 && row < rowLength && column < columnLength)
-        dispatch(selectOneCell, { payload: { i: row, j: column } });
-    },
-    [i, j, rowLength, columnLength, dispatch],
+    [editMode, dispatch, moveToNext],
   );
 
   const onClick = useCallback(
@@ -175,34 +187,32 @@ const Input = (props: Prop) => {
     [i, j, dispatch],
   );
 
-  const renderInput = useMemo(() => {
-    const baseProps = {
-      id: `${i}-${j}`,
-      "data-testid": `${i}-${j}`,
-      value: value,
-      style: styles,
-      onFocus: () => setFocus(true),
-      onMouseMoveCapture: onDrag,
-      onMouseDown: onClick,
-      className: `input ${editMode ? "" : "view_mode"} ${selected ? "sheet-selected-td" : ""}`,
-      onBlur: () => {
+  // No useMemo wrapper — Input only re-renders when one of its store slices
+  // (selected, value, styles, type) or local state (editMode) changes, so
+  // the memo was paying cost for zero benefit.
+  return (
+    <input
+      key={`${i}-${j}-${type}`}
+      id={`${i}-${j}`}
+      data-testid={`${i}-${j}`}
+      value={value}
+      style={parsedStyles}
+      type={type}
+      onFocus={() => {
+        focusRef.current = true;
+      }}
+      onBlur={() => {
+        focusRef.current = false;
         setEdit(false);
-        setFocus(false);
-      },
-      onDoubleClick: () => setEdit(true),
-    };
-    return (
-      <input
-        key={`${i}-${j}-${type}`}
-        {...baseProps}
-        type={type}
-        onKeyDown={keyDown}
-        onChange={change}
-      />
-    );
-  }, [i, j, value, styles, type, editMode, selected, focus, keyDown, change, onDrag, onClick]);
-
-  return renderInput;
+      }}
+      onMouseMoveCapture={onDrag}
+      onMouseDown={onClick}
+      className={`input${editMode ? "" : " view_mode"}${selected ? " sheet-selected-td" : ""}`}
+      onDoubleClick={() => setEdit(true)}
+      onKeyDown={keyDown}
+      onChange={change}
+    />
+  );
 };
 
-export default Input;
+export default memo(Input);

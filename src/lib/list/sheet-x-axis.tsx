@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import { store, useAppSelector } from "../store";
 import { printToLetter } from "./utils";
 import { selectAllCells, selectVerticalCells } from "../reducer";
@@ -47,4 +47,4 @@ const SheetXAxis = ({ resize, headerValues, readOnly = false }: Props) => {
   return <tr data-testid="sheet-table-x-axis-header">{items}</tr>;
 };
 
-export default SheetXAxis;
+export default memo(SheetXAxis);

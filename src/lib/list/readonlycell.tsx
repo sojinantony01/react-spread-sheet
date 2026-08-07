@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, CSSProperties } from "react";
 import { store, useAppSelector } from "../store";
 import { getCalculatedVal } from "./utils";
 
@@ -35,9 +35,12 @@ const ReadOnlyCell = (props: Prop) => {
     return state.data[props.i][props.j].skip;
   });
 
-  const styles = useAppSelector(store, (state) => {
-    return state.data[props.i][props.j].styles;
+  // Serialize styles so Object.is comparison works on the returned value.
+  const stylesJson = useAppSelector(store, (state) => {
+    const s = state.data[props.i][props.j].styles;
+    return s ? JSON.stringify(s) : undefined;
   });
+  const styles: React.CSSProperties | undefined = stylesJson ? JSON.parse(stylesJson) : undefined;
 
   return !skip ? (
     <td colSpan={colSpan} rowSpan={rowSpan}>

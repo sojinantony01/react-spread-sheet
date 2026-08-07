@@ -5,6 +5,7 @@ import { addData } from "../../reducer";
 import { generateDummyContent } from "../utils";
 import Cell from "../cell";
 import { mockAllIsIntersecting } from "react-intersection-observer/test-utils";
+
 const i = 1;
 const j = 1;
 test("cell  render", () => {
