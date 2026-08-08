@@ -33,14 +33,17 @@ const Input = (props: Prop) => {
   // O(1) selected check via the pre-computed Set in the store.
   const selected = useAppSelector(store, () => store.getSelectedSet().has(`${i},${j}`));
 
-  const value = useAppSelector(store, (state) => {
-    const val = state.data[i][j].value;
-    // Show calculated result unless the user is actively editing this cell.
-    if (!editMode && val && val.toString().trim().startsWith("=")) {
-      return getCalculatedVal(val, state.data, headerValues);
-    }
-    return val;
-  });
+  // Always read the raw stored value from the store.
+  const rawValue = useAppSelector(store, (state) => state.data[i][j].value);
+
+  // Compute the displayed value outside the selector so editMode (local state)
+  // is always fresh. useAppSelector only re-runs its selector on store changes,
+  // so putting editMode inside it causes stale-closure bugs where the cell shows
+  // the raw formula after blur because the selector was computed when editMode=true.
+  const value =
+    !editMode && rawValue && rawValue.toString().trim().startsWith("=")
+      ? getCalculatedVal(rawValue, store.getState().data, headerValues)
+      : rawValue;
 
   // Parse inside the selector so the component receives a stable object reference
   // when styles content hasn't changed (JSON.stringify → same string → Object.is bails out).
