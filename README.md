@@ -15,7 +15,9 @@
 
 - ⚡ **Blazing Fast** - Optimized virtual scrolling renders 100,000+ cells smoothly
 - 🪶 **Ultra Lightweight** - Only ~300KB, no heavy dependencies
-- 🧮 **Excel-like Formulas** - Full calculation engine with cell references (=A1*B2+C3)
+- 🧮 **Excel-like Formulas** - Full calculation engine: SUM, AVERAGE, COUNT, MIN, MAX, IF, CONCAT, ROUND, ABS, SQRT, POWER and more
+- 🔣 **Σ Formula Toolbar** - Insert range and single-cell formulas instantly with the Σ button
+- 💡 **fx Bar with Autocomplete** - Live formula bar with function suggestions as you type
 - 🎨 **Rich Formatting** - Bold, italic, underline, colors, alignment, and more
 - 📊 **Merge Cells** - Combine cells like in Excel
 - ↩️ **Undo/Redo** - Full history management
@@ -106,18 +108,45 @@ Our spreadsheet uses advanced virtual scrolling and memoization techniques to ha
 
 ### 🧮 Excel-like Formulas
 
-Full calculation engine supporting:
+Full calculation engine supporting cell references, ranges, and built-in functions:
 
 ```javascript
-// Cell references
+// Basic arithmetic with cell references
 =A1 + B2
-
-// Complex formulas
 =A1 * B2 + (C3 - D4) / E5
-
-// Multiple operations
 =(A1 + A2 + A3) * 0.1
+
+// Range formulas (Σ toolbar or type directly)
+=SUM(A1:A10)        // Sum a range
+=AVERAGE(B1:B5)     // Mean of a range
+=COUNT(C1:C10)      // Count numeric cells
+=COUNTA(D1:D10)     // Count all non-empty cells
+=MIN(A1:A10)        // Smallest value
+=MAX(A1:A10)        // Largest value
+=CONCAT(A1:A3)      // Join text in a range
+
+// Single-cell functions
+=ABS(A1)            // Absolute value
+=SQRT(A1)           // Square root
+=ROUND(A1, 2)       // Round to N decimal places
+=POWER(A1, 3)       // Raise to a power
+=IF(A1>0, A1, 0)    // Conditional expression
 ```
+
+#### Σ Formula Toolbar
+
+Click the **Σ** button in the toolbar to insert a formula into the selected cell:
+
+- **Range formulas** (SUM, AVERAGE, COUNT, COUNTA, MIN, MAX, CONCAT) — built from the current selection, result placed in the cell below
+- **Single-cell formulas** (ABS, SQRT, ROUND, POWER, IF) — applied to the selected cell's address
+
+#### fx Bar Autocomplete
+
+Type `=` followed by letters in the fx bar (e.g. `=SU`) to get a dropdown of matching functions with descriptions. Use **↑ ↓** to navigate, **Enter** or **Tab** to apply.
+
+#### Live Reference Highlights
+
+While typing a formula, all referenced cells glow with a **blue dashed border** and the relevant column/row headers highlight in blue — so you always know what's in scope.
 
 ### 🎨 Rich Text Formatting
 
@@ -331,9 +360,11 @@ const mergedData = [
 | `Ctrl/Cmd + I` | Italic |
 | `Ctrl/Cmd + U` | Underline |
 | `Ctrl/Cmd + A` | Select all |
-| `Delete/Backspace` | Clear selected cells |
-| `Enter` | Edit cell |
+| `Delete/Backspace` | Clear selected cells (only when no input field is focused) |
+| `Double-click` / `Enter` | Edit cell |
 | `Esc` | Cancel edit |
+| `↑ ↓` in fx bar | Navigate formula autocomplete suggestions |
+| `Enter` / `Tab` in fx bar | Apply selected formula suggestion |
 
 ## 🧪 Testing
 
