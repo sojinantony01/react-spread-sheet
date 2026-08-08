@@ -38,8 +38,10 @@ const extractRefs = (
     const r1 = parseInt(m[2], 10) - 1;
     const c2 = colLabelToIndex(m[3], headerValues);
     const r2 = parseInt(m[4], 10) - 1;
-    const rMin = Math.min(r1, r2); const rMax = Math.max(r1, r2);
-    const cMin = Math.min(c1, c2); const cMax = Math.max(c1, c2);
+    const rMin = Math.min(r1, r2);
+    const rMax = Math.max(r1, r2);
+    const cMin = Math.min(c1, c2);
+    const cMax = Math.max(c1, c2);
     for (let r = rMin; r <= rMax; r++)
       for (let c = cMin; c <= cMax; c++)
         if (gridRows === 0 || (r < gridRows && c < gridCols)) cells.push([r, c]);
@@ -74,7 +76,9 @@ export const updateFormulaHighlights = (
 ): void => {
   for (const id of _highlightedIds) {
     const el = document.getElementById(id);
-    if (el) { el.removeAttribute("data-formula-ref"); }
+    if (el) {
+      el.removeAttribute("data-formula-ref");
+    }
   }
   _highlightedIds = [];
   for (const { el, attr } of _highlightedAxes) el.removeAttribute(attr);
@@ -89,7 +93,10 @@ export const updateFormulaHighlights = (
   for (const [r, c] of refs) {
     if (r === formulaRow && c === formulaCol) continue;
     const el = document.getElementById(`${r}-${c}`);
-    if (el) { el.setAttribute("data-formula-ref", "1"); _highlightedIds.push(`${r}-${c}`); }
+    if (el) {
+      el.setAttribute("data-formula-ref", "1");
+      _highlightedIds.push(`${r}-${c}`);
+    }
     highlightedCols.add(c);
     highlightedRows.add(r);
   }
@@ -97,12 +104,18 @@ export const updateFormulaHighlights = (
   const headerThs = document.querySelectorAll(".sheet-table thead th");
   for (const col of highlightedCols) {
     const th = headerThs[col + 1] as HTMLElement | undefined;
-    if (th) { th.setAttribute("data-formula-col", "1"); _highlightedAxes.push({ el: th, attr: "data-formula-col" }); }
+    if (th) {
+      th.setAttribute("data-formula-col", "1");
+      _highlightedAxes.push({ el: th, attr: "data-formula-col" });
+    }
   }
   for (const row of highlightedRows) {
     const tr = document.querySelector(`.sheet-table tbody tr:nth-child(${row + 1})`);
     const axisTd = tr?.querySelector("td:first-child");
-    if (axisTd) { axisTd.setAttribute("data-formula-row", "1"); _highlightedAxes.push({ el: axisTd, attr: "data-formula-row" }); }
+    if (axisTd) {
+      axisTd.setAttribute("data-formula-row", "1");
+      _highlightedAxes.push({ el: axisTd, attr: "data-formula-row" });
+    }
   }
 };
 

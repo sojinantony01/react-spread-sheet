@@ -209,7 +209,14 @@ const Input = (props: Prop) => {
         // Update reference highlights live as the user types a formula.
         if (newVal.startsWith("=")) {
           const state = store.getState();
-          updateFormulaHighlights(newVal, i, j, headerValues, state.data.length, state.data[0]?.length ?? 0);
+          updateFormulaHighlights(
+            newVal,
+            i,
+            j,
+            headerValues,
+            state.data.length,
+            state.data[0]?.length ?? 0,
+          );
         } else {
           clearFormulaHighlights();
         }

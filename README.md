@@ -15,7 +15,7 @@
 
 - ⚡ **Blazing Fast** - Optimized virtual scrolling renders 100,000+ cells smoothly
 - 🪶 **Ultra Lightweight** - Only ~300KB, no heavy dependencies
-- 🧮 **Excel-like Formulas** - Full calculation engine: SUM, AVERAGE, COUNT, MIN, MAX, IF, CONCAT, ROUND, ABS, SQRT, POWER and more
+- 🧮 **Excel-like Formulas** - Full calculation engine: SUM, AVERAGE, COUNT, MIN, MAX, IF, CONCAT, ROUND, ABS, SQRT, POWER, expressions like - (=A1*B2+C3) and more
 - 🔣 **Σ Formula Toolbar** - Insert range and single-cell formulas instantly with the Σ button
 - 💡 **fx Bar with Autocomplete** - Live formula bar with function suggestions as you type
 - 🎨 **Rich Formatting** - Bold, italic, underline, colors, alignment, and more

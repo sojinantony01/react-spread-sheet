@@ -9,8 +9,10 @@ export const colIndexToLabel = (colIdx: number, headerValues?: string[]): string
 
 // Build a range string like "A1:C3" from two [row,col] pairs (0-based).
 export const buildRangeString = (
-  r1: number, c1: number,
-  r2: number, c2: number,
+  r1: number,
+  c1: number,
+  r2: number,
+  c2: number,
   headerValues?: string[],
 ): string => {
   const minR = Math.min(r1, r2);
@@ -157,10 +159,18 @@ const parseArgs = (argsStr: string): string[] => {
   let depth = 0;
   let current = "";
   for (const ch of argsStr) {
-    if (ch === "(") { depth++; current += ch; }
-    else if (ch === ")") { depth--; current += ch; }
-    else if (ch === "," && depth === 0) { args.push(current.trim()); current = ""; }
-    else { current += ch; }
+    if (ch === "(") {
+      depth++;
+      current += ch;
+    } else if (ch === ")") {
+      depth--;
+      current += ch;
+    } else if (ch === "," && depth === 0) {
+      args.push(current.trim());
+      current = "";
+    } else {
+      current += ch;
+    }
   }
   if (current.trim()) args.push(current.trim());
   return args;
@@ -176,31 +186,45 @@ const evalFunction = (
   const fn = name.toUpperCase();
   switch (fn) {
     case "SUM": {
-      const nums = argsStr.includes(":") ? expandRange(argsStr, data, headerValues) : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)) || 0);
+      const nums = argsStr.includes(":")
+        ? expandRange(argsStr, data, headerValues)
+        : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)) || 0);
       return nums.reduce((s, n) => s + n, 0);
     }
     case "AVERAGE": {
-      const nums = argsStr.includes(":") ? expandRange(argsStr, data, headerValues) : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)) || 0);
+      const nums = argsStr.includes(":")
+        ? expandRange(argsStr, data, headerValues)
+        : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)) || 0);
       return nums.length ? nums.reduce((s, n) => s + n, 0) / nums.length : 0;
     }
     case "COUNT": {
-      const nums = argsStr.includes(":") ? expandRange(argsStr, data, headerValues) : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)));
+      const nums = argsStr.includes(":")
+        ? expandRange(argsStr, data, headerValues)
+        : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)));
       return nums.filter((n) => !isNaN(n)).length;
     }
     case "COUNTA": {
-      const raws = argsStr.includes(":") ? expandRangeRaw(argsStr, data, headerValues) : parseArgs(argsStr).map((a) => resolveArg(a, data, headerValues));
+      const raws = argsStr.includes(":")
+        ? expandRangeRaw(argsStr, data, headerValues)
+        : parseArgs(argsStr).map((a) => resolveArg(a, data, headerValues));
       return raws.filter((v) => v !== "" && v !== undefined).length;
     }
     case "MIN": {
-      const nums = argsStr.includes(":") ? expandRange(argsStr, data, headerValues) : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)) || 0);
+      const nums = argsStr.includes(":")
+        ? expandRange(argsStr, data, headerValues)
+        : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)) || 0);
       return nums.length ? Math.min(...nums) : 0;
     }
     case "MAX": {
-      const nums = argsStr.includes(":") ? expandRange(argsStr, data, headerValues) : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)) || 0);
+      const nums = argsStr.includes(":")
+        ? expandRange(argsStr, data, headerValues)
+        : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)) || 0);
       return nums.length ? Math.max(...nums) : 0;
     }
     case "CONCAT": {
-      const raws = argsStr.includes(":") ? expandRangeRaw(argsStr, data, headerValues) : parseArgs(argsStr).map((a) => resolveArg(a, data, headerValues));
+      const raws = argsStr.includes(":")
+        ? expandRangeRaw(argsStr, data, headerValues)
+        : parseArgs(argsStr).map((a) => resolveArg(a, data, headerValues));
       return raws.join("");
     }
     case "IF": {

@@ -173,7 +173,9 @@
   background-color: white;
   border-radius: 4px;
   overflow: hidden;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 .sheet-table .sheet-tools .sheet-tools-calculation-input-container .fx-label {
   color: #888;

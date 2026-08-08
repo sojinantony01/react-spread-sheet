@@ -231,7 +231,9 @@ const List = (props: Props) => {
 
   return (
     <div onKeyDown={handleKeyDown} className="sheet-table" data-testid="sheet-table" tabIndex={0}>
-      {!hideTools && <Tools changeStyle={changeStyle} onChange={onChange} headerValues={headerValues} />}
+      {!hideTools && (
+        <Tools changeStyle={changeStyle} onChange={onChange} headerValues={headerValues} />
+      )}
       <div
         className="sheet-table-table-container"
         ref={parentDivRef}
