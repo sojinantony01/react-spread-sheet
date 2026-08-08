@@ -1,70 +1,275 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import Icons from "../../svg/icons";
 import { store, useAppSelector } from "../../store";
-import { changeData, mergeCells, redo, undo } from "../../reducer";
+import { changeData, mergeCells, redo, selectOneCell, undo } from "../../reducer";
+import { buildRangeString, colIndexToLabel } from "../utils";
+import { updateFormulaHighlights, clearFormulaHighlights } from "../formula-edit-state";
 
 let timer: string | number | NodeJS.Timeout | undefined;
 const emptyObject = {};
 const notSelectedIndex = [undefined, undefined];
+
+// Formulas that operate on a range of cells (shown in the Σ toolbar).
+const RANGE_FORMULAS = [
+  { name: "SUM", template: "SUM(%)", desc: "Add up all numbers in a range" },
+  { name: "AVERAGE", template: "AVERAGE(%)", desc: "Mean of all numbers in a range" },
+  { name: "COUNT", template: "COUNT(%)", desc: "Count cells containing numbers" },
+  { name: "COUNTA", template: "COUNTA(%)", desc: "Count all non-empty cells (numbers + text)" },
+  { name: "MIN", template: "MIN(%)", desc: "Smallest number in a range" },
+  { name: "MAX", template: "MAX(%)", desc: "Largest number in a range" },
+  { name: "CONCAT", template: "CONCAT(%)", desc: "Join all cell text in a range" },
+];
+
+// Formulas that operate on a single cell value (shown in the fx autocomplete only).
+const SINGLE_FORMULAS = [
+  {
+    name: "ABS",
+    template: "ABS(A1)",
+    desc: "Absolute (positive) value of a cell — e.g. ABS(-5) = 5",
+  },
+  { name: "SQRT", template: "SQRT(A1)", desc: "Square root of a cell value" },
+  {
+    name: "ROUND",
+    template: "ROUND(A1,2)",
+    desc: "Round a cell to N decimal places — e.g. ROUND(A1,2)",
+  },
+  {
+    name: "POWER",
+    template: "POWER(A1,2)",
+    desc: "Raise a cell value to a power — e.g. POWER(A1,3) = A1³",
+  },
+  {
+    name: "IF",
+    template: "IF(A1>0,A1,0)",
+    desc: "If condition is true return one value, else another",
+  },
+];
+
+// Combined list used for fx-bar autocomplete.
+const FORMULA_LIST = [...RANGE_FORMULAS, ...SINGLE_FORMULAS];
+
 const Tools = ({
   changeStyle,
   onChange,
+  headerValues,
 }: {
   changeStyle: (type: string, val?: string) => void;
   onChange: ((i?: number, j?: number, value?: string) => void) | undefined;
+  headerValues?: string[];
 }) => {
   const calculationRef = useRef<HTMLInputElement>(null);
   const fontColorRef = useRef<HTMLInputElement>(null);
   const backgroundColorRef = useRef<HTMLInputElement>(null);
+  const formulaMenuRef = useRef<HTMLDivElement>(null);
+
+  const [formulaSuggestions, setFormulaSuggestions] = useState<typeof FORMULA_LIST>([]);
+  const [activeSuggestion, setActiveSuggestion] = useState(-1);
+  const [showFormulaMenu, setShowFormulaMenu] = useState(false);
+
   const { dispatch } = store;
   const selectedI = useAppSelector(store, (state) => state.selected[0]?.[0]);
   const selectedJ = useAppSelector(store, (state) => state.selected[0]?.[1]);
   const i = selectedI ?? notSelectedIndex[0];
   const j = selectedJ ?? notSelectedIndex[1];
+
   const stylesJson = useAppSelector(store, (state) => {
     const index = state.selected[0];
     if (index) {
-      // Serialize so Object.is works — same content = same string = no re-render
       const s = state.data[index[0]][index[1]].styles;
       return s ? JSON.stringify(s) : "";
     }
     return "";
   });
   const parsedSelectedStyles = stylesJson ? JSON.parse(stylesJson) : emptyObject;
+
   const type = useAppSelector(store, (state) => {
     const index = state.selected[0];
-    if (index) {
-      return state.data[index[0]][index[1]].type || "text";
-    }
+    if (index) return state.data[index[0]][index[1]].type || "text";
     return "";
   });
+
   const selectedItemVal = useAppSelector(
     store,
-    (state) => state.data[state.selected?.[0]?.[0]]?.[state.selected?.[0]?.[1]].value || "",
+    (state) => state.data[state.selected?.[0]?.[0]]?.[state.selected?.[0]?.[1]]?.value || "",
   );
 
   const rowSpan = useAppSelector(
     store,
     (state) =>
-      state.data[state.selected?.[0]?.[0]]?.[state.selected?.[0]?.[1]].rowSpan || undefined,
+      state.data[state.selected?.[0]?.[0]]?.[state.selected?.[0]?.[1]]?.rowSpan || undefined,
   );
+
+  const selectedCount = useAppSelector(store, (state) => state.selected.length);
 
   const selectedFontSize = parsedSelectedStyles?.["fontSize"]
     ? parsedSelectedStyles["fontSize"]?.split("px")?.[0]
     : "12";
-  const changeStyleWithDebounce = (type: string, val: string) => {
+
+  const changeStyleWithDebounce = (styleType: string, val: string) => {
     clearTimeout(timer);
-    timer = setTimeout(() => {
-      changeStyle(type, val);
-    }, 200);
+    timer = setTimeout(() => changeStyle(styleType, val), 200);
   };
+
+  // ─── fx bar ─────────────────────────────────────────────────────────────────
+
   const onValChange = (e: { target: { value: string } }) => {
-    dispatch(changeData, { payload: { value: e.target.value, i: i, j: j } });
-    onChange && onChange(i, j, e.target.value);
+    const val = e.target.value;
+    dispatch(changeData, { payload: { value: val, i, j } });
+    onChange && onChange(i, j, val);
+
+    // Update reference highlights as the user types a formula.
+    if (val.startsWith("=") && i !== undefined && j !== undefined) {
+      const state = store.getState();
+      updateFormulaHighlights(
+        val,
+        i,
+        j,
+        headerValues,
+        state.data.length,
+        state.data[0]?.length ?? 0,
+      );
+    } else {
+      clearFormulaHighlights();
+    }
+
+    if (val.startsWith("=")) {
+      const afterEq = val.slice(1).toUpperCase();
+      if (afterEq.length > 0 && /^[A-Z]+$/.test(afterEq)) {
+        setFormulaSuggestions(FORMULA_LIST.filter((f) => f.name.startsWith(afterEq)));
+      } else {
+        setFormulaSuggestions([]);
+      }
+    } else {
+      setFormulaSuggestions([]);
+    }
+    setActiveSuggestion(-1);
   };
+
+  const applyFxSuggestion = useCallback(
+    (template: string) => {
+      const newVal = "=" + template.replace("%", "");
+      dispatch(changeData, { payload: { value: newVal, i, j } });
+      onChange && onChange(i, j, newVal);
+      setFormulaSuggestions([]);
+      setActiveSuggestion(-1);
+      calculationRef.current?.focus();
+    },
+    [i, j, dispatch, onChange],
+  );
+
+  const onFxKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (!formulaSuggestions.length) return;
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveSuggestion((prev) => Math.min(prev + 1, formulaSuggestions.length - 1));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveSuggestion((prev) => Math.max(prev - 1, 0));
+      } else if (e.key === "Enter" || e.key === "Tab") {
+        if (activeSuggestion >= 0) {
+          e.preventDefault();
+          applyFxSuggestion(formulaSuggestions[activeSuggestion].template);
+        }
+      } else if (e.key === "Escape") {
+        setFormulaSuggestions([]);
+        setActiveSuggestion(-1);
+      }
+    },
+    [formulaSuggestions, activeSuggestion, applyFxSuggestion],
+  );
+
+  const onFxBlur = useCallback(() => {
+    clearFormulaHighlights();
+    setTimeout(() => setFormulaSuggestions([]), 150);
+  }, []);
+
+  // ─── Σ formula toolbar button ────────────────────────────────────────────────
+
+  const applyFormulaFromToolbar = useCallback(
+    (formulaName: string) => {
+      setShowFormulaMenu(false);
+      const state = store.getState();
+      const sel = state.selected;
+      if (!sel.length || i === undefined || j === undefined) return;
+
+      const isSingleCell = SINGLE_FORMULAS.some((f) => f.name === formulaName);
+      const formula = FORMULA_LIST.find((f) => f.name === formulaName);
+
+      let newVal: string;
+      let targetI: number;
+      let targetJ: number;
+
+      if (isSingleCell) {
+        // Build the actual cell address from the selected cell (e.g. "C5" not "A1").
+        const col = colIndexToLabel(sel[0][1], headerValues);
+        const row = sel[0][0] + 1;
+        const cellRef = `${col}${row}`;
+        // Replace the placeholder "A1" in the template with the real cell reference.
+        const tmpl = formula?.template ?? `${formulaName}(A1)`;
+        newVal = "=" + tmpl.replace(/A1/g, cellRef);
+        targetI = sel[0][0];
+        targetJ = sel[0][1];
+      } else {
+        // Range formulas: build range from selection, place result below.
+        let rangeStr: string;
+        if (sel.length > 1) {
+          const firstCell = sel[0];
+          const lastCell = sel[sel.length - 1];
+          rangeStr = buildRangeString(
+            firstCell[0],
+            firstCell[1],
+            lastCell[0],
+            lastCell[1],
+            headerValues,
+          );
+          const maxRow = Math.max(...sel.map((s) => s[0]));
+          const minCol = Math.min(...sel.map((s) => s[1]));
+          targetI = maxRow + 1 < state.data.length ? maxRow + 1 : firstCell[0];
+          targetJ = minCol;
+        } else {
+          const singleCol = colIndexToLabel(sel[0][1], headerValues);
+          rangeStr = `${singleCol}1:${singleCol}${Math.min(sel[0][0], state.data.length)}`;
+          targetI = sel[0][0];
+          targetJ = sel[0][1];
+        }
+        newVal = "=" + (formula?.template ?? `${formulaName}(%)`).replace("%", rangeStr);
+      }
+
+      dispatch(changeData, { payload: { value: newVal, i: targetI, j: targetJ } });
+      onChange && onChange(targetI, targetJ, newVal);
+      dispatch(selectOneCell, { payload: { i: targetI, j: targetJ } });
+      // Focus the target cell (not the fx bar) — the user sees the result and
+      // can start a new selection. Formula-edit mode only activates if they
+      // explicitly focus the cell/fx-bar to edit. No select() — that was
+      // selecting all text and causing the next cell click to replace the formula.
+      setTimeout(() => {
+        document.getElementById(`${targetI}-${targetJ}`)?.focus();
+      }, 0);
+    },
+    [i, j, dispatch, onChange, headerValues],
+  );
+
+  // Close Σ menu when clicking outside
+  useEffect(() => {
+    if (!showFormulaMenu) return;
+    const handleOutside = (e: MouseEvent) => {
+      if (formulaMenuRef.current && !formulaMenuRef.current.contains(e.target as Node)) {
+        setShowFormulaMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [showFormulaMenu]);
+
+  // ─── Render ──────────────────────────────────────────────────────────────────
+
+  const hasSelection = i !== undefined && j !== undefined;
+
   return (
     <div className="sheet-tools-container">
       <div className="sheet-tools">
+        {/* fx bar */}
         <div
           className="sheet-tools-calculation-input-container"
           data-testid="sheet-tools-calculation-input-container"
@@ -74,16 +279,89 @@ const Tools = ({
             calculationRef.current?.focus();
           }}
         >
-          fx
-          <input
-            data-testid="fx-input"
-            ref={calculationRef}
-            value={selectedItemVal}
-            type={type === "number" ? "number" : "text"}
-            readOnly={i === undefined || j === undefined || !["text", "number"].includes(type)}
-            onChange={onValChange}
-          />
+          <span className="fx-label">fx</span>
+          <div className="fx-input-wrapper">
+            <input
+              data-testid="fx-input"
+              ref={calculationRef}
+              value={selectedItemVal}
+              type={type === "number" ? "number" : "text"}
+              readOnly={!hasSelection || !["text", "number"].includes(type)}
+              onChange={onValChange}
+              onKeyDown={onFxKeyDown}
+              onBlur={onFxBlur}
+            />
+            {formulaSuggestions.length > 0 && (
+              <ul className="sheet-formula-suggestions" data-testid="formula-suggestions">
+                {formulaSuggestions.map((f, idx) => (
+                  <li
+                    key={f.name}
+                    className={`sheet-formula-suggestion-item${idx === activeSuggestion ? " active" : ""}`}
+                    onMouseDown={() => applyFxSuggestion(f.template)}
+                  >
+                    <span className="fx-name">{f.name}</span>
+                    <span className="fx-desc">{f.desc}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
+
+        {/* Σ formula toolbar button */}
+        <div className="sheet-tools-formula-container" ref={formulaMenuRef}>
+          <button
+            className={`sheet-formula-sigma-btn${showFormulaMenu ? " active" : ""}`}
+            title="Insert formula"
+            data-testid="formula-sigma-btn"
+            onClick={() => setShowFormulaMenu((v) => !v)}
+            disabled={!hasSelection}
+          >
+            Σ
+          </button>
+          {showFormulaMenu && (
+            <div className="sheet-formula-toolbar-menu" data-testid="formula-toolbar-menu">
+              <div className="sheet-formula-toolbar-header">
+                {selectedCount > 1 ? (
+                  <span className="fx-range-hint">
+                    {selectedCount} cells selected — result placed below
+                  </span>
+                ) : (
+                  <span className="fx-range-hint">Select a formula to insert</span>
+                )}
+              </div>
+              <div className="sheet-formula-toolbar-grid">
+                {RANGE_FORMULAS.map((f) => (
+                  <button
+                    key={f.name}
+                    className="sheet-formula-toolbar-item"
+                    title={f.desc}
+                    onClick={() => applyFormulaFromToolbar(f.name)}
+                  >
+                    {f.name}
+                  </button>
+                ))}
+              </div>
+              <div className="sheet-formula-toolbar-divider" />
+              <div className="sheet-formula-toolbar-more-header">Single-cell formulas</div>
+              <div className="sheet-formula-toolbar-more">
+                {SINGLE_FORMULAS.map((f) => (
+                  <button
+                    key={f.name}
+                    className="sheet-formula-toolbar-item-more"
+                    title={f.desc}
+                    onClick={() => applyFormulaFromToolbar(f.name)}
+                  >
+                    <span className="fx-name">{f.name}</span>
+                    <span className="fx-desc">{f.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Undo / Redo */}
         <div className="sheet-tools-text-style-container">
           <button
             data-testid="undo-button-tools"
@@ -120,6 +398,8 @@ const Tools = ({
             </svg>
           </button>
         </div>
+
+        {/* Font size */}
         <div className="sheet-tools-font-size-container">
           <button
             data-testid="font-size-decrease"
@@ -149,6 +429,8 @@ const Tools = ({
             </svg>
           </button>
         </div>
+
+        {/* Font / background color */}
         <div className="sheet-tools-text-cell-color-container">
           <button data-testid="font-color-button" onClick={() => fontColorRef.current?.click()}>
             A{" "}
@@ -188,6 +470,8 @@ const Tools = ({
             onChange={(e) => changeStyleWithDebounce("BACKGROUND", e.target.value)}
           />
         </div>
+
+        {/* Text style: B / U / I */}
         <div className="sheet-tools-text-style-container">
           <button
             className={parsedSelectedStyles["fontWeight"] === "bold" ? "text-style-btn-active" : ""}
@@ -214,6 +498,8 @@ const Tools = ({
             I
           </button>
         </div>
+
+        {/* Text alignment */}
         <div className="sheet-tools-text-align-container">
           <button
             className={parsedSelectedStyles["textAlign"] === "left" ? "text-style-btn-active" : ""}
@@ -248,6 +534,8 @@ const Tools = ({
             <Icons type="align-justify" />
           </button>
         </div>
+
+        {/* Merge */}
         <div className="sheet-tools-text-style-container">
           <button
             className={rowSpan ? "text-style-btn-active" : ""}

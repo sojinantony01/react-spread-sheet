@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, useState, useCallback, useRef, memo } from "react";
+import React, { ChangeEvent, KeyboardEvent, useState, useCallback, memo } from "react";
 import { store, useAppSelector } from "../store";
 import {
   changeData,
@@ -8,6 +8,7 @@ import {
   selectOneCell,
 } from "../reducer";
 import { getCalculatedVal } from "./utils";
+import { updateFormulaHighlights, clearFormulaHighlights } from "./formula-edit-state";
 
 interface Prop {
   i: number;
@@ -27,21 +28,22 @@ const detectLeftButton = (evt: any) => {
 const Input = (props: Prop) => {
   const { i, j, onChange, headerValues } = props;
   const [editMode, setEdit] = useState(false);
-  // Track focus in a ref — it only affects the value selector, not JSX output,
-  // so it doesn't need to be state that triggers its own re-render cycle.
-  const focusRef = useRef(false);
   const { dispatch } = store;
 
   // O(1) selected check via the pre-computed Set in the store.
   const selected = useAppSelector(store, () => store.getSelectedSet().has(`${i},${j}`));
 
-  const value = useAppSelector(store, (state) => {
-    const val = state.data[i][j].value;
-    if (!focusRef.current && val && val.toString().trim().startsWith("=")) {
-      return getCalculatedVal(val, state.data, headerValues);
-    }
-    return val;
-  });
+  // Always read the raw stored value from the store.
+  const rawValue = useAppSelector(store, (state) => state.data[i][j].value);
+
+  // Compute the displayed value outside the selector so editMode (local state)
+  // is always fresh. useAppSelector only re-runs its selector on store changes,
+  // so putting editMode inside it causes stale-closure bugs where the cell shows
+  // the raw formula after blur because the selector was computed when editMode=true.
+  const value =
+    !editMode && rawValue && rawValue.toString().trim().startsWith("=")
+      ? getCalculatedVal(rawValue, store.getState().data, headerValues)
+      : rawValue;
 
   // Parse inside the selector so the component receives a stable object reference
   // when styles content hasn't changed (JSON.stringify → same string → Object.is bails out).
@@ -187,9 +189,6 @@ const Input = (props: Prop) => {
     [i, j, dispatch],
   );
 
-  // No useMemo wrapper — Input only re-renders when one of its store slices
-  // (selected, value, styles, type) or local state (editMode) changes, so
-  // the memo was paying cost for zero benefit.
   return (
     <input
       key={`${i}-${j}-${type}`}
@@ -198,19 +197,34 @@ const Input = (props: Prop) => {
       value={value}
       style={parsedStyles}
       type={type}
-      onFocus={() => {
-        focusRef.current = true;
-      }}
       onBlur={() => {
-        focusRef.current = false;
         setEdit(false);
+        // Clear formula highlights when leaving a formula cell.
+        clearFormulaHighlights();
       }}
       onMouseMoveCapture={onDrag}
       onMouseDown={onClick}
       className={`input${editMode ? "" : " view_mode"}${selected ? " sheet-selected-td" : ""}`}
       onDoubleClick={() => setEdit(true)}
       onKeyDown={keyDown}
-      onChange={change}
+      onChange={(e: ChangeEvent<HTMLInputElement>) => {
+        const newVal = e.target.value;
+        // Update reference highlights live as the user types a formula.
+        if (newVal.startsWith("=")) {
+          const state = store.getState();
+          updateFormulaHighlights(
+            newVal,
+            i,
+            j,
+            headerValues,
+            state.data.length,
+            state.data[0]?.length ?? 0,
+          );
+        } else {
+          clearFormulaHighlights();
+        }
+        change(e);
+      }}
     />
   );
 };

@@ -98,6 +98,30 @@
   border: 1px solid #0a58d0;
 }
 
+/* ─── Formula reference highlights ──────────────────────────────────────── */
+
+/* Cells referenced by the formula being edited — blue dashed border + tint.
+   Uses outline so it doesn't affect layout. */
+.sheet-table .input[data-formula-ref] {
+  outline: 2px dashed #1565c0;
+  outline-offset: -2px;
+  background-color: #e3f0ff !important;
+}
+
+/* Column/row axis headers for referenced columns/rows */
+.sheet-table th[data-formula-col] {
+  background-color: #c8deff !important;
+  color: #0a58d0 !important;
+  font-weight: 700;
+}
+.sheet-table td[data-formula-row] {
+  background-color: #c8deff !important;
+}
+.sheet-table td[data-formula-row] .sheet-axis {
+  color: #0a58d0 !important;
+  font-weight: 700;
+}
+
 .sheet-table input:focus {
   border-radius: 0;
 }
@@ -149,6 +173,22 @@
   background-color: white;
   border-radius: 4px;
   overflow: hidden;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.sheet-table .sheet-tools .sheet-tools-calculation-input-container .fx-label {
+  color: #888;
+  font-size: 12px;
+  user-select: none;
+  flex-shrink: 0;
+}
+.sheet-table .sheet-tools .sheet-tools-calculation-input-container .fx-input-wrapper {
+  flex: 1 1 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
 }
 .sheet-table .sheet-tools .sheet-tools-calculation-input-container input {
   margin-left: 10px;
@@ -157,6 +197,166 @@
   border: none;
   box-shadow: none;
   outline: none;
+  min-width: 0;
+}
+/* ─── Σ Formula toolbar button ─────────────────────────────────── */
+.sheet-table .sheet-tools .sheet-tools-formula-container {
+  position: relative;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+.sheet-table .sheet-tools .sheet-formula-sigma-btn {
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  background: white;
+  height: 28px;
+  min-width: 32px;
+  padding: 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1c274c;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sheet-table .sheet-tools .sheet-formula-sigma-btn:hover,
+.sheet-table .sheet-tools .sheet-formula-sigma-btn.active {
+  background: #e8f0fe;
+  border-color: #0a58d0;
+  color: #0a58d0;
+}
+.sheet-table .sheet-tools .sheet-formula-sigma-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+/* Σ dropdown menu */
+.sheet-table .sheet-formula-toolbar-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: #fff;
+  border: 1px solid #c9d1d9;
+  border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
+  z-index: 300;
+  min-width: 220px;
+  padding: 6px 0 8px;
+}
+.sheet-table .sheet-formula-toolbar-header {
+  padding: 4px 12px 6px;
+  border-bottom: 1px solid #e1e1e1;
+  margin-bottom: 6px;
+}
+.sheet-table .sheet-formula-toolbar-header .fx-range-hint {
+  font-size: 11px;
+  color: #57606a;
+}
+/* 3-column quick-formula grid */
+.sheet-table .sheet-formula-toolbar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 0 8px;
+}
+.sheet-table .sheet-formula-toolbar-item {
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  background: #f7f8fa;
+  padding: 4px 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1c274c;
+  cursor: pointer;
+  text-align: center;
+}
+.sheet-table .sheet-formula-toolbar-item:hover {
+  background: #e8f0fe;
+  border-color: #0a58d0;
+  color: #0a58d0;
+}
+.sheet-table .sheet-formula-toolbar-divider {
+  height: 1px;
+  background: #e1e1e1;
+  margin: 8px 0 6px;
+}
+/* "More formulas" list below divider */
+.sheet-table .sheet-formula-toolbar-more-header {
+  padding: 2px 12px 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #57606a;
+}
+.sheet-table .sheet-formula-toolbar-more {
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+}
+.sheet-table .sheet-formula-toolbar-item-more {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 3px;
+  text-align: left;
+  width: 100%;
+}
+.sheet-table .sheet-formula-toolbar-item-more:hover {
+  background: #e8f0fe;
+}
+.sheet-table .sheet-formula-toolbar-item-more .fx-name {
+  font-weight: 600;
+  color: #0a58d0;
+  font-size: 12px;
+  min-width: 52px;
+}
+.sheet-table .sheet-formula-toolbar-item-more .fx-desc {
+  color: #57606a;
+  font-size: 11px;
+}
+.sheet-table .sheet-formula-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 260px;
+  background: #fff;
+  border: 1px solid #c9d1d9;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  list-style: none;
+  margin: 2px 0 0 0;
+  padding: 4px 0;
+  z-index: 200;
+  max-height: 240px;
+  overflow-y: auto;
+}
+.sheet-table .sheet-formula-suggestion-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1.5;
+  user-select: none;
+  white-space: nowrap;
+}
+.sheet-table .sheet-formula-suggestion-item:hover,
+.sheet-table .sheet-formula-suggestion-item.active {
+  background-color: #e8f0fe;
+}
+.sheet-table .sheet-formula-suggestion-item .fx-name {
+  font-weight: 600;
+  color: #0a58d0;
+  min-width: 72px;
+}
+.sheet-table .sheet-formula-suggestion-item .fx-desc {
+  color: #57606a;
+  font-size: 12px;
 }
 .sheet-table .sheet-tools .sheet-tools-font-size-container {
   margin-left: 15px;

@@ -172,8 +172,14 @@ const List = (props: Props) => {
         dispatch(selectAllCells);
       }
       if (e.code === "Backspace" || e.code === "Delete") {
-        dispatch(deleteSelectItems);
-        onChange && onChange();
+        // Only delete the selected cell(s) when the user is NOT actively typing
+        // in an input/textarea (e.g. the fx bar). Checking document.activeElement
+        // avoids wiping cell values while the user edits text in any input field.
+        const tag = (document.activeElement as HTMLElement)?.tagName?.toLowerCase();
+        if (tag !== "input" && tag !== "textarea") {
+          dispatch(deleteSelectItems);
+          onChange && onChange();
+        }
       } else if ((e.ctrlKey || e.metaKey) && e.code === "KeyC") {
         e.preventDefault();
         copyToClipBoard();
@@ -225,7 +231,9 @@ const List = (props: Props) => {
 
   return (
     <div onKeyDown={handleKeyDown} className="sheet-table" data-testid="sheet-table" tabIndex={0}>
-      {!hideTools && <Tools changeStyle={changeStyle} onChange={onChange} />}
+      {!hideTools && (
+        <Tools changeStyle={changeStyle} onChange={onChange} headerValues={headerValues} />
+      )}
       <div
         className="sheet-table-table-container"
         ref={parentDivRef}
