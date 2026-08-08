@@ -31,7 +31,7 @@
   ],
   "author": "Sojin Antony",
   "dependencies": {
-    "react-intersection-observer": "^9.16.0"
+    "react-intersection-observer": "^11.0.0"
   },
   "type": "module",
   "main": "build/index.js",
@@ -58,10 +58,11 @@
     "@testing-library/react": "^16.3.1",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^22.0.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "@vitejs/plugin-react": "^5.1.2",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^6.0.5",
     "@vitest/coverage-v8": "^4.0.18",
+    "esbuild": "^0.28.1",
     "jsdom": "^27.4.0",
     "postcss": "^8.4.16",
     "prettier": "^3.4.2",
@@ -70,8 +71,8 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-typescript2": "^0.36.0",
     "tslib": "^2.8.1",
-    "typescript": "^4.8.3",
-    "vite": "^7.3.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.2.1",
     "vitest": "^4.0.16"
   },
   "scripts": {
