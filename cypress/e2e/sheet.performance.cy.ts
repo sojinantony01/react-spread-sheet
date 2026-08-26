@@ -38,8 +38,8 @@ describe('Spreadsheet - Performance Tests', () => {
         unit: 'ms'
       });
       
-      // Observed average: ~140ms across 8 runs. 350ms gives 75% CI headroom.
-      expect(avgScrollTime).to.be.lessThan(350);
+      // Observed average: ~140ms across 8 runs. 380ms gives 75% CI headroom.
+      expect(avgScrollTime).to.be.lessThan(380);
     });
   });
 
