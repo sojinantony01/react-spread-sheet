@@ -228,9 +228,12 @@ const Tools = ({
           targetI = maxRow + 1 < state.data.length ? maxRow + 1 : firstCell[0];
           targetJ = minCol;
         } else {
+          // Single-cell selection: infer a range from row 1 down to the selected row,
+          // then place the formula result in the row immediately below.
           const singleCol = colIndexToLabel(sel[0][1], headerValues);
-          rangeStr = `${singleCol}1:${singleCol}${Math.min(sel[0][0], state.data.length)}`;
-          targetI = sel[0][0];
+          const endRow = Math.max(1, sel[0][0]); // guard: row 0 → range A1:A1
+          rangeStr = `${singleCol}1:${singleCol}${endRow}`;
+          targetI = Math.min(sel[0][0] + 1, state.data.length - 1);
           targetJ = sel[0][1];
         }
         newVal = "=" + (formula?.template ?? `${formulaName}(%)`).replace("%", rangeStr);

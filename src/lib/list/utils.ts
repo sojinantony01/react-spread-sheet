@@ -78,6 +78,7 @@ export const exportToCsv = (
 };
 
 // Resolve a cell reference like "A1" — throws if out of bounds so the caller's try/catch can fall back.
+// If the referenced cell itself contains a formula, it is evaluated recursively (chained formulas).
 const resolveCellRef = (ref: string, data: any[][], headerValues?: string[]): string => {
   const match = /^([A-Z]+)([0-9]+)$/i.exec(ref.trim());
   if (!match) throw new Error(`#REF: ${ref}`);
@@ -88,7 +89,12 @@ const resolveCellRef = (ref: string, data: any[][], headerValues?: string[]): st
   if (colIdx === -1 || rowNum < 1 || rowNum > data.length) throw new Error(`#REF: ${ref}`);
   const row = data[rowNum - 1];
   if (!row || colIdx >= row.length) throw new Error(`#REF: ${ref}`);
-  return String(row[colIdx]?.value ?? "");
+  const raw = String(row[colIdx]?.value ?? "");
+  // If the referenced cell is itself a formula, resolve it so chained dependencies work.
+  if (raw.trim().startsWith("=")) {
+    return String(getCalculatedVal(raw, data, headerValues));
+  }
+  return raw;
 };
 
 // Safe version of resolveCellRef — returns "0" for out-of-bounds cells (used inside SUM/AVERAGE etc).
@@ -176,6 +182,24 @@ const parseArgs = (argsStr: string): string[] => {
   return args;
 };
 
+// Expand a function's argument string into a flat array of numeric values.
+// Handles both ranges (A1:C3) and comma-separated lists, including mixed (SUM(A1:A3,B1,5)).
+const expandArgsNumeric = (argsStr: string, data: any[][], headerValues?: string[]): number[] => {
+  return parseArgs(argsStr).flatMap((arg) => {
+    if (arg.includes(":")) return expandRange(arg, data, headerValues);
+    const n = parseFloat(resolveArg(arg, data, headerValues));
+    return [isNaN(n) ? 0 : n];
+  });
+};
+
+// Same as expandArgsNumeric but returns raw strings (for COUNTA, CONCAT).
+const expandArgsRaw = (argsStr: string, data: any[][], headerValues?: string[]): string[] => {
+  return parseArgs(argsStr).flatMap((arg) => {
+    if (arg.includes(":")) return expandRangeRaw(arg, data, headerValues);
+    return [resolveArg(arg, data, headerValues)];
+  });
+};
+
 // Evaluate a function call like SUM(A1:A5) or IF(A1>B1,A1,B1).
 const evalFunction = (
   name: string,
@@ -186,52 +210,56 @@ const evalFunction = (
   const fn = name.toUpperCase();
   switch (fn) {
     case "SUM": {
-      const nums = argsStr.includes(":")
-        ? expandRange(argsStr, data, headerValues)
-        : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)) || 0);
+      const nums = expandArgsNumeric(argsStr, data, headerValues);
       return nums.reduce((s, n) => s + n, 0);
     }
     case "AVERAGE": {
-      const nums = argsStr.includes(":")
-        ? expandRange(argsStr, data, headerValues)
-        : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)) || 0);
-      return nums.length ? nums.reduce((s, n) => s + n, 0) / nums.length : 0;
+      const nums = expandArgsNumeric(argsStr, data, headerValues);
+      if (!nums.length) return 0;
+      const avg = nums.reduce((s, n) => s + n, 0) / nums.length;
+      return parseFloat(avg.toFixed(2));
     }
     case "COUNT": {
-      const nums = argsStr.includes(":")
-        ? expandRange(argsStr, data, headerValues)
-        : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)));
+      const nums = expandArgsNumeric(argsStr, data, headerValues);
       return nums.filter((n) => !isNaN(n)).length;
     }
     case "COUNTA": {
-      const raws = argsStr.includes(":")
-        ? expandRangeRaw(argsStr, data, headerValues)
-        : parseArgs(argsStr).map((a) => resolveArg(a, data, headerValues));
+      const raws = expandArgsRaw(argsStr, data, headerValues);
       return raws.filter((v) => v !== "" && v !== undefined).length;
     }
     case "MIN": {
-      const nums = argsStr.includes(":")
-        ? expandRange(argsStr, data, headerValues)
-        : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)) || 0);
+      const nums = expandArgsNumeric(argsStr, data, headerValues);
       return nums.length ? Math.min(...nums) : 0;
     }
     case "MAX": {
-      const nums = argsStr.includes(":")
-        ? expandRange(argsStr, data, headerValues)
-        : parseArgs(argsStr).map((a) => parseFloat(resolveArg(a, data, headerValues)) || 0);
+      const nums = expandArgsNumeric(argsStr, data, headerValues);
       return nums.length ? Math.max(...nums) : 0;
     }
     case "CONCAT": {
-      const raws = argsStr.includes(":")
-        ? expandRangeRaw(argsStr, data, headerValues)
-        : parseArgs(argsStr).map((a) => resolveArg(a, data, headerValues));
+      const raws = expandArgsRaw(argsStr, data, headerValues);
       return raws.join("");
     }
     case "IF": {
       const args = parseArgs(argsStr);
       if (args.length < 2) return "";
-      const condition = resolveArg(args[0], data, headerValues);
-      const truthy = condition && condition !== "0" && condition !== "false" && condition !== "";
+      const condStr = args[0].trim();
+      // Evaluate comparison operators: >=, <=, <>, >, <, =
+      const cmpMatch = /^(.+?)(>=|<=|<>|>|<|=)(.+)$/.exec(condStr);
+      let truthy: boolean;
+      if (cmpMatch) {
+        const lv = parseFloat(resolveArg(cmpMatch[1].trim(), data, headerValues));
+        const rv = parseFloat(resolveArg(cmpMatch[3].trim(), data, headerValues));
+        const op = cmpMatch[2];
+        truthy = op === ">=" ? lv >= rv
+               : op === "<=" ? lv <= rv
+               : op === "<>" ? lv !== rv
+               : op === ">"  ? lv > rv
+               : op === "<"  ? lv < rv
+               : /* = */       lv === rv;
+      } else {
+        const condition = resolveArg(condStr, data, headerValues);
+        truthy = condition !== "" && condition !== "0" && condition !== "false";
+      }
       const branch = truthy ? args[1] : (args[2] ?? "");
       return resolveArg(branch, data, headerValues);
     }
@@ -295,6 +323,8 @@ export const getCalculatedVal = (
     });
 
     val = val.replaceAll(/\(.+?\)/gi, solveMathExpression);
+    // If val is a plain text result (no digits/operators), return as-is without arithmetic parsing.
+    if (!/[\d]/.test(val)) return val;
     return solveMathExpression(val);
   } catch (e) {
     return val;
@@ -307,6 +337,8 @@ export const solveMathExpression = (expr: string) => {
   let str = expr.replace(/ +/g, "");
 
   const m = [...str.matchAll(/(-?[\d.]+)([*\/+-])?/g)].flat().filter((x, i) => x && i % 3);
+  // If the expression contains no numbers at all, return it unchanged (e.g. text result from IF).
+  if (m.length === 0) return str || undefined;
 
   const calc: Calcs = {
     "*": (a: number, b: number) => (a * b).toString(),
