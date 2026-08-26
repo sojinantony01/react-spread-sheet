@@ -228,12 +228,18 @@ const Tools = ({
           targetI = maxRow + 1 < state.data.length ? maxRow + 1 : firstCell[0];
           targetJ = minCol;
         } else {
-          // Single-cell selection: infer a range from row 1 down to the selected row,
-          // then place the formula result in the row immediately below.
+          // Single-cell selection: range covers row 1 up to (but not including)
+          // the selected row, and the formula is written into the selected cell.
+          // e.g. D4 selected → =SUM(D1:D3) placed in D4.
+          // If row 0 is selected there are no rows above, so range is the cell itself.
           const singleCol = colIndexToLabel(sel[0][1], headerValues);
-          const endRow = Math.max(1, sel[0][0]); // guard: row 0 → range A1:A1
-          rangeStr = `${singleCol}1:${singleCol}${endRow}`;
-          targetI = Math.min(sel[0][0] + 1, state.data.length - 1);
+          const selectedRow = sel[0][0]; // 0-based
+          const endRow = Math.max(1, selectedRow); // guard: row 0 → D1:D1
+          rangeStr =
+            selectedRow === 0
+              ? `${singleCol}1:${singleCol}1`
+              : `${singleCol}1:${singleCol}${endRow}`;
+          targetI = selectedRow; // formula goes into the selected cell
           targetJ = sel[0][1];
         }
         newVal = "=" + (formula?.template ?? `${formulaName}(%)`).replace("%", rangeStr);
