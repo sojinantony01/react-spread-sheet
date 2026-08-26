@@ -35,6 +35,10 @@ export default {
   ],
   plugins: [
     peerDepsExternal(),
+    resolve({
+      extensions: ['.ts', '.tsx', '.js', '.jsx']
+    }),
+    commonjs(),
     typescript({
       tsconfig: './tsconfig.json',
       compilerOptions: {
@@ -44,10 +48,6 @@ export default {
         rootDir: './src/lib'
       }
     }),
-    resolve({
-      extensions: ['.ts', '.tsx', '.js', '.jsx']
-    }),
-    commonjs(),
     postcss(),
     copyCssPlugin()
   ],

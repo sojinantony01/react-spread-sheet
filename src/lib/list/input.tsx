@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, useState, useCallback, memo } from "react";
+import React, { ChangeEvent, KeyboardEvent, useState, useCallback, useRef, memo } from "react";
 import { store, useAppSelector } from "../store";
 import {
   changeData,
@@ -30,20 +30,24 @@ const Input = (props: Prop) => {
   const [editMode, setEdit] = useState(false);
   const { dispatch } = store;
 
+  // Ref so the selector below can always read the current editMode without
+  // closing over a stale value. Updated synchronously before any selector runs.
+  const editModeRef = useRef(false);
+
   // O(1) selected check via the pre-computed Set in the store.
   const selected = useAppSelector(store, () => store.getSelectedSet().has(`${i},${j}`));
 
-  // Always read the raw stored value from the store.
-  const rawValue = useAppSelector(store, (state) => state.data[i][j].value);
-
-  // Compute the displayed value outside the selector so editMode (local state)
-  // is always fresh. useAppSelector only re-runs its selector on store changes,
-  // so putting editMode inside it causes stale-closure bugs where the cell shows
-  // the raw formula after blur because the selector was computed when editMode=true.
-  const value =
-    !editMode && rawValue && rawValue.toString().trim().startsWith("=")
-      ? getCalculatedVal(rawValue, store.getState().data, headerValues)
-      : rawValue;
+  // Run getCalculatedVal inside the selector so that when any referenced cell
+  // changes, the selector returns a new value and triggers a re-render.
+  // editModeRef (not editMode state) is read here to avoid stale closures —
+  // the ref is always current because setEdit + editModeRef are updated together.
+  const value = useAppSelector(store, (state) => {
+    const val = state.data[i][j].value;
+    if (!editModeRef.current && val && val.toString().trim().startsWith("=")) {
+      return getCalculatedVal(val, state.data, headerValues);
+    }
+    return val;
+  });
 
   // Parse inside the selector so the component receives a stable object reference
   // when styles content hasn't changed (JSON.stringify → same string → Object.is bails out).
@@ -58,6 +62,7 @@ const Input = (props: Prop) => {
   const change = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       if (value !== e.target.value) {
+        editModeRef.current = true;
         setEdit(true);
         dispatch(changeData, { payload: { value: e.target.value || "", i, j } });
         onChange && onChange(i, j, e.target.value);
@@ -169,7 +174,10 @@ const Input = (props: Prop) => {
         if (e.ctrlKey || e.metaKey || e.shiftKey) {
           dispatch(selectCells, { payload: { i, j } });
         } else {
-          selected && setEdit(true);
+          if (selected) {
+            editModeRef.current = true;
+            setEdit(true);
+          }
           setSelected();
         }
       } else {
@@ -197,7 +205,11 @@ const Input = (props: Prop) => {
       value={value}
       style={parsedStyles}
       type={type}
+      onFocus={() => {
+        editModeRef.current = true;
+      }}
       onBlur={() => {
+        editModeRef.current = false;
         setEdit(false);
         // Clear formula highlights when leaving a formula cell.
         clearFormulaHighlights();
@@ -205,7 +217,10 @@ const Input = (props: Prop) => {
       onMouseMoveCapture={onDrag}
       onMouseDown={onClick}
       className={`input${editMode ? "" : " view_mode"}${selected ? " sheet-selected-td" : ""}`}
-      onDoubleClick={() => setEdit(true)}
+      onDoubleClick={() => {
+        editModeRef.current = true;
+        setEdit(true);
+      }}
       onKeyDown={keyDown}
       onChange={(e: ChangeEvent<HTMLInputElement>) => {
         const newVal = e.target.value;
