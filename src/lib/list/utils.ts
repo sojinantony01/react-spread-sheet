@@ -307,9 +307,10 @@ export const getCalculatedVal = (
   val: string,
   data: any[][],
   headerValues?: string[],
-): string | number => {
+): string | number | undefined => {
   try {
     val = val.toString().trim();
+    if (!val.startsWith("=")) return undefined;
     val = val.substring(1, val.length); // strip leading "="
 
     // Evaluate named functions: SUM(...), IF(...), etc.
@@ -328,10 +329,10 @@ export const getCalculatedVal = (
       return resolveCellRef(x, data, headerValues); // throws on out-of-bounds → caught below
     });
 
-    val = val.replaceAll(/\(.+?\)/gi, solveMathExpression);
+    val = val.replaceAll(/\(.+?\)/gi, (s) => solveMathExpression(s) ?? s);
     // If val is a plain text result (no digits/operators), return as-is without arithmetic parsing.
     if (!/[\d]/.test(val)) return val;
-    return solveMathExpression(val);
+    return solveMathExpression(val) ?? val;
   } catch (e) {
     return val;
   }
@@ -339,7 +340,7 @@ export const getCalculatedVal = (
 interface Calcs {
   [key: string]: (a: number, b: number) => string;
 }
-export const solveMathExpression = (expr: string) => {
+export const solveMathExpression = (expr: string): string | undefined => {
   let str = expr.replace(/ +/g, "");
 
   const m = [...str.matchAll(/(-?[\d.]+)([*\/+-])?/g)].flat().filter((x, i) => x && i % 3);
