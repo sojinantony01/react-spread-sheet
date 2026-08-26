@@ -250,12 +250,18 @@ const evalFunction = (
         const lv = parseFloat(resolveArg(cmpMatch[1].trim(), data, headerValues));
         const rv = parseFloat(resolveArg(cmpMatch[3].trim(), data, headerValues));
         const op = cmpMatch[2];
-        truthy = op === ">=" ? lv >= rv
-               : op === "<=" ? lv <= rv
-               : op === "<>" ? lv !== rv
-               : op === ">"  ? lv > rv
-               : op === "<"  ? lv < rv
-               : /* = */       lv === rv;
+        truthy =
+          op === ">="
+            ? lv >= rv
+            : op === "<="
+              ? lv <= rv
+              : op === "<>"
+                ? lv !== rv
+                : op === ">"
+                  ? lv > rv
+                  : op === "<"
+                    ? lv < rv
+                    : /* = */ lv === rv;
       } else {
         const condition = resolveArg(condStr, data, headerValues);
         truthy = condition !== "" && condition !== "0" && condition !== "false";
