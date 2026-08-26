@@ -8,6 +8,7 @@ import {
   selectOneCell,
 } from "../reducer";
 import { getCalculatedVal } from "./utils";
+import { updateFormulaHighlights, clearFormulaHighlights } from "./formula-edit-state";
 
 interface Prop {
   i: number;
@@ -27,17 +28,22 @@ const detectLeftButton = (evt: any) => {
 const Input = (props: Prop) => {
   const { i, j, onChange, headerValues } = props;
   const [editMode, setEdit] = useState(false);
-  // Track focus in a ref — it only affects the value selector, not JSX output,
-  // so it doesn't need to be state that triggers its own re-render cycle.
-  const focusRef = useRef(false);
   const { dispatch } = store;
+
+  // Ref so the selector below can always read the current editMode without
+  // closing over a stale value. Updated synchronously before any selector runs.
+  const editModeRef = useRef(false);
 
   // O(1) selected check via the pre-computed Set in the store.
   const selected = useAppSelector(store, () => store.getSelectedSet().has(`${i},${j}`));
 
+  // Run getCalculatedVal inside the selector so that when any referenced cell
+  // changes, the selector returns a new value and triggers a re-render.
+  // editModeRef (not editMode state) is read here to avoid stale closures —
+  // the ref is always current because setEdit + editModeRef are updated together.
   const value = useAppSelector(store, (state) => {
     const val = state.data[i][j].value;
-    if (!focusRef.current && val && val.toString().trim().startsWith("=")) {
+    if (!editModeRef.current && val && val.toString().trim().startsWith("=")) {
       return getCalculatedVal(val, state.data, headerValues);
     }
     return val;
@@ -56,6 +62,7 @@ const Input = (props: Prop) => {
   const change = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       if (value !== e.target.value) {
+        editModeRef.current = true;
         setEdit(true);
         dispatch(changeData, { payload: { value: e.target.value || "", i, j } });
         onChange && onChange(i, j, e.target.value);
@@ -167,7 +174,10 @@ const Input = (props: Prop) => {
         if (e.ctrlKey || e.metaKey || e.shiftKey) {
           dispatch(selectCells, { payload: { i, j } });
         } else {
-          selected && setEdit(true);
+          if (selected) {
+            editModeRef.current = true;
+            setEdit(true);
+          }
           setSelected();
         }
       } else {
@@ -187,9 +197,6 @@ const Input = (props: Prop) => {
     [i, j, dispatch],
   );
 
-  // No useMemo wrapper — Input only re-renders when one of its store slices
-  // (selected, value, styles, type) or local state (editMode) changes, so
-  // the memo was paying cost for zero benefit.
   return (
     <input
       key={`${i}-${j}-${type}`}
@@ -199,18 +206,40 @@ const Input = (props: Prop) => {
       style={parsedStyles}
       type={type}
       onFocus={() => {
-        focusRef.current = true;
+        editModeRef.current = true;
       }}
       onBlur={() => {
-        focusRef.current = false;
+        editModeRef.current = false;
         setEdit(false);
+        // Clear formula highlights when leaving a formula cell.
+        clearFormulaHighlights();
       }}
       onMouseMoveCapture={onDrag}
       onMouseDown={onClick}
       className={`input${editMode ? "" : " view_mode"}${selected ? " sheet-selected-td" : ""}`}
-      onDoubleClick={() => setEdit(true)}
+      onDoubleClick={() => {
+        editModeRef.current = true;
+        setEdit(true);
+      }}
       onKeyDown={keyDown}
-      onChange={change}
+      onChange={(e: ChangeEvent<HTMLInputElement>) => {
+        const newVal = e.target.value;
+        // Update reference highlights live as the user types a formula.
+        if (newVal.startsWith("=")) {
+          const state = store.getState();
+          updateFormulaHighlights(
+            newVal,
+            i,
+            j,
+            headerValues,
+            state.data.length,
+            state.data[0]?.length ?? 0,
+          );
+        } else {
+          clearFormulaHighlights();
+        }
+        change(e);
+      }}
     />
   );
 };
