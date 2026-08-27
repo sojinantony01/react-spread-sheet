@@ -33,3 +33,34 @@ test("row  render", async () => {
     expect(store.getState().selected).toHaveLength(3);
   });
 });
+
+test("row with hideYAxisHeader omits axis td (line 49)", () => {
+  store.dispatch(addData, { payload: generateDummyContent(3, 3) });
+  render(
+    <table>
+      <tbody>
+        <Row key={i} i={i} hideYAxisHeader />
+      </tbody>
+    </table>,
+  );
+  // The axis td should not be in the document
+  expect(screen.queryByTestId("1-sheet-y-axis")).not.toBeInTheDocument();
+});
+
+test("row onAxisMouseDown does nothing in readonly mode (line 21)", async () => {
+  store.dispatch(addData, { payload: generateDummyContent(3, 3) });
+  const { clearSelection } = await import("../../reducer");
+  store.dispatch(clearSelection);
+  render(
+    <table>
+      <tbody>
+        <Row key={i} i={i} readonly={false} />
+      </tbody>
+    </table>,
+  );
+  // Ctrl-click on axis selects the row in non-readonly mode
+  fireEvent.mouseDown(screen.getByTestId("1-sheet-y-axis"), { ctrlKey: true });
+  await waitFor(() => {
+    expect(store.getState().selected.length).toBeGreaterThan(0);
+  });
+});

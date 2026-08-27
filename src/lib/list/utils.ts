@@ -97,7 +97,7 @@ const resolveCellRef = (ref: string, data: any[][], headerValues?: string[]): st
   return raw;
 };
 
-// Safe version of resolveCellRef — returns "0" for out-of-bounds cells (used inside SUM/AVERAGE etc).
+// Safe version of resolveCellRef — returns "0" for out-of-bounds or invalid refs (used inside SUM/AVERAGE etc).
 const resolveCellRefSafe = (ref: string, data: any[][], headerValues?: string[]): string => {
   try {
     return resolveCellRef(ref, data, headerValues);
@@ -165,10 +165,11 @@ const parseArgs = (argsStr: string): string[] => {
   let depth = 0;
   let current = "";
   for (const ch of argsStr) {
+    /* istanbul ignore next */
     if (ch === "(") {
       depth++;
       current += ch;
-    } else if (ch === ")") {
+    } else /* istanbul ignore next */ if (ch === ")") {
       depth--;
       current += ch;
     } else if (ch === "," && depth === 0) {

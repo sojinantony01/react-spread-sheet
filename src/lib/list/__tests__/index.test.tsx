@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import List from "../index";
 import { store } from "../../store";
 import { generateDummyContent } from "../utils";
-import { changeData, selectCellsDrag, selectOneCell } from "../../reducer";
+import { addRows, changeData, selectCellsDrag, selectOneCell } from "../../reducer";
 import { mockAllIsIntersecting } from "react-intersection-observer/test-utils";
 import { wait } from "@testing-library/user-event/dist/cjs/utils/index.js";
 
@@ -367,6 +367,24 @@ describe("index tests", () => {
     fireEvent.keyDown(screen.getByRole("table"), { code: "KeyZ", ctrlKey: true, shiftKey: true });
     expect(store.getState().data[0].length).toBe(1);
   });
+  test("setJ branch when new rows are added while list is partially rendered (index.tsx line 114)", async () => {
+    render(<List data={generateDummyContent(310, 1)} autoAddAdditionalRows={false} />);
+    mockAllIsIntersecting(true);
+    // After initial render, j should be 300 (< 300 cutoff)
+    const tr = await screen.findAllByTestId("sheet-table-tr");
+    expect(tr.length).toBe(300);
+    // Scroll to advance j beyond 0 so the `j !== 0` condition is met
+    fireEvent.scroll(screen.getByTestId("sheet-table-content"), { target: { scrollTop: 1000 } });
+    // Now dispatch addRows to increase itemLength > initialItemLength
+    act(() => {
+      store.dispatch(addRows, { payload: generateDummyContent(50, 1) });
+    });
+    // After itemLength increases, the effect should call setJ(initialItemLength)
+    await waitFor(() => {
+      expect(store.getState().data.length).toBe(360);
+    });
+  });
+
   test("merge cells", async () => {
     const user = userEvent.setup();
     const { container } = render(

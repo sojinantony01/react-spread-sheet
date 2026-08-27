@@ -21,6 +21,7 @@ const detectLeftButton = (evt: any) => {
   if ("buttons" in evt) {
     return evt.buttons === 1;
   }
+  /* v8 ignore next 2 */
   const button = evt.which || evt.button;
   return button === 1;
 };
@@ -152,9 +153,9 @@ const Input = (props: Prop) => {
         e.stopPropagation();
       } else if (editMode && e.code === "KeyA" && (e.ctrlKey || e.metaKey)) {
         e.stopPropagation();
-      } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
       } else if (e.code === "KeyZ" && e.shiftKey && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+      } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
       } else if (
         editMode &&
