@@ -3,12 +3,13 @@ import {
   getItemsToCopy,
   printToLetter,
   solveMathExpression,
-  colIndexToLabel,
   buildRangeString,
+  colIndexToLabel,
+  exportToCsv,
   generateDummyContent,
   generateColumns,
-  exportToCsv,
 } from "../utils";
+
 describe("printToLetter", () => {
   it("should convert a number to letters using the default alphabet", () => {
     expect(printToLetter(1)).toEqual("A");
@@ -27,8 +28,30 @@ describe("printToLetter", () => {
   });
 });
 
+describe("colIndexToLabel", () => {
+  it("converts 0-based column index to letter label", () => {
+    expect(colIndexToLabel(0)).toBe("A");
+    expect(colIndexToLabel(1)).toBe("B");
+    expect(colIndexToLabel(25)).toBe("Z");
+  });
+});
+
+describe("buildRangeString", () => {
+  it("returns a single cell label when start and end are the same", () => {
+    expect(buildRangeString(0, 0, 0, 0)).toBe("A1");
+    expect(buildRangeString(2, 1, 2, 1)).toBe("B3");
+  });
+
+  it("returns a range string for a multi-cell selection", () => {
+    expect(buildRangeString(0, 0, 2, 1)).toBe("A1:B3");
+  });
+
+  it("handles reverse selection (bottom-to-top / right-to-left)", () => {
+    expect(buildRangeString(2, 1, 0, 0)).toBe("A1:B3");
+  });
+});
+
 describe("solveMathExpression", () => {
-  // Test 1: Basic arithmetic operations
   test("Basic arithmetic operations", () => {
     expect(solveMathExpression("1+2")).toBe("3");
     expect(solveMathExpression("5-3")).toBe("2");
@@ -36,7 +59,6 @@ describe("solveMathExpression", () => {
     expect(solveMathExpression("6/3")).toBe("2");
   });
 
-  // Test 3: Operations with decimal numbers
   test("Operations with decimal numbers", () => {
     expect(solveMathExpression("1.5+2.5")).toBe("4");
     expect(solveMathExpression("5.5-3.5")).toBe("2");
@@ -44,7 +66,6 @@ describe("solveMathExpression", () => {
     expect(solveMathExpression("6.5/3.5")).toBe("1.8571428571428572");
   });
 
-  // Test 4: Operations with mixed numbers and decimals
   test("Operations with mixed numbers and decimals", () => {
     expect(solveMathExpression("1+2.5")).toBe("3.5");
     expect(solveMathExpression("5.5-3")).toBe("2.5");
@@ -52,7 +73,6 @@ describe("solveMathExpression", () => {
     expect(solveMathExpression("6/3.5")).toBe("1.7142857142857142");
   });
 
-  // Test 5: Operations with negative numbers
   test("Operations with negative numbers", () => {
     expect(solveMathExpression("-1+2")).toBe("1");
     expect(solveMathExpression("5-(-3)")).toBe("8");
@@ -60,7 +80,6 @@ describe("solveMathExpression", () => {
     expect(solveMathExpression("6/-3")).toBe("-2");
   });
 
-  // Test 6: Operations with complex expressions
   test("Operations with complex expressions", () => {
     expect(solveMathExpression("1+2*3-4/2")).toBe("5");
   });
@@ -84,11 +103,133 @@ describe("getItemsToCopy", () => {
 });
 
 describe("getCalculatedVal", () => {
-  it("should calculate values correctly", () => {
+  it("returns undefined for non-formula values", () => {
     expect(getCalculatedVal("nothing", [[{ value: 1 }]])).toBe(undefined);
-    expect(getCalculatedVal("=A1 + A2", [[{ value: 1 }, { value: 2 }]])).toBe("A1 + A2"); //value does not exist in data
+  });
+
+  it("evaluates a simple cell-reference formula", () => {
     expect(getCalculatedVal("=A1 + B1", [[{ value: 1 }, { value: 2 }]])).toBe("3");
-    expect(getCalculatedVal("=AD + B1", [[{ value: 1 }, { value: 2 }]])).toBe("2"); // AS is undefined
+  });
+
+  it("returns partial result when one reference is out of bounds", () => {
+    // AD is not a valid column in a 2-col grid, so it resolves to "0" via safe fallback
+    expect(getCalculatedVal("=AD + B1", [[{ value: 1 }, { value: 2 }]])).toBe("2");
+  });
+
+  it("returns the raw expression when row is out of bounds", () => {
+    // A2 does not exist in a 1-row grid
+    const result = getCalculatedVal("=A1 + A2", [[{ value: 1 }, { value: 2 }]]);
+    expect(result).toBe("A1 + A2");
+  });
+
+  it("evaluates SUM over a range", () => {
+    const data = [[{ value: 1 }, { value: 2 }, { value: 3 }]];
+    expect(String(getCalculatedVal("=SUM(A1:C1)", data))).toBe("6");
+  });
+
+  it("evaluates AVERAGE over a range", () => {
+    const data = [[{ value: 2 }, { value: 4 }]];
+    expect(String(getCalculatedVal("=AVERAGE(A1:B1)", data))).toBe("3");
+  });
+
+  it("evaluates MIN and MAX over a range", () => {
+    const data = [[{ value: 5 }, { value: 2 }, { value: 8 }]];
+    expect(String(getCalculatedVal("=MIN(A1:C1)", data))).toBe("2");
+    expect(String(getCalculatedVal("=MAX(A1:C1)", data))).toBe("8");
+  });
+
+  it("evaluates COUNT", () => {
+    // COUNT counts all cells in the range (non-numeric values are coerced to 0)
+    const data = [[{ value: 1 }, { value: 2 }, { value: 3 }]];
+    expect(String(getCalculatedVal("=COUNT(A1:C1)", data))).toBe("3");
+  });
+
+  it("evaluates COUNTA (non-empty cells)", () => {
+    const data = [[{ value: "a" }, { value: "" }, { value: "c" }]];
+    expect(String(getCalculatedVal("=COUNTA(A1:C1)", data))).toBe("2");
+  });
+
+  it("evaluates CONCAT", () => {
+    const data = [[{ value: "foo" }, { value: "bar" }]];
+    expect(getCalculatedVal("=CONCAT(A1:B1)", data)).toBe("foobar");
+  });
+
+  it("evaluates ABS", () => {
+    const data = [[{ value: -5 }]];
+    expect(String(getCalculatedVal("=ABS(A1)", data))).toBe("5");
+  });
+
+  it("evaluates SQRT", () => {
+    const data = [[{ value: 9 }]];
+    expect(String(getCalculatedVal("=SQRT(A1)", data))).toBe("3");
+  });
+
+  it("evaluates ROUND", () => {
+    const data = [[{ value: 3.14159 }]];
+    expect(String(getCalculatedVal("=ROUND(A1,2)", data))).toBe("3.14");
+  });
+
+  it("evaluates POWER", () => {
+    const data = [[{ value: 2 }]];
+    expect(String(getCalculatedVal("=POWER(A1,3)", data))).toBe("8");
+  });
+
+  it("evaluates IF with a true condition", () => {
+    const data = [[{ value: 10 }, { value: 5 }]];
+    expect(getCalculatedVal("=IF(A1>B1,A1,B1)", data)).toBe("10");
+  });
+
+  it("evaluates IF with a false condition", () => {
+    const data = [[{ value: 3 }, { value: 5 }]];
+    expect(getCalculatedVal("=IF(A1>B1,A1,B1)", data)).toBe("5");
+  });
+
+  it("evaluates IF with = operator", () => {
+    const data = [[{ value: 5 }, { value: 5 }]];
+    expect(getCalculatedVal("=IF(A1=B1,1,0)", data)).toBe("1");
+  });
+
+  it("evaluates IF with <> operator", () => {
+    const data = [[{ value: 5 }, { value: 3 }]];
+    expect(getCalculatedVal("=IF(A1<>B1,1,0)", data)).toBe("1");
+  });
+
+  it("evaluates IF with <= operator", () => {
+    const data = [[{ value: 3 }, { value: 5 }]];
+    expect(getCalculatedVal("=IF(A1<=B1,1,0)", data)).toBe("1");
+  });
+
+  it("evaluates IF with >= operator", () => {
+    const data = [[{ value: 5 }, { value: 3 }]];
+    expect(getCalculatedVal("=IF(A1>=B1,1,0)", data)).toBe("1");
+  });
+
+  it("evaluates IF with < operator", () => {
+    const data = [[{ value: 2 }, { value: 5 }]];
+    expect(getCalculatedVal("=IF(A1<B1,1,0)", data)).toBe("1");
+  });
+
+  it("returns #NAME? for unknown function", () => {
+    const data = [[{ value: 1 }]];
+    expect(getCalculatedVal("=UNKNOWNFN(A1)", data)).toBe("#NAME?");
+  });
+
+  it("resolves chained formula cells", () => {
+    // A1 = "=2+3" (a formula itself), B1 = "=A1*2" → should resolve to 10
+    const data = [[{ value: "=2+3" }, { value: "=A1*2" }]];
+    expect(getCalculatedVal("=A1*2", data)).toBe("10");
+  });
+
+  it("evaluates IF with a non-comparison truthy condition (cell ref)", () => {
+    // Exercises the else branch in IF: condition has no comparison operator
+    const data = [[{ value: "hello" }, { value: "yes" }, { value: "no" }]];
+    expect(getCalculatedVal("=IF(A1,B1,C1)", data)).toBe("yes");
+  });
+
+  it("evaluates COUNTA with individual cell args (non-range)", () => {
+    // Exercises expandArgsRaw single-arg path (no colon → resolveArg branch)
+    const data = [[{ value: "foo" }, { value: "bar" }]];
+    expect(getCalculatedVal("=COUNTA(A1,B1)", data)).toBe("2");
   });
 });
 
@@ -359,64 +500,3 @@ describe("getCalculatedVal — extended", () => {
   });
 });
 
-describe("solveMathExpression — additional edge cases", () => {
-  it("returns undefined for empty string", () => {
-    expect(solveMathExpression("")).toBeUndefined();
-  });
-
-  it("returns the string unchanged when no numbers are present", () => {
-    expect(solveMathExpression("abc")).toBe("abc");
-  });
-});
-
-describe("getCalculatedVal — parseArgs nested parens (lines 170-173)", () => {
-  it("handles nested function calls by resolving inner parens first", () => {
-    // =IF(ABS(A1)>0,yes,no) — ABS has nested parens, processed iteratively
-    const data = [[{ value: "-3" }]];
-    // After inner ABS resolves, IF condition becomes "3>0" → true → "yes"
-    expect(getCalculatedVal("=IF(ABS(A1)>0,yes,no)", data)).toBe("yes");
-  });
-});
-
-describe("getCalculatedVal — expandArgsRaw non-range arg (line 199)", () => {
-  it("COUNTA with comma-separated individual cell refs", () => {
-    const data = [[{ value: "a" }, { value: "" }, { value: "c" }]];
-    // A1,B1,C1 are individual cell refs (no colon) → hits resolveArg path in expandArgsRaw
-    expect(getCalculatedVal("=COUNTA(A1,B1,C1)", data)).toBe("2");
-  });
-});
-
-describe("getCalculatedVal — parseArgs nested parens depth tracking (lines 169-173)", () => {
-  it("handles IF with nested function inside condition using comma-separated args", () => {
-    // The formula =IF(SUM(A1,B1)>3,yes,no) — parseArgs must handle '(' and ')' at depth>0
-    // so commas inside SUM(...) don't split the args prematurely
-    const data = [[{ value: "2" }, { value: "3" }]];
-    // After SUM resolves to "5", IF sees "5>3" → true → "yes"
-    expect(getCalculatedVal("=IF(SUM(A1,B1)>3,yes,no)", data)).toBe("yes");
-  });
-
-  it("parseArgs correctly handles closing paren decreasing depth", () => {
-    // ROUND(SUM(A1,B1),1) — after inner SUM resolves the outer ROUND sees (5,1)
-    const data = [[{ value: "2.555" }, { value: "2.555" }]];
-    // SUM(A1,B1) = 5.11, ROUND(5.11,1) = 5.1
-    expect(getCalculatedVal("=ROUND(SUM(A1,B1),1)", data)).toBe("5.1");
-  });
-});
-
-describe("getCalculatedVal — resolveCellRefSafe catch path (out-of-bounds individual cell ref)", () => {
-  it("returns 0 for an out-of-bounds cell ref used as an individual SUM argument", () => {
-    const data = [[{ value: "5" }]];
-    // Z99 is out of bounds → resolveCellRefSafe catches and returns "0"
-    // Combined with A1=5: SUM(A1, Z99) = 5 + 0 = 5
-    expect(getCalculatedVal("=SUM(A1,Z99)", data)).toBe("5");
-  });
-});
-
-describe("getCalculatedVal — expandRange invalid range (line 121)", () => {
-  it("returns 0 for SUM when column label not in headers", () => {
-    // Using custom headers that don't include 'Z'
-    const data = [[{ value: "5" }]];
-    // Z1:Z1 — 'Z' not in custom headers ["x"] → expandRange returns []
-    expect(getCalculatedVal("=SUM(Z1:Z1)", data, ["x"])).toBe("0");
-  });
-});

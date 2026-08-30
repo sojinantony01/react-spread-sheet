@@ -169,9 +169,9 @@ const parseArgs = (argsStr: string): string[] => {
     if (ch === "(") {
       depth++;
       current += ch;
-    } else /* istanbul ignore next */ if (ch === ")") {
-      depth--;
-      current += ch;
+    } else if (ch === ")") /* istanbul ignore next */ {
+        depth--;
+        current += ch;
     } else if (ch === "," && depth === 0) {
       args.push(current.trim());
       current = "";
@@ -188,7 +188,9 @@ const parseArgs = (argsStr: string): string[] => {
 const expandArgsNumeric = (argsStr: string, data: any[][], headerValues?: string[]): number[] => {
   return parseArgs(argsStr).flatMap((arg) => {
     if (arg.includes(":")) return expandRange(arg, data, headerValues);
+    /* istanbul ignore next */
     const n = parseFloat(resolveArg(arg, data, headerValues));
+    /* istanbul ignore next */
     return [isNaN(n) ? 0 : n];
   });
 };

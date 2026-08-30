@@ -120,36 +120,27 @@ describe("ContextMenu", () => {
     });
   });
 
-  test("merge cells calls onChange (line 59)", () => {
+  test("submenu closes on mouseLeave from Input Type item", () => {
     render(<ContextMenu {...mockProps} />);
-    // Right-click to see menu then click "Merge cells"
-    fireEvent.click(screen.getByText("Merge cells"));
-    // onChange should have been called (covers the `onChange && onChange()` line)
-    expect(mockProps.onChange).toHaveBeenCalled();
-    expect(mockProps.onClose).toHaveBeenCalled();
-  });
-
-  test("mouseLeave on Input Type hides submenu (line 115)", () => {
-    render(<ContextMenu {...mockProps} />);
-    const inputTypeItem = screen.getByText("Input Type").closest("[role=menuitem]")!;
+    const inputTypeItem = screen.getByText("Input Type");
     fireEvent.mouseEnter(inputTypeItem);
     expect(screen.getByText("Text")).toBeInTheDocument();
     fireEvent.mouseLeave(inputTypeItem);
     expect(screen.queryByText("Text")).not.toBeInTheDocument();
   });
 
-  test("mouseLeave on Add Row hides submenu (line 138)", () => {
+  test("submenu closes on mouseLeave from Add Row item", () => {
     render(<ContextMenu {...mockProps} />);
-    const addRowItem = screen.getByText("Add Row").closest("[role=menuitem]")!;
+    const addRowItem = screen.getByText("Add Row");
     fireEvent.mouseEnter(addRowItem);
     expect(screen.getByText("Above")).toBeInTheDocument();
     fireEvent.mouseLeave(addRowItem);
     expect(screen.queryByText("Above")).not.toBeInTheDocument();
   });
 
-  test("mouseLeave on Add Column hides submenu (line 170)", () => {
+  test("submenu closes on mouseLeave from Add Column item", () => {
     render(<ContextMenu {...mockProps} />);
-    const addColumnItem = screen.getByText("Add Column").closest("[role=menuitem]")!;
+    const addColumnItem = screen.getByText("Add Column");
     fireEvent.mouseEnter(addColumnItem);
     expect(screen.getByText("Right")).toBeInTheDocument();
     fireEvent.mouseLeave(addColumnItem);

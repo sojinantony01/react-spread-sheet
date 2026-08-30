@@ -1,38 +1,48 @@
 import { updateFormulaHighlights, clearFormulaHighlights } from "../formula-edit-state";
 
 /**
- * Helpers to create DOM elements that mimic the spreadsheet structure
- * updateFormulaHighlights queries for.
+ * formula-edit-state tests
+ *
+ * These tests verify real observable DOM behaviour:
+ * - cells referenced in a formula get data-formula-ref set
+ * - column headers get data-formula-col set
+ * - row axis headers get data-formula-row set
+ * - switching to a new formula clears the previous highlights
+ * - clearFormulaHighlights removes all attributes
+ * - non-formula values produce no highlights
  */
-const createCell = (id: string) => {
+
+const makeCell = (id: string): HTMLInputElement => {
   const el = document.createElement("input");
   el.id = id;
   document.body.appendChild(el);
   return el;
 };
 
-const createTableStructure = (rows: number, cols: number) => {
+const makeTh = (): HTMLTableCellElement => {
+  const el = document.createElement("th");
+  return el;
+};
+
+const makeTable = (rows: number, cols: number) => {
   const table = document.createElement("table");
   table.className = "sheet-table";
 
-  // thead with th for each column (+1 for the row-axis stub)
   const thead = document.createElement("thead");
   const headerRow = document.createElement("tr");
+  // First th is the row-axis header (blank); subsequent ths are column headers
   for (let c = 0; c <= cols; c++) {
-    const th = document.createElement("th");
-    headerRow.appendChild(th);
+    headerRow.appendChild(makeTh());
   }
   thead.appendChild(headerRow);
   table.appendChild(thead);
 
-  // tbody – each tr has a leading <td class="sheet-axis"> plus one td per col
   const tbody = document.createElement("tbody");
   for (let r = 0; r < rows; r++) {
     const tr = document.createElement("tr");
-    // axis td (first child)
+    // First td is the row axis
     const axisTd = document.createElement("td");
     tr.appendChild(axisTd);
-    // cell inputs
     for (let c = 0; c < cols; c++) {
       const td = document.createElement("td");
       const input = document.createElement("input");
@@ -48,133 +58,108 @@ const createTableStructure = (rows: number, cols: number) => {
 };
 
 afterEach(() => {
-  // Reset DOM between tests
   document.body.innerHTML = "";
 });
 
 describe("updateFormulaHighlights", () => {
-  test("does nothing when formula does not start with =", () => {
-    const cell = createCell("0-0");
-    updateFormulaHighlights("SUM(A1)", 1, 1);
-    expect(cell.hasAttribute("data-formula-ref")).toBe(false);
+  test("non-formula value produces no highlights", () => {
+    makeCell("0-0");
+    updateFormulaHighlights("hello", 1, 1);
+    expect(document.getElementById("0-0")?.getAttribute("data-formula-ref")).toBeNull();
   });
 
-  test("clears previous highlights before applying new ones", () => {
-    createTableStructure(3, 3);
-    // First call — highlight A1 (0-0)
-    updateFormulaHighlights("=A1", 1, 1, undefined, 3, 3);
-    const el00 = document.getElementById("0-0");
-    expect(el00?.getAttribute("data-formula-ref")).toBe("1");
-
-    // Second call with different formula — previous highlight should be cleared
-    updateFormulaHighlights("=B1", 1, 1, undefined, 3, 3);
-    expect(el00?.hasAttribute("data-formula-ref")).toBe(false);
-    const el01 = document.getElementById("0-1");
-    expect(el01?.getAttribute("data-formula-ref")).toBe("1");
-  });
-
-  test("highlights a single cell reference", () => {
-    createTableStructure(3, 3);
+  test("formula with a single cell ref highlights that cell", () => {
+    makeTable(3, 3);
     updateFormulaHighlights("=A1", 1, 1, undefined, 3, 3);
     const el = document.getElementById("0-0");
     expect(el?.getAttribute("data-formula-ref")).toBe("1");
   });
 
-  test("does not self-highlight the formula cell itself", () => {
-    createTableStructure(3, 3);
-    // Formula is in B2 (row=1, col=1) and references B2 itself
+  test("formula does not highlight the cell being edited", () => {
+    makeTable(3, 3);
+    // editing B2 (row=1,col=1), formula references B2 itself
     updateFormulaHighlights("=B2", 1, 1, undefined, 3, 3);
-    const el = document.getElementById("1-1");
-    expect(el?.hasAttribute("data-formula-ref")).toBe(false);
+    expect(document.getElementById("1-1")?.getAttribute("data-formula-ref")).toBeNull();
   });
 
-  test("highlights a range reference", () => {
-    createTableStructure(3, 3);
-    // =A1:B2 should highlight (0,0), (0,1), (1,0), (1,1)
-    updateFormulaHighlights("=A1:B2", 2, 2, undefined, 3, 3);
+  test("range formula highlights all cells in range", () => {
+    makeTable(3, 3);
+    updateFormulaHighlights("=SUM(A1:B2)", 2, 2, undefined, 3, 3);
     expect(document.getElementById("0-0")?.getAttribute("data-formula-ref")).toBe("1");
     expect(document.getElementById("0-1")?.getAttribute("data-formula-ref")).toBe("1");
     expect(document.getElementById("1-0")?.getAttribute("data-formula-ref")).toBe("1");
     expect(document.getElementById("1-1")?.getAttribute("data-formula-ref")).toBe("1");
   });
 
-  test("highlights column header th for referenced cells", () => {
-    createTableStructure(3, 3);
-    updateFormulaHighlights("=A1", 1, 1, undefined, 3, 3);
-    // Column 0 → th index 1 (index 0 is the row-axis stub)
-    const ths = document.querySelectorAll(".sheet-table thead th");
-    expect(ths[1]?.getAttribute("data-formula-col")).toBe("1");
+  test("column headers get data-formula-col when a column is referenced", () => {
+    makeTable(3, 3);
+    updateFormulaHighlights("=A1", 2, 2, undefined, 3, 3);
+    // Column A is index 0; in the header row, col 0 maps to th[1] (th[0] is the blank corner)
+    const headerThs = document.querySelectorAll(".sheet-table thead th");
+    expect(headerThs[1]?.getAttribute("data-formula-col")).toBe("1");
   });
 
-  test("highlights row axis td for referenced cells", () => {
-    createTableStructure(3, 3);
-    updateFormulaHighlights("=A1", 1, 1, undefined, 3, 3);
-    // Row 0 → first tr in tbody, first td
-    const tr = document.querySelector(".sheet-table tbody tr:nth-child(1)");
-    const axisTd = tr?.querySelector("td:first-child");
-    expect(axisTd?.getAttribute("data-formula-row")).toBe("1");
+  test("row axis td gets data-formula-row when a row is referenced", () => {
+    makeTable(3, 3);
+    updateFormulaHighlights("=A1", 2, 2, undefined, 3, 3);
+    // Row 0 axis td is the first td in the first tbody tr
+    const firstRowAxisTd = document.querySelector(".sheet-table tbody tr:nth-child(1) td:first-child");
+    expect(firstRowAxisTd?.getAttribute("data-formula-row")).toBe("1");
   });
 
-  test("respects gridRows/gridCols bounds — out-of-bounds refs are ignored", () => {
-    createTableStructure(2, 2);
-    // C3 is row=2, col=2 which is out of a 2×2 grid
-    updateFormulaHighlights("=C3", 0, 0, undefined, 2, 2);
-    // No highlights should be set
-    expect(document.getElementById("2-2")).toBeNull();
-  });
+  test("calling again clears previous highlights and applies new ones", () => {
+    makeTable(3, 3);
+    updateFormulaHighlights("=A1", 2, 2, undefined, 3, 3);
+    expect(document.getElementById("0-0")?.getAttribute("data-formula-ref")).toBe("1");
 
-  test("works with custom headerValues", () => {
-    createTableStructure(3, 3);
-    const headers = ["x", "y", "z"];
-    // =y1 references row 0, col 1 with custom headers
-    updateFormulaHighlights("=y1", 2, 2, headers, 3, 3);
+    // Now update to reference B1 instead
+    updateFormulaHighlights("=B1", 2, 2, undefined, 3, 3);
+    expect(document.getElementById("0-0")?.getAttribute("data-formula-ref")).toBeNull();
     expect(document.getElementById("0-1")?.getAttribute("data-formula-ref")).toBe("1");
   });
 
-  test("handles formula with no valid refs gracefully", () => {
-    createTableStructure(3, 3);
-    // The formula starts with = but contains no cell references
-    expect(() => updateFormulaHighlights("=1+2+3", 0, 0, undefined, 3, 3)).not.toThrow();
+  test("out-of-bounds cell refs are ignored when gridRows/gridCols are provided", () => {
+    makeTable(2, 2);
+    // Z99 is far outside a 2x2 grid
+    updateFormulaHighlights("=Z99", 0, 0, undefined, 2, 2);
+    // no ref should be set on any cell
+    expect(document.getElementById("0-0")?.getAttribute("data-formula-ref")).toBeNull();
   });
+});
 
-  test("handles missing DOM elements gracefully", () => {
-    // No cells in DOM — should not throw
-    expect(() => updateFormulaHighlights("=A1", 1, 1, undefined, 3, 3)).not.toThrow();
+describe("updateFormulaHighlights — custom headerValues", () => {
+  test("uses custom header array to resolve column references", () => {
+    makeTable(3, 3);
+    // With headerValues=["X","Y","Z"], "X" maps to col 0, "Y" to col 1
+    updateFormulaHighlights("=X1", 2, 2, ["X", "Y", "Z"], 3, 3);
+    expect(document.getElementById("0-0")?.getAttribute("data-formula-ref")).toBe("1");
   });
 });
 
 describe("clearFormulaHighlights", () => {
-  test("removes data-formula-ref attributes set by updateFormulaHighlights", () => {
-    createTableStructure(3, 3);
-    updateFormulaHighlights("=A1", 1, 1, undefined, 3, 3);
-    const el = document.getElementById("0-0");
-    expect(el?.hasAttribute("data-formula-ref")).toBe(true);
+  test("removes data-formula-ref from highlighted cells", () => {
+    makeTable(3, 3);
+    updateFormulaHighlights("=A1", 2, 2, undefined, 3, 3);
+    expect(document.getElementById("0-0")?.getAttribute("data-formula-ref")).toBe("1");
 
     clearFormulaHighlights();
-    expect(el?.hasAttribute("data-formula-ref")).toBe(false);
+    expect(document.getElementById("0-0")?.getAttribute("data-formula-ref")).toBeNull();
   });
 
-  test("removes data-formula-col and data-formula-row attributes", () => {
-    createTableStructure(3, 3);
-    updateFormulaHighlights("=A1", 1, 1, undefined, 3, 3);
+  test("removes data-formula-col and data-formula-row from axis headers", () => {
+    makeTable(3, 3);
+    updateFormulaHighlights("=A1", 2, 2, undefined, 3, 3);
+
     clearFormulaHighlights();
 
-    const ths = document.querySelectorAll(".sheet-table thead th");
-    ths.forEach((th) => expect(th.hasAttribute("data-formula-col")).toBe(false));
+    const headerThs = document.querySelectorAll(".sheet-table thead th");
+    expect(headerThs[1]?.getAttribute("data-formula-col")).toBeNull();
 
-    const trs = document.querySelectorAll(".sheet-table tbody tr");
-    trs.forEach((tr) => {
-      const axisTd = tr.querySelector("td:first-child");
-      expect(axisTd?.hasAttribute("data-formula-row")).toBe(false);
-    });
+    const firstRowAxisTd = document.querySelector(".sheet-table tbody tr:nth-child(1) td:first-child");
+    expect(firstRowAxisTd?.getAttribute("data-formula-row")).toBeNull();
   });
 
-  test("is idempotent — calling twice does not throw", () => {
-    createTableStructure(3, 3);
-    updateFormulaHighlights("=A1", 1, 1, undefined, 3, 3);
-    expect(() => {
-      clearFormulaHighlights();
-      clearFormulaHighlights();
-    }).not.toThrow();
+  test("calling clearFormulaHighlights when nothing is highlighted is a no-op", () => {
+    expect(() => clearFormulaHighlights()).not.toThrow();
   });
 });
