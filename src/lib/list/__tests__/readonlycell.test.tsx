@@ -93,7 +93,9 @@ test("read only cell renders calculated formula value", () => {
 test("read only cell respects colSpan and rowSpan when both are set", () => {
   store.dispatch(addData, { payload: generateDummyContent(3, 3) });
   act(() => {
-    store.dispatch(changeData, { payload: { value: "merged", i: 0, j: 0, colSpan: 2, rowSpan: 2 } });
+    store.dispatch(changeData, {
+      payload: { value: "merged", i: 0, j: 0, colSpan: 2, rowSpan: 2 },
+    });
     // Manually set the spans via store — the reducer stores whatever value object is passed
     const state = store.getState();
     const newRow = state.data[0].slice();

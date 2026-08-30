@@ -103,7 +103,9 @@ describe("updateFormulaHighlights", () => {
     makeTable(3, 3);
     updateFormulaHighlights("=A1", 2, 2, undefined, 3, 3);
     // Row 0 axis td is the first td in the first tbody tr
-    const firstRowAxisTd = document.querySelector(".sheet-table tbody tr:nth-child(1) td:first-child");
+    const firstRowAxisTd = document.querySelector(
+      ".sheet-table tbody tr:nth-child(1) td:first-child",
+    );
     expect(firstRowAxisTd?.getAttribute("data-formula-row")).toBe("1");
   });
 
@@ -155,7 +157,9 @@ describe("clearFormulaHighlights", () => {
     const headerThs = document.querySelectorAll(".sheet-table thead th");
     expect(headerThs[1]?.getAttribute("data-formula-col")).toBeNull();
 
-    const firstRowAxisTd = document.querySelector(".sheet-table tbody tr:nth-child(1) td:first-child");
+    const firstRowAxisTd = document.querySelector(
+      ".sheet-table tbody tr:nth-child(1) td:first-child",
+    );
     expect(firstRowAxisTd?.getAttribute("data-formula-row")).toBeNull();
   });
 

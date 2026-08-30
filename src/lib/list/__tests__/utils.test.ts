@@ -294,19 +294,32 @@ describe("exportToCsv", () => {
     HTMLAnchorElement.prototype.click = vi.fn() as any;
   });
 
-  const makeData = (values: string[][]) =>
-    values.map((row) => row.map((v) => ({ value: v })));
+  const makeData = (values: string[][]) => values.map((row) => row.map((v) => ({ value: v })));
 
   it("triggers a download without headers", () => {
     const appendSpy = vi.spyOn(document.body, "appendChild");
-    exportToCsv(makeData([["a", "b"], ["c", "d"]]), "test");
+    exportToCsv(
+      makeData([
+        ["a", "b"],
+        ["c", "d"],
+      ]),
+      "test",
+    );
     expect(appendSpy).toHaveBeenCalled();
     appendSpy.mockRestore();
   });
 
   it("triggers a download with headers included", () => {
     const appendSpy = vi.spyOn(document.body, "appendChild");
-    exportToCsv(makeData([["a", "b"], ["c", "d"]]), "test", undefined, true);
+    exportToCsv(
+      makeData([
+        ["a", "b"],
+        ["c", "d"],
+      ]),
+      "test",
+      undefined,
+      true,
+    );
     expect(appendSpy).toHaveBeenCalled();
     appendSpy.mockRestore();
   });
@@ -449,9 +462,7 @@ describe("getCalculatedVal — extended", () => {
 
   it("handles chained cell references (cell formula referencing another formula cell)", () => {
     // A1=5, B1 = =A1*2 = 10, C1 = =B1+1 → 11 — returned as string
-    const data = [
-      [{ value: "5" }, { value: "=A1*2" }, { value: "=B1+1" }],
-    ];
+    const data = [[{ value: "5" }, { value: "=A1*2" }, { value: "=B1+1" }]];
     expect(getCalculatedVal("=B1+1", data)).toBe("11");
   });
 
@@ -499,4 +510,3 @@ describe("getCalculatedVal — extended", () => {
     expect(getCalculatedVal("=A1", data)).toBe("hello");
   });
 });
-
