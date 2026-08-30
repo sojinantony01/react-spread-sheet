@@ -154,7 +154,11 @@ const Input = (props: Prop) => {
         e.stopPropagation();
       } else if (e.code === "KeyZ" && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
-      } else if (e.code === "KeyZ" && e.shiftKey && /* istanbul ignore next */ (e.ctrlKey || e.metaKey)) {
+      } else if (
+        e.code === "KeyZ" &&
+        e.shiftKey &&
+        /* istanbul ignore next */ (e.ctrlKey || e.metaKey)
+      ) {
         /* istanbul ignore next */
         e.preventDefault();
       } else if (

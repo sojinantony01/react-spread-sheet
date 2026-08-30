@@ -169,8 +169,8 @@ const parseArgs = (argsStr: string): string[] => {
       depth++;
       current += ch;
     } else if (ch === ")") /* istanbul ignore next */ {
-        depth--;
-        current += ch;
+      depth--;
+      current += ch;
     } else if (ch === "," && depth === 0) {
       args.push(current.trim());
       current = "";

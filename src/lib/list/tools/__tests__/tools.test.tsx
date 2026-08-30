@@ -406,4 +406,3 @@ test("fx bar suggestion can be selected by clicking (mouseDown)", async () => {
     expect(val).toMatch(/^=SUM/);
   });
 });
-
