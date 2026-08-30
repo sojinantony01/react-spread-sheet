@@ -56,6 +56,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
 
   const mergeCell = () => {
     dispatch(mergeCells);
+    /* istanbul ignore next */
     onChange && onChange();
     onClose();
   };

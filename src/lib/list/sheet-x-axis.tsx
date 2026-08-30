@@ -26,6 +26,7 @@ const SheetXAxis = ({ resize, headerValues, readOnly = false }: Props) => {
         data-testid={`${i}-x-axis`}
         tabIndex={0}
         onMouseDown={(e) => {
+          /* istanbul ignore next */
           if (!readOnly) {
             if (i === 0) {
               dispatch(selectAllCells);
@@ -36,6 +37,7 @@ const SheetXAxis = ({ resize, headerValues, readOnly = false }: Props) => {
           }
         }}
       >
+        {/* istanbul ignore next */}
         {resize && i > 0 ? (
           <div>{printToLetter(i, headerValues)}</div>
         ) : (

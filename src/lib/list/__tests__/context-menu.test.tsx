@@ -119,4 +119,31 @@ describe("ContextMenu", () => {
       expect(item).not.toBeDisabled();
     });
   });
+
+  test("submenu closes on mouseLeave from Input Type item", () => {
+    render(<ContextMenu {...mockProps} />);
+    const inputTypeItem = screen.getByText("Input Type");
+    fireEvent.mouseEnter(inputTypeItem);
+    expect(screen.getByText("Text")).toBeInTheDocument();
+    fireEvent.mouseLeave(inputTypeItem);
+    expect(screen.queryByText("Text")).not.toBeInTheDocument();
+  });
+
+  test("submenu closes on mouseLeave from Add Row item", () => {
+    render(<ContextMenu {...mockProps} />);
+    const addRowItem = screen.getByText("Add Row");
+    fireEvent.mouseEnter(addRowItem);
+    expect(screen.getByText("Above")).toBeInTheDocument();
+    fireEvent.mouseLeave(addRowItem);
+    expect(screen.queryByText("Above")).not.toBeInTheDocument();
+  });
+
+  test("submenu closes on mouseLeave from Add Column item", () => {
+    render(<ContextMenu {...mockProps} />);
+    const addColumnItem = screen.getByText("Add Column");
+    fireEvent.mouseEnter(addColumnItem);
+    expect(screen.getByText("Right")).toBeInTheDocument();
+    fireEvent.mouseLeave(addColumnItem);
+    expect(screen.queryByText("Right")).not.toBeInTheDocument();
+  });
 });

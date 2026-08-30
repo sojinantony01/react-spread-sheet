@@ -391,4 +391,34 @@ describe("index tests", () => {
     fireEvent.click(screen.getByText("Merge cells"));
     expect(screen.getAllByRole("textbox").length).toBe(18); //why this is 21 !!!!
   });
+
+  test("List without data prop uses generateDummyContent", async () => {
+    render(<List />);
+    await waitFor(() => {
+      expect(screen.getAllByTestId("sheet-table-tr").length).toBeGreaterThan(0);
+    });
+  });
+
+  test("readonly mode prevents context menu", () => {
+    render(<List data={generateDummyContent(3, 1)} readonly />);
+    mockAllIsIntersecting(true);
+    fireEvent.contextMenu(screen.getByRole("table"));
+    // context menu should NOT appear in readonly mode
+    expect(screen.queryByText("Cut")).not.toBeInTheDocument();
+  });
+
+  test("hideTools hides the toolbar", () => {
+    render(<List data={generateDummyContent(3, 1)} hideTools />);
+    expect(screen.queryByTestId("fx-input")).not.toBeInTheDocument();
+  });
+
+  test("hideXAxisHeader hides the column header row", () => {
+    render(<List data={generateDummyContent(3, 1)} hideXAxisHeader />);
+    expect(screen.queryByTestId("sheet-table-x-axis-header")).not.toBeInTheDocument();
+  });
+
+  test("headerValues are displayed in column headers", () => {
+    render(<List data={generateDummyContent(3, 1)} headerValues={["Alpha"]} />);
+    expect(screen.getByText("Alpha")).toBeInTheDocument();
+  });
 });

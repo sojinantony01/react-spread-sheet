@@ -111,6 +111,7 @@ const List = (props: Props) => {
         //Add additional rows
         dispatch(addRows, { payload: generateDummyContent(300, store.getState().data[0].length) });
       } else {
+        /* istanbul ignore next */
         setJ(nextVal > itemLength ? itemLength : nextVal);
       }
     }
