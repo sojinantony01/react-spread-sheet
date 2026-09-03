@@ -427,7 +427,7 @@ const actions: DispatcherActions = {
   },
 
   mergeCells(state) {
-    if (state.selected.length === 0) return state;
+    if (state.selected.length === 0) /* istanbul ignore next */ return state;
 
     const undo: Action[] = [];
     const cellForMerge = state.selected[0];

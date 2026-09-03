@@ -21,7 +21,7 @@ const Sheet = forwardRef((props: Props, ref) => {
   };
 
   const updateOneCell = (row: number, col: number, value: any) => {
-    store.dispatch(changeData, { payload: { row, col, value } });
+    store.dispatch(changeData, { payload: { i: row, j: col, value } });
   };
 
   const getOneCell = (row: number, col: number): Data => {

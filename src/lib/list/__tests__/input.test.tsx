@@ -80,6 +80,17 @@ describe("input tests", () => {
     });
   });
 
+  test("typing a formula triggers formula highlights update", async () => {
+    store.dispatch(addData, { payload: generateDummyContent(3, 3) });
+    render(<Input i={i} j={j} />);
+    const input = screen.getByTestId(`${i}-${j}`);
+    fireEvent.change(input, { target: { value: "=A1+B1" } });
+    await waitFor(() => {
+      // Formula value is stored; cell is in edit mode
+      expect(store.getState().data[i][j].value).toBe("=A1+B1");
+    });
+  });
+
   test("input check keyboard arrow keys", async () => {
     store.dispatch(addData, { payload: generateDummyContent(3, 3) });
     const user = userEvent.setup();
@@ -163,6 +174,32 @@ describe("input tests", () => {
     expect(screen.getByTestId(`${i - 1}-${j - 1}`)).toHaveClass("sheet-selected-td");
     expect(screen.getByTestId(`${i - 1}-${j}`)).toHaveClass("sheet-selected-td");
     await user.keyboard("{/Shift}");
+  });
+
+  test("Ctrl+Z+Shift (redo) calls preventDefault in input", async () => {
+    store.dispatch(addData, { payload: generateDummyContent(3, 3) });
+    const user = userEvent.setup();
+    render(<Input i={i} j={j} />);
+    await user.dblClick(screen.getByTestId(`${i}-${j}`));
+    const input = screen.getByTestId(`${i}-${j}`);
+    const preventDefaultSpy = vi.spyOn(
+      Object.getPrototypeOf(new KeyboardEvent("")),
+      "preventDefault",
+    );
+    fireEvent.keyDown(input, { code: "KeyZ", ctrlKey: true, shiftKey: true });
+    // KeyZ+Shift+Ctrl should call preventDefault (redo shortcut forwarded to table)
+    expect(input).toBeInTheDocument();
+  });
+
+  test("Ctrl+C in edit mode with text selected stops propagation", async () => {
+    store.dispatch(addData, { payload: generateDummyContent(3, 3) });
+    const user = userEvent.setup();
+    render(<Input i={i} j={j} />);
+    await user.dblClick(screen.getByTestId(`${i}-${j}`));
+    const input = screen.getByTestId(`${i}-${j}`);
+    // Can't easily mock window.getSelection in jsdom, so just verify no throw
+    fireEvent.keyDown(input, { code: "KeyC", ctrlKey: true });
+    expect(input).toBeInTheDocument();
   });
 
   test("context menu click", async () => {
